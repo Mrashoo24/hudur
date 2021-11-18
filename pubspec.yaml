@@ -40,11 +40,6 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: "^0.9.2"
 
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/Images/logo.png"
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -52,6 +47,11 @@ flutter_icons:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/Images/logo.png"
+  
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
