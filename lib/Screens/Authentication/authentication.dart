@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hudur/Components/api.dart';
 import 'package:hudur/Screens/Home/home.dart';
 
 class Authentication extends StatefulWidget {
@@ -10,6 +11,18 @@ class Authentication extends StatefulWidget {
 
 class _AuthenticationState extends State<Authentication> {
   var _isChecked = false;
+  var _userPhone = '';
+  var _userPassword = '';
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _trySubmit() {
+    var isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid) {
+      _formKey.currentState!.save();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +45,27 @@ class _AuthenticationState extends State<Authentication> {
               Container(
                 padding: const EdgeInsets.all(40.0),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       TextFormField(
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value!.isEmpty || value.length != 10) {
+                            return 'Phone Number must be of 10 digits';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _userPhone = value!;
+                        },
                         decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.person,
                             color: Colors.white,
                           ),
                           label: Text(
-                            'Username',
+                            'Phone Number',
                             style: TextStyle(
                               color: Colors.white,
                             ),
@@ -57,6 +81,16 @@ class _AuthenticationState extends State<Authentication> {
                         height: 20,
                       ),
                       TextFormField(
+                        obscureText: true,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter password';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _userPassword = value!;
+                        },
                         decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.lock,
@@ -102,11 +136,28 @@ class _AuthenticationState extends State<Authentication> {
                             Colors.green,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) {
-                            return const Home();
-                          }));
+                        onPressed: () async {
+                          _trySubmit();
+                          var result = await AllApi().getUser(_userPhone);
+                          if (_userPassword == result.pass &&
+                              _userPhone == result.phoneNumber) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sign in succesful.'),
+                              ),
+                            );
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(builder: (context) {
+                              return const Home();
+                            }));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Incorrect phone number or password.'),
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           'SIGN IN',
