@@ -21,27 +21,52 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Card(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))),
-            color: Color.alphaBlend(Colors.blueAccent, Colors.white),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      'Azzan Saeed Thani Juma Khawan',
-                      style: TextStyle(color: Colors.white),
+          Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Colors.blueAccent,
+                  Colors.orange,
+                ],
+              ),
+            ),
+            width: double.infinity,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    'Azzan Saeed Thani Juma Khawan',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blueAccent, Colors.orange],
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                      ),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(8.0),
+                          bottomRight: Radius.circular(8.0)),
+                    ),
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,6 +74,8 @@ class _HomeState extends State<Home> {
                         const Text(
                           'Attendance',
                           style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
@@ -64,6 +91,7 @@ class _HomeState extends State<Home> {
                                 Text(
                                   'In Time',
                                   style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -84,6 +112,7 @@ class _HomeState extends State<Home> {
                                 Text(
                                   'Out Time',
                                   style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -104,6 +133,7 @@ class _HomeState extends State<Home> {
                                 Text(
                                   'Status',
                                   style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -120,8 +150,73 @@ class _HomeState extends State<Home> {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 10,
+              bottom: 10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Card(
+                  color: Colors.amber,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                  child: SizedBox(
+                    width: 150,
+                    height: 170,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.login,
+                          size: 70,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          'CHECK IN',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: Colors.orange,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                  child: SizedBox(
+                    width: 150,
+                    height: 170,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.logout,
+                          size: 70,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          'CHECK OUT',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],
