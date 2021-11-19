@@ -16,12 +16,13 @@ class _AuthenticationState extends State<Authentication> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _trySubmit() {
+  bool _trySubmit() {
     var isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
     }
+    return isValid;
   }
 
   @override
@@ -39,6 +40,7 @@ class _AuthenticationState extends State<Authentication> {
           child: Column(
             children: [
               Container(
+                margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset('assets/Images/logo.png'),
               ),
@@ -62,12 +64,12 @@ class _AuthenticationState extends State<Authentication> {
                         decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.person,
-                            color: Colors.white,
+                            color: Colors.green,
                           ),
                           label: Text(
                             'Phone Number',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -94,12 +96,12 @@ class _AuthenticationState extends State<Authentication> {
                         decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.lock,
-                            color: Colors.white,
+                            color: Colors.green,
                           ),
                           label: Text(
                             'Password',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           border: OutlineInputBorder(
@@ -125,7 +127,7 @@ class _AuthenticationState extends State<Authentication> {
                           const Text(
                             'Remember Me',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ],
@@ -137,26 +139,30 @@ class _AuthenticationState extends State<Authentication> {
                           ),
                         ),
                         onPressed: () async {
-                          _trySubmit();
-                          var result = await AllApi().getUser(_userPhone);
-                          if (_userPassword == result.pass &&
-                              _userPhone == result.phoneNumber) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Sign in succesful.'),
-                              ),
-                            );
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (context) {
-                              return const Home();
-                            }));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Incorrect phone number or password.'),
-                              ),
-                            );
+                          var canSignIn = _trySubmit();
+                          if (canSignIn) {
+                            var result = await AllApi().getUser(_userPhone);
+                            if (_userPassword == result.pass &&
+                                _userPhone == result.phoneNumber) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Sign in succesful.'),
+                                ),
+                              );
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (context) {
+                                return Home(
+                                  userModel: result,
+                                );
+                              }));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Incorrect phone number or password.'),
+                                ),
+                              );
+                            }
                           }
                         },
                         child: const Text(
@@ -172,7 +178,7 @@ class _AuthenticationState extends State<Authentication> {
                           const Text(
                             'Don\'t have an account?',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           TextButton(
@@ -180,7 +186,7 @@ class _AuthenticationState extends State<Authentication> {
                             child: const Text(
                               'Sign up',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.green,
                               ),
                             ),
                           ),

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:hudur/Components/api.dart';
+import 'package:hudur/Components/models.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final UserModel userModel;
+  const Home({Key? key, required this.userModel}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -9,11 +15,37 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var _selectedIndex = 0;
+  var _isCheckedIn = false;
+  var _isCheckedOut = false;
+  var _inTime = '';
+  var _outTime = '';
+  var _inDate = '';
+  var _outDate = '';
+  var _remainingTimeHours = 0;
+  var _remainingTimeMinutes = 0;
+  var _remainingTimeSeconds = 0;
+  late CountdownTimerController _controller;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Widget _countDowmTimer() {
+    int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 25200;
+    _controller = CountdownTimerController(endTime: endTime);
+    return Center(
+        child: Container(
+      padding: const EdgeInsets.all(8.0),
+      child: CountdownTimer(
+        endTime: endTime,
+        textStyle: const TextStyle(
+          color: Colors.black,
+        ),
+        controller: _controller,
+      ),
+    ));
   }
 
   Widget _home() {
@@ -29,8 +61,8 @@ class _HomeState extends State<Home> {
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  Colors.blueAccent,
-                  Colors.orange,
+                  Colors.white,
+                  Colors.green,
                 ],
               ),
             ),
@@ -39,11 +71,11 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(20.0),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
                   child: Text(
-                    'Azzan Saeed Thani Juma Khawan',
-                    style: TextStyle(
+                    widget.userModel.name,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -58,7 +90,10 @@ class _HomeState extends State<Home> {
                   child: Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blueAccent, Colors.orange],
+                        colors: [
+                          Colors.white,
+                          Colors.green,
+                        ],
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
                       ),
@@ -87,8 +122,8 @@ class _HomeState extends State<Home> {
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   'In Time',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -96,8 +131,10 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 Text(
-                                  '07:30 AM',
-                                  style: TextStyle(
+                                  _isCheckedIn || _isCheckedOut
+                                      ? _inTime
+                                      : '-----',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                   ),
                                 )
@@ -108,8 +145,8 @@ class _HomeState extends State<Home> {
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   'Out Time',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -117,8 +154,8 @@ class _HomeState extends State<Home> {
                                   ),
                                 ),
                                 Text(
-                                  '02:30 PM',
-                                  style: TextStyle(
+                                  _isCheckedOut ? _outTime : '-----',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                   ),
                                 )
@@ -162,59 +199,171 @@ class _HomeState extends State<Home> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Card(
-                  color: Colors.amber,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                  child: SizedBox(
-                    width: 150,
-                    height: 170,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.login,
-                          size: 70,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          'CHECK IN',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 16,
+                InkWell(
+                  child: Card(
+                    color: Colors.amber,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                    child: SizedBox(
+                      width: 150,
+                      height: 170,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            Icons.login,
+                            size: 70,
+                            color: Colors.white,
                           ),
-                        )
-                      ],
+                          Text(
+                            'CHECK IN',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
+                  onTap: () {
+                    _inTime = DateFormat('hh:mm a').format(DateTime.now());
+                    _inDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                    showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return AlertDialog(
+                            backgroundColor: Colors.green,
+                            title: const Text(
+                              'Confirm Check In',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text(
+                                  'Check-In',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  await AllApi().postCheckIn(
+                                    checkInTime: _inTime,
+                                    checkOutTime: '-----',
+                                    date: _inDate,
+                                    phoneNumber: widget.userModel.phoneNumber,
+                                  );
+                                  setState(() {
+                                    _isCheckedIn = true;
+                                    _isCheckedOut = false;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
                 ),
-                Card(
-                  color: Colors.orange,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                  child: SizedBox(
-                    width: 150,
-                    height: 170,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.logout,
-                          size: 70,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          'CHECK OUT',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                InkWell(
+                  child: Card(
+                    color: Colors.amber,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                    child: SizedBox(
+                      width: 150,
+                      height: 170,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            Icons.logout,
+                            size: 70,
+                            color: Colors.white,
                           ),
-                        )
-                      ],
+                          Text(
+                            'CHECK OUT',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
+                  onTap: () {
+                    _outTime = DateFormat('hh:mm a').format(DateTime.now());
+                    _outDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                    showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return AlertDialog(
+                            backgroundColor: Colors.green,
+                            title: const Text(
+                              'Confirm Check Out',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text(
+                                  'Check-Out',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  await AllApi().postCheckIn(
+                                    checkInTime: _inTime,
+                                    checkOutTime: _outTime,
+                                    date: _inDate,
+                                    phoneNumber: widget.userModel.phoneNumber,
+                                  );
+                                  setState(() {
+                                    _isCheckedOut = true;
+                                    _isCheckedIn = false;
+                                    _remainingTimeHours = _controller
+                                        .currentRemainingTime!.hours!;
+                                    _remainingTimeMinutes =
+                                        _controller.currentRemainingTime!.min!;
+                                    _remainingTimeSeconds =
+                                        _controller.currentRemainingTime!.sec!;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
                 ),
               ],
             ),
@@ -238,7 +387,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Home',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -246,7 +395,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Attendance',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -254,7 +403,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Location',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -262,7 +411,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Chat',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -270,7 +419,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Settings',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.green,
         ),
       ],
     );
@@ -304,6 +453,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           actions: [
+            if (_isCheckedIn) _countDowmTimer(),
             IconButton(
               onPressed: () {},
               icon: const Icon(
@@ -314,8 +464,10 @@ class _HomeState extends State<Home> {
           ],
         ),
         backgroundColor: Colors.transparent,
-        body: Container(
-          child: _widgetOptions.elementAt(_selectedIndex),
+        body: SingleChildScrollView(
+          child: Container(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
         ),
         bottomNavigationBar: _bottomNavigationBar(),
       ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'models.dart';
 
@@ -8,8 +9,25 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getuser";
 
     var response = await http.get(Uri.parse("$getUserUrl?phone=$phone"));
-    var list = json.decode(response.body);
-    var model = UserModel(
+    if (response.statusCode == 200) {
+      var list = json.decode(response.body);
+      if (list != null) {
+        var model = UserModel(
+                address: '',
+                allotedOffice: '',
+                designation: '',
+                leaves: '',
+                manager: '',
+                name: '',
+                notificationToken: '',
+                pass: '',
+                phoneNumber: '',
+                uid: '',
+                uuid: '')
+            .fromJson(list);
+        return model;
+      } else {
+        return UserModel(
             address: '',
             allotedOffice: '',
             designation: '',
@@ -20,8 +38,42 @@ class AllApi {
             pass: '',
             phoneNumber: '',
             uid: '',
-            uuid: '')
-        .fromJson(list);
-    return model;
+            uuid: '');
+      }
+    } else {
+      return UserModel(
+          address: '',
+          allotedOffice: '',
+          designation: '',
+          leaves: '',
+          manager: '',
+          name: '',
+          notificationToken: '',
+          pass: '',
+          phoneNumber: '',
+          uid: '',
+          uuid: '');
+    }
+  }
+
+  Future<void> postCheckIn(
+      {required String checkInTime,
+      required String checkOutTime,
+      required String phoneNumber,
+      required String date}) async {
+    var postCheckInUrl = Uri.parse(
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postCheckin');
+
+    var response = await http.post(postCheckInUrl, body: {
+      'checkin': checkInTime,
+      'checkout': checkOutTime,
+      'refid': phoneNumber,
+      'date': date,
+    });
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      Fluttertoast.showToast(msg: response.body);
+    }
   }
 }
