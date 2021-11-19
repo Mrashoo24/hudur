@@ -228,9 +228,37 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   onTap: () {
-                    _inTime = DateFormat('hh:mm a').format(DateTime.now());
-                    _inDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                    showDialog(
+                    if (_isCheckedIn) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              backgroundColor: Colors.green,
+                              title: const Text(
+                                'You have already checked-in.',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'Dismiss',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
+                    } else {
+                      _inTime = DateFormat('hh:mm a').format(DateTime.now());
+                      _inDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                      showDialog(
                         context: context,
                         builder: (ctx) {
                           return AlertDialog(
@@ -276,7 +304,9 @@ class _HomeState extends State<Home> {
                               )
                             ],
                           );
-                        });
+                        },
+                      );
+                    }
                   },
                 ),
                 InkWell(
@@ -308,9 +338,38 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   onTap: () {
-                    _outTime = DateFormat('hh:mm a').format(DateTime.now());
-                    _outDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                    showDialog(
+                    if (!_isCheckedIn) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              backgroundColor: Colors.green,
+                              title: const Text(
+                                'You need to check-in first.',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'Dismiss',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
+                    } else {
+                      _outTime = DateFormat('hh:mm a').format(DateTime.now());
+                      _outDate =
+                          DateFormat('dd-MM-yyyy').format(DateTime.now());
+                      showDialog(
                         context: context,
                         builder: (ctx) {
                           return AlertDialog(
@@ -362,7 +421,9 @@ class _HomeState extends State<Home> {
                               )
                             ],
                           );
-                        });
+                        },
+                      );
+                    }
                   },
                 ),
               ],
