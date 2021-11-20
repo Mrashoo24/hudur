@@ -36,9 +36,9 @@ class MyApp extends StatelessWidget {
 
           var usersString = pref.getString("user");
 
-          var converted = jsonDecode(usersString);
-          var converted1 = json.decode(json.encode(converted)) as Map<String, dynamic>;
-          var users = UserModel().fromJson(converted1);
+          var converted =  usersString == null ? "" : jsonDecode(usersString);
+          var converted1 = usersString == null ? "" : json.decode(json.encode(converted)) as Map<String, dynamic>;
+          var users = usersString == null ? "" : UserModel().fromJson(converted1);
 
 
           print("converted = $users");

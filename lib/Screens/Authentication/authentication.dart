@@ -192,6 +192,9 @@ class _AuthenticationState extends State<Authentication> {
                                   }));
 
                                 } else {
+                                  setState(() {
+                                    loading = false;
+                                  });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
