@@ -1,5 +1,6 @@
 class UserModel {
   String address,
+      email,
       name,
       phoneNumber,
       uid,
@@ -16,6 +17,7 @@ class UserModel {
      this.allotedOffice,
      this.designation,
      this.leaves,
+    this.email,
      this.manager,
      this.name,
      this.notificationToken,
@@ -32,6 +34,7 @@ class UserModel {
       designation: json['designation'],
       leaves: json['leaves'],
       manager: json['manager'],
+      email:json['email'],
       name: json['Name'],
       notificationToken: json['notificationToken'],
       pass: json['pass'],
@@ -52,6 +55,7 @@ class UserModel {
     data['Name'] = name;
     data['notificationToken'] = notificationToken;
     data['pass'] = pass;
+    data['email'] = email;
     data['PhoneNumber'] = phoneNumber;
     data['UID'] = uid;
     data['UUID'] = uuid;

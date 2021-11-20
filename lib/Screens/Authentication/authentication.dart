@@ -13,8 +13,9 @@ class Authentication extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authentication> {
+
   var _isChecked = false;
-  var _userPhone = '';
+  var _userId = '';
   var _userPassword = '';
   bool loading = false;
 
@@ -45,6 +46,7 @@ class _AuthenticationState extends State<Authentication> {
           builder: (context, snapshot) {
 
             if(!snapshot.hasData){
+
               return Center(
                 child: Image.asset("assets/Images/loading.gif"),
               );
@@ -69,15 +71,20 @@ class _AuthenticationState extends State<Authentication> {
                       child: Column(
                         children: [
                           TextFormField(
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
-                              if (value.isEmpty || value.length != 10) {
-                                return 'Phone Number must be of 10 digits';
+
+                              if ( value.isEmpty ) {
+
+                                return 'Please input correct details';
+
                               }
+
                               return null;
+
                             },
                             onSaved: (value) {
-                              _userPhone = value;
+                              _userId = value;
                             },
                             decoration: const InputDecoration(
                               prefixIcon: Icon(
@@ -85,7 +92,7 @@ class _AuthenticationState extends State<Authentication> {
                                 color: Colors.green,
                               ),
                               label: Text(
-                                'Phone Number',
+                                'User Id',
                                 style: TextStyle(
                                   color: Colors.black,
                                 ),
@@ -167,9 +174,9 @@ class _AuthenticationState extends State<Authentication> {
                                 setState(() {
                                   loading = true;
                                 });
-                                var result = await AllApi().getUser(_userPhone);
+                                var result = await AllApi().getUser(_userId);
                                 if (_userPassword == result.pass &&
-                                    _userPhone == result.phoneNumber) {
+                                    _userId == result.email) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('Sign in succesful.'),
@@ -198,7 +205,7 @@ class _AuthenticationState extends State<Authentication> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                          'Incorrect phone number or password.'),
+                                          'Incorrect User id or password.'),
                                     ),
                                   );
                                 }

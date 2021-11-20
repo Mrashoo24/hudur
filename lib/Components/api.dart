@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'models.dart';
 
 class AllApi {
-  Future<UserModel> getUser(String phone) async {
+  Future<UserModel> getUser(String email) async {
     var getUserUrl =
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getuser";
 
-    var response = await http.get(Uri.parse("$getUserUrl?phone=$phone"));
+    var response = await http.get(Uri.parse("$getUserUrl?email=$email"));
     if (response.statusCode == 200) {
       var list = json.decode(response.body);
       if (list != null) {
