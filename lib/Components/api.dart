@@ -57,10 +57,10 @@ class AllApi {
   }
 
   Future<void> postCheckIn(
-      {required String checkInTime,
-      required String checkOutTime,
-      required String phoneNumber,
-      required String date}) async {
+      { String checkInTime,
+       String checkOutTime,
+       String phoneNumber,
+       String date}) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postCheckin');
 
@@ -76,4 +76,19 @@ class AllApi {
       Fluttertoast.showToast(msg: response.body);
     }
   }
+
+  Future<void> getCheckIn(
+      {String phoneNumber,
+        String date}) async {
+    var postCheckInUrl = Uri.parse(
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getcheckin?date=$date&refid=$phoneNumber');
+
+    var response = await http.get(postCheckInUrl);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      Fluttertoast.showToast(msg: response.body);
+    }
+  }
+
 }

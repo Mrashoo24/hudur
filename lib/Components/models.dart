@@ -12,17 +12,17 @@ class UserModel {
       pass;
 
   UserModel({
-    required this.address,
-    required this.allotedOffice,
-    required this.designation,
-    required this.leaves,
-    required this.manager,
-    required this.name,
-    required this.notificationToken,
-    required this.pass,
-    required this.phoneNumber,
-    required this.uid,
-    required this.uuid,
+     this.address,
+     this.allotedOffice,
+     this.designation,
+     this.leaves,
+     this.manager,
+     this.name,
+     this.notificationToken,
+     this.pass,
+     this.phoneNumber,
+     this.uid,
+     this.uuid,
   });
 
   fromJson(Map<String, dynamic> json) {
