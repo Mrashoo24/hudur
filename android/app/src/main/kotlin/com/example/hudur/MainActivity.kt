@@ -1,4 +1,4 @@
-package com.example.hudur
+package com.ak.hudur
 
 import io.flutter.embedding.android.FlutterActivity
 
