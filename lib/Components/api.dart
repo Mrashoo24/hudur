@@ -6,7 +6,7 @@ import 'models.dart';
 class AllApi {
   Future<UserModel> getUser(String email) async {
     var getUserUrl =
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getuser";
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUser";
 
     var response = await http.get(Uri.parse("$getUserUrl?email=$email"));
     if (response.statusCode == 200) {
@@ -57,12 +57,12 @@ class AllApi {
   }
 
   Future<void> postCheckIn(
-      { String checkInTime,
-       String checkOutTime,
-       String phoneNumber,
-       String date}) async {
+      {String checkInTime,
+      String checkOutTime,
+      String phoneNumber,
+      String date}) async {
     var postCheckInUrl = Uri.parse(
-        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postCheckin');
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
 
     var response = await http.post(postCheckInUrl, body: {
       'checkin': checkInTime,
@@ -77,11 +77,9 @@ class AllApi {
     }
   }
 
-  Future<void> getCheckIn(
-      {String phoneNumber,
-        String date}) async {
+  Future<dynamic> getCheckIn({String phoneNumber, String date}) async {
     var postCheckInUrl = Uri.parse(
-        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getcheckin?date=$date&refid=$phoneNumber');
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckIn?date=$date&refid=$phoneNumber');
 
     var response = await http.get(postCheckInUrl);
     if (response.statusCode == 200) {
@@ -90,5 +88,4 @@ class AllApi {
       Fluttertoast.showToast(msg: response.body);
     }
   }
-
 }

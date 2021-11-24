@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -40,51 +42,57 @@ class _HomeState extends State<Home> {
     // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 25200;
 
     return FutureBuilder(
-        future: AllApi().getCheckIn(
-          phoneNumber: widget.userModel.phoneNumber,
-          date: DateFormat('dd-MM-yyyy').format(DateTime.now()),
-        ),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: Image.asset("assets/Images/loading.gif"),
-            );
-          } else {
-            var report = snapshot.requireData;
-            String checkInTime =
-                report == "No Data" ? "-----" : report["checkin"];
-            String checkOutTime =
-                report == "No Data" ? "-----" : report["checkout"];
-            String date = report["date"];
-            checkInTime = checkInTime.substring(0, 5);
-            checkInTime = checkInTime + ':00';
+      future: AllApi().getCheckIn(
+        phoneNumber: widget.userModel.phoneNumber,
+        date: DateFormat('dd-MM-yyyy').format(DateTime.now()),
+      ),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Image.asset("assets/Images/loading.gif"),
+          );
+        } else {
+          var report = snapshot.requireData;
+          String checkInTime = "-----";
+          String checkOutTime = "-----";
+          String date = "-----";
+          int endTime = 0;
+          if (report != "No Data") {
+            checkInTime = report["checkin"];
+            checkOutTime = report["checkout"];
+            date = report["date"];
+            var dateAndTime =
+                DateFormat('hh:mm a').parse(checkInTime).toString();
+            var splitDateAndTime = dateAndTime.split(' ');
+            checkInTime = splitDateAndTime[1];
             String day = date.substring(0, 2);
-            print(day);
             String month = date.substring(3, 5);
-            print(month);
             String year = date.substring(6, 10);
-            print(year);
             date = year + '-' + month + '-' + day;
-            print(checkOutTime);
-            int endTime = checkOutTime == "-----"
+            endTime = checkOutTime == "-----"
                 ? DateTime.parse(date + ' ' + checkInTime)
                         .millisecondsSinceEpoch +
                     1000 * 25200
                 : 0;
-            _controller = CountdownTimerController(endTime: endTime);
-            return Center(
-                child: Container(
+          }
+          _controller = CountdownTimerController(endTime: endTime);
+
+          return Center(
+            child: Container(
               padding: const EdgeInsets.all(8.0),
               child: CountdownTimer(
+                endWidget: const Text(''),
                 endTime: endTime,
                 textStyle: const TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
                 controller: _controller,
               ),
-            ));
-          }
-        });
+            ),
+          );
+        }
+      },
+    );
   }
 
   Widget _home() {
@@ -110,11 +118,11 @@ class _HomeState extends State<Home> {
               //  var date = report == "No Data" ? "-----": report["date"];
               // var gotCheckin = DateFormat('hh:mm a').format(DateFormat('hh:mm a').parse(checkin));
               // var gotCheckout = DateFormat('hh:mm a').format(DateFormat('hh:mm a').parse(checkout));
-              if (checkin != "-----") {
-                _isCheckedIn = true;
-              } else {
-                _isCheckedIn = false;
-              }
+              // if (checkin != "-----") {
+              //   _isCheckedIn = true;
+              // } else {
+              //   _isCheckedIn = false;
+              // }
               var start = report == "No Data"
                   ? DateFormat('hh:mm a').parse("00:00 AM")
                   : DateFormat('hh:mm a').parse(checkin);
@@ -661,7 +669,7 @@ class _HomeState extends State<Home> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.green,
           actions: [
             _countDowmTimer(),
             IconButton(
