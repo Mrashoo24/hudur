@@ -88,4 +88,18 @@ class AllApi {
       Fluttertoast.showToast(msg: response.body);
     }
   }
+
+  Future<dynamic> getVicinity(
+      {String phoneNumber, double latitude, double longitude}) async {
+    var getVicinityUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
+
+    var response = await http.get(getVicinityUrl);
+    if (response.statusCode == 200) {
+      print(response.body);
+      return json.decode(response.body);
+    } else {
+      return;
+    }
+  }
 }

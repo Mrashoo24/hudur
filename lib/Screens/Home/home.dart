@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 
 class Home extends StatefulWidget {
   final UserModel userModel;
@@ -29,8 +30,43 @@ class _HomeState extends State<Home> {
   // var _remainingTimeHours = 0;
   // var _remainingTimeMinutes = 0;
   // var _remainingTimeSeconds = 0;
+
   CountdownTimerController _controller;
   bool loading = false;
+
+  // ignore: unnecessary_new
+  Location location = new Location();
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+
+  Future<LocationData> getUserLocation() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location service is disabled. Please enable it to check-in.')));
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permission denied. Please allow it to check-in.')));
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    return _locationData;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -384,29 +420,49 @@ class _HomeState extends State<Home> {
                                             ),
                                           ),
                                           onPressed: () async {
-                                            _inTime = DateFormat('hh:mm a')
-                                                .format(DateTime.now());
-                                            _inDate = DateFormat('dd-MM-yyyy')
-                                                .format(DateTime.now());
-                                            Get.back();
-                                            setState(() {
-                                              loading = true;
-                                            });
-                                            await AllApi().postCheckIn(
-                                              checkInTime: _inTime,
-                                              checkOutTime: '-----',
-                                              date: _inDate,
+                                            var latAndLong =
+                                                await getUserLocation();
+                                            var result =
+                                                await AllApi().getVicinity(
                                               phoneNumber:
                                                   widget.userModel.phoneNumber,
+                                              latitude: latAndLong.latitude,
+                                              longitude: latAndLong.longitude,
                                             );
-
-                                            setState(() {
-                                              _isCheckedIn = true;
-                                              _isCheckedOut = false;
+                                            print(
+                                                'latitude: ${latAndLong.latitude}\nlongitude: ${latAndLong.longitude}');
+                                            if (result == 'true') {
+                                              _inTime = DateFormat('hh:mm a')
+                                                  .format(DateTime.now());
+                                              _inDate = DateFormat('dd-MM-yyyy')
+                                                  .format(DateTime.now());
+                                              Get.back();
                                               setState(() {
-                                                loading = false;
+                                                loading = true;
                                               });
-                                            });
+                                              await AllApi().postCheckIn(
+                                                checkInTime: _inTime,
+                                                checkOutTime: '-----',
+                                                date: _inDate,
+                                                phoneNumber: widget
+                                                    .userModel.phoneNumber,
+                                              );
+
+                                              setState(() {
+                                                _isCheckedIn = true;
+                                                _isCheckedOut = false;
+                                                setState(() {
+                                                  loading = false;
+                                                });
+                                              });
+                                            } else {
+                                              Get.back();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          'You aren\'t in the vicinity of 250 metres from your office.')));
+                                            }
+
                                             // Navigator.of(context).pop();
                                           },
                                         ),

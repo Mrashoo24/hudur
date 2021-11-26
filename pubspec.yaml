@@ -41,6 +41,7 @@ dependencies:
   fluttertoast: ^8.0.8
   get: ^4.1.4
   shared_preferences: ^2.0.6
+  location: ^4.2.0
 
 
 dev_dependencies:
