@@ -13,35 +13,6 @@ class AllApi {
       var list = json.decode(response.body);
       if (list != null) {
         var model = UserModel(
-                address: '',
-                allotedOffice: '',
-                designation: '',
-                leaves: '',
-                manager: '',
-                name: '',
-                notificationToken: '',
-                pass: '',
-                phoneNumber: '',
-                uid: '',
-                uuid: '')
-            .fromJson(list);
-        return model;
-      } else {
-        return UserModel(
-            address: '',
-            allotedOffice: '',
-            designation: '',
-            leaves: '',
-            manager: '',
-            name: '',
-            notificationToken: '',
-            pass: '',
-            phoneNumber: '',
-            uid: '',
-            uuid: '');
-      }
-    } else {
-      return UserModel(
           address: '',
           allotedOffice: '',
           designation: '',
@@ -52,7 +23,47 @@ class AllApi {
           pass: '',
           phoneNumber: '',
           uid: '',
-          uuid: '');
+          uuid: '',
+          allowCheckin: false,
+          email: '',
+          location: {},
+        ).fromJson(list);
+        return model;
+      } else {
+        return UserModel(
+          address: '',
+          allotedOffice: '',
+          designation: '',
+          leaves: '',
+          manager: '',
+          name: '',
+          notificationToken: '',
+          pass: '',
+          phoneNumber: '',
+          uid: '',
+          uuid: '',
+          allowCheckin: false,
+          email: '',
+          location: {},
+        );
+      }
+    } else {
+      return UserModel(
+        address: '',
+        allotedOffice: '',
+        designation: '',
+        leaves: '',
+        manager: '',
+        name: '',
+        notificationToken: '',
+        pass: '',
+        phoneNumber: '',
+        uid: '',
+        uuid: '',
+        allowCheckin: false,
+        email: '',
+        location: {},
+      );
     }
   }
 
@@ -99,6 +110,22 @@ class AllApi {
       print(response.body);
       return json.decode(response.body);
     } else {
+      return;
+    }
+  }
+
+  Future<void> postCheckInRequest({String phoneNumber, String date}) async {
+    var postCheckInRequestUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
+
+    var response = await http.post(postCheckInRequestUrl, body: {
+      'refid': phoneNumber,
+      'date': date,
+    });
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      Fluttertoast.showToast(msg: response.body);
       return;
     }
   }

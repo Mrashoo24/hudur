@@ -6,6 +6,7 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 
@@ -457,13 +458,96 @@ class _HomeState extends State<Home> {
                                               });
                                             } else {
                                               Get.back();
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      content: Text(
-                                                          'You aren\'t in the vicinity of 250 metres from your office.')));
+                                              showDialog(
+                                                context: context,
+                                                builder: (ctx) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                      'Check-in not allowed.',
+                                                    ),
+                                                    content: const Text(
+                                                        'You aren\'t in the vicinity of 250 metres from your office.'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Get.back();
+                                                          await AllApi()
+                                                              .postCheckInRequest(
+                                                            date: DateFormat(
+                                                                    'dd-MM-yyyy')
+                                                                .format(DateTime
+                                                                    .now()),
+                                                            phoneNumber: widget
+                                                                .userModel
+                                                                .phoneNumber,
+                                                          );
+                                                          var allowCheckIn =
+                                                              await AllApi()
+                                                                  .getUser(widget
+                                                                      .userModel
+                                                                      .email);
+                                                          if (allowCheckIn
+                                                              .allowCheckin) {
+                                                            _inTime = DateFormat(
+                                                                    'hh:mm a')
+                                                                .format(DateTime
+                                                                    .now());
+                                                            _inDate = DateFormat(
+                                                                    'dd-MM-yyyy')
+                                                                .format(DateTime
+                                                                    .now());
+                                                            Get.back();
+                                                            setState(() {
+                                                              loading = true;
+                                                            });
+                                                            await AllApi()
+                                                                .postCheckIn(
+                                                              checkInTime:
+                                                                  _inTime,
+                                                              checkOutTime:
+                                                                  '-----',
+                                                              date: _inDate,
+                                                              phoneNumber: widget
+                                                                  .userModel
+                                                                  .phoneNumber,
+                                                            );
+                                                            setState(() {
+                                                              _isCheckedIn =
+                                                                  true;
+                                                              _isCheckedOut =
+                                                                  false;
+                                                              setState(() {
+                                                                loading = false;
+                                                              });
+                                                            });
+                                                          } else {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                content: Text(
+                                                                    'You are not allowed to check-in.'),
+                                                              ),
+                                                            );
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          'Send Request',
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Get.back();
+                                                        },
+                                                        child: const Text(
+                                                          'Cancel',
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
                                             }
-
-                                            // Navigator.of(context).pop();
                                           },
                                         ),
                                         TextButton(
@@ -644,7 +728,8 @@ class _HomeState extends State<Home> {
                   ],
                 ),
               );
-            });
+            },
+          );
   }
 
   Widget _bottomNavigationBar() {
@@ -724,17 +809,11 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: Scaffold(
+        drawer: const HomeDrawer(),
         appBar: AppBar(
           backgroundColor: Colors.green,
           actions: [
             _countDowmTimer(),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.black,
-              ),
-            ),
           ],
         ),
         backgroundColor: Colors.transparent,
