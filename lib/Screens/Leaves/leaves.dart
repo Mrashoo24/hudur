@@ -30,7 +30,7 @@ class _LeavesState extends State<Leaves> {
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: const Text(
-                  'Select reason for your leave request.',
+                  'Select reason for your leave request: ',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

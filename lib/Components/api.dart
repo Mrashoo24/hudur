@@ -121,6 +121,7 @@ class AllApi {
     var response = await http.post(postCheckInRequestUrl, body: {
       'refid': phoneNumber,
       'date': date,
+      'status': 'pending',
     });
     if (response.statusCode == 200) {
       return;

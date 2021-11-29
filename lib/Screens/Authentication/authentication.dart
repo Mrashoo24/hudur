@@ -13,7 +13,6 @@ class Authentication extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authentication> {
-
   var _isChecked = false;
   var _userId = '';
   var _userPassword = '';
@@ -42,211 +41,208 @@ class _AuthenticationState extends State<Authentication> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: FutureBuilder(
-          future: SharedPreferences.getInstance(),
-          builder: (context, snapshot) {
+            future: SharedPreferences.getInstance(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Image.asset("assets/Images/loading.gif"),
+                );
+              }
 
-            if(!snapshot.hasData){
+              SharedPreferences pref = snapshot.requireData;
 
-              return Center(
-                child: Image.asset("assets/Images/loading.gif"),
-              );
-            }
-
-            SharedPreferences pref = snapshot.requireData;
-
-            return loading ? Center(
-              child: Image.asset("assets/Images/loading.gif"),
-            ) : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset('assets/Images/logo.png'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(40.0),
-                    child: Form(
-                      key: _formKey,
+              return loading
+                  ? Center(
+                      child: Image.asset("assets/Images/loading.gif"),
+                    )
+                  : SingleChildScrollView(
                       child: Column(
                         children: [
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-
-                              if ( value.isEmpty ) {
-
-                                return 'Please input correct details';
-
-                              }
-
-                              return null;
-
-                            },
-                            onSaved: (value) {
-                              _userId = value;
-                            },
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.person,
-                                color: Colors.green,
-                              ),
-                              label: Text(
-                                'User Id',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
-                                ),
-                              ),
-                            ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset('assets/Images/logo.png'),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          Container(
+                            padding: const EdgeInsets.all(40.0),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please input correct details';
+                                      }
 
-                          TextFormField(
-                            obscureText: true,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter password';
-                              }
-                              return null;
-                            },
-
-                            onSaved: (value) {
-                              _userPassword = value;
-                            },
-
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.lock,
-                                color: Colors.green,
-                              ),
-
-                              label: Text(
-                                'Password',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
-
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: _isChecked,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isChecked = value;
-                                  });
-                                },
-                              ),
-                              const Text(
-                                'Remember Me',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.green,
-                              ),
-                            ),
-                            onPressed: () async {
-                              var canSignIn = _trySubmit();
-                              if (canSignIn) {
-                                setState(() {
-                                  loading = true;
-                                });
-                                var result = await AllApi().getUser(_userId);
-                                if (_userPassword == result.pass &&
-                                    _userId == result.email) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Sign in succesful.'),
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      _userId = value;
+                                    },
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.person,
+                                        color: Colors.green,
+                                      ),
+                                      label: Text(
+                                        'User Id',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                      ),
                                     ),
-                                  );
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
 
-                                 pref.setBool("loggedin", true);
-
-                                 pref.setString("user", jsonEncode(result));
-
-                                  setState(() {
-                                    loading = false;
-                                  });
-
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(builder: (context) {
-                                    return Home(
-                                      userModel: result,
-                                    );
-                                  }));
-
-                                } else {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          'Incorrect User id or password.'),
+                                  TextFormField(
+                                    obscureText: true,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please enter password';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      _userPassword = value;
+                                    },
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.lock,
+                                        color: Colors.green,
+                                      ),
+                                      label: Text(
+                                        'Password',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                      ),
                                     ),
-                                  );
-                                }
-                              }
-                            },
-                            child: const Text(
-                              'SIGN IN',
-                              style: TextStyle(
-                                color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _isChecked,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _isChecked = value;
+                                          });
+                                        },
+                                      ),
+                                      const Text(
+                                        'Remember Me',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                        Colors.green,
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      var canSignIn = _trySubmit();
+                                      if (canSignIn) {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        var result =
+                                            await AllApi().getUser(_userId);
+                                        if (_userPassword == result.pass &&
+                                            _userId == result.email) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content:
+                                                  Text('Sign in succesful.'),
+                                            ),
+                                          );
+
+                                          pref.setBool("loggedin", true);
+
+                                          pref.setString(
+                                              "user", jsonEncode(result));
+
+                                          setState(() {
+                                            loading = false;
+                                          });
+
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return Home(
+                                              userModel: result,
+                                            );
+                                          }));
+                                        } else {
+                                          setState(() {
+                                            loading = false;
+                                          });
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'Incorrect User id or password.'),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    child: const Text(
+                                      'SIGN IN',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: [
+                                  //     const Text(
+                                  //       'Don\'t have an account?',
+                                  //       style: TextStyle(
+                                  //         color: Colors.black,
+                                  //       ),
+                                  //     ),
+                                  //     TextButton(
+                                  //       onPressed: () {},
+                                  //       child: const Text(
+                                  //         'Sign up',
+                                  //         style: TextStyle(
+                                  //           color: Colors.green,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // )
+                                ],
                               ),
                             ),
-                          ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     const Text(
-                          //       'Don\'t have an account?',
-                          //       style: TextStyle(
-                          //         color: Colors.black,
-                          //       ),
-                          //     ),
-                          //     TextButton(
-                          //       onPressed: () {},
-                          //       child: const Text(
-                          //         'Sign up',
-                          //         style: TextStyle(
-                          //           color: Colors.green,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // )
+                          )
                         ],
                       ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-        ),
+                    );
+            }),
       ),
     );
   }

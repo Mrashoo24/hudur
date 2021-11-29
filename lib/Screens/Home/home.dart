@@ -149,7 +149,7 @@ class _HomeState extends State<Home> {
               }
 
               var report = snapshot.requireData;
-              print("report ${report}");
+              print("report $report");
               var checkin = report == "No Data" ? "-----" : report["checkin"];
               var checkout = report == "No Data" ? "-----" : report["checkout"];
               //  var date = report == "No Data" ? "-----": report["date"];
@@ -191,7 +191,7 @@ class _HomeState extends State<Home> {
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
                           colors: [
-                            Colors.white,
+                            Colors.green,
                             Colors.green,
                           ],
                         ),
@@ -216,12 +216,14 @@ class _HomeState extends State<Home> {
                               ? Container()
                               : Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Today You Have Checked Out in ($differenceFinal) Hours',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red,
+                                  child: Center(
+                                    child: Text(
+                                      'Today You Have Checked Out in ($differenceFinal) Hours',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -234,7 +236,7 @@ class _HomeState extends State<Home> {
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.white,
+                                    Colors.green,
                                     Colors.green,
                                   ],
                                   begin: Alignment.topRight,
@@ -378,12 +380,8 @@ class _HomeState extends State<Home> {
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
-                                        backgroundColor: Colors.green,
                                         title: const Text(
                                           'You have already checked-in.',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
                                         ),
                                         actions: [
                                           TextButton(
@@ -392,9 +390,6 @@ class _HomeState extends State<Home> {
                                             },
                                             child: const Text(
                                               'Dismiss',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
                                             ),
                                           ),
                                         ],
@@ -405,20 +400,13 @@ class _HomeState extends State<Home> {
                                   context: context,
                                   builder: (ctx) {
                                     return AlertDialog(
-                                      backgroundColor: Colors.green,
                                       title: const Text(
                                         'Confirm Check In',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
                                       ),
                                       actions: [
                                         TextButton(
                                           child: const Text(
                                             'Check-In',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
                                           ),
                                           onPressed: () async {
                                             var latAndLong =
@@ -553,9 +541,6 @@ class _HomeState extends State<Home> {
                                         TextButton(
                                           child: const Text(
                                             'Cancel',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
                                           ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -603,12 +588,8 @@ class _HomeState extends State<Home> {
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
-                                        backgroundColor: Colors.green,
                                         title: const Text(
                                           'You need to check-in first.',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
                                         ),
                                         actions: [
                                           TextButton(
@@ -617,9 +598,6 @@ class _HomeState extends State<Home> {
                                             },
                                             child: const Text(
                                               'Dismiss',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
                                             ),
                                           ),
                                         ],
@@ -631,12 +609,8 @@ class _HomeState extends State<Home> {
                                       context: context,
                                       builder: (ctx) {
                                         return AlertDialog(
-                                          backgroundColor: Colors.green,
                                           title: const Text(
                                             'You have Checked out Already',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
                                           ),
                                           actions: [
                                             TextButton(
@@ -645,9 +619,6 @@ class _HomeState extends State<Home> {
                                               },
                                               child: const Text(
                                                 'Dismiss',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
                                               ),
                                             ),
                                           ],
@@ -658,20 +629,13 @@ class _HomeState extends State<Home> {
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
-                                        backgroundColor: Colors.green,
                                         title: const Text(
                                           'Confirm Check Out',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
                                         ),
                                         actions: [
                                           TextButton(
                                             child: const Text(
                                               'Check-Out',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
                                             ),
                                             onPressed: () async {
                                               _outTime = DateFormat('hh:mm a')
@@ -706,9 +670,6 @@ class _HomeState extends State<Home> {
                                           TextButton(
                                             child: const Text(
                                               'Cancel',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
                                             ),
                                             onPressed: () {
                                               Navigator.of(context).pop();

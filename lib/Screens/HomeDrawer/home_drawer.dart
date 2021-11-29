@@ -12,6 +12,7 @@ class HomeDrawer extends StatelessWidget {
         child: Column(
           children: [
             Container(
+              color: Colors.lightGreen,
               padding: const EdgeInsets.all(18.0),
               child: Image.asset(
                 'assets/Images/logo.png',
@@ -21,7 +22,10 @@ class HomeDrawer extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.question_answer),
+                    leading: const Icon(
+                      Icons.question_answer,
+                      color: Colors.lightGreen,
+                    ),
                     title: const Text('Request'),
                     onTap: () {
                       Get.to(const Leaves());
