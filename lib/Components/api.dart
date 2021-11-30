@@ -6,7 +6,7 @@ import 'models.dart';
 class AllApi {
   Future<UserModel> getUser(String email) async {
     var getUserUrl =
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUser";
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getuser";
 
     var response = await http.get(Uri.parse("$getUserUrl?email=$email"));
     if (response.statusCode == 200) {
@@ -73,7 +73,7 @@ class AllApi {
       String phoneNumber,
       String date}) async {
     var postCheckInUrl = Uri.parse(
-        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postCheckin');
 
     var response = await http.post(postCheckInUrl, body: {
       'checkin': checkInTime,
@@ -90,7 +90,7 @@ class AllApi {
 
   Future<dynamic> getCheckIn({String phoneNumber, String date}) async {
     var postCheckInUrl = Uri.parse(
-        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckIn?date=$date&refid=$phoneNumber');
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getcheckin?date=$date&refid=$phoneNumber');
 
     var response = await http.get(postCheckInUrl);
     if (response.statusCode == 200) {
@@ -103,7 +103,7 @@ class AllApi {
   Future<dynamic> getVicinity(
       {String phoneNumber, double latitude, double longitude}) async {
     var getVicinityUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
 
     var response = await http.get(getVicinityUrl);
     print("vicinity data ${response.body}");
@@ -122,7 +122,7 @@ class AllApi {
       String lon,
       String name}) async {
     var postCheckInRequestUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postCheckInRequest");
 
     var response = await http.post(postCheckInRequestUrl, body: {
       'refid': phoneNumber,
@@ -161,7 +161,7 @@ class AllApi {
 
   Future<List<CoursesModel>> getCourses() async {
     var getCoursesUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCourses");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getCourses");
 
     var response = await http.get(getCoursesUrl);
 
