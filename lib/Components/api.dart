@@ -143,7 +143,7 @@ class AllApi {
   Future<void> postOuterGeoList(
       {String phoneNumber, String date, String lat, String lon}) async {
     var postCheckInRequestUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postOuterGeoList");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostOuterGeoList");
 
     var response = await http.post(postCheckInRequestUrl, body: {
       'refid': phoneNumber,
