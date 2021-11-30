@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/models.dart';
@@ -191,8 +192,9 @@ class _HomeState extends State<Home> {
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
                           colors: [
-                            Colors.green,
-                            Colors.green,
+                            Colors.white,
+                            Color(0xFF6392B0),
+
                           ],
                         ),
                       ),
@@ -236,8 +238,10 @@ class _HomeState extends State<Home> {
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.green,
-                                    Colors.green,
+                                    Colors.yellow,
+
+                                    Color(0xFF6392B0),
+
                                   ],
                                   begin: Alignment.topRight,
                                   end: Alignment.bottomLeft,
@@ -420,7 +424,7 @@ class _HomeState extends State<Home> {
                                             );
                                             print(
                                                 'latitude: ${latAndLong.latitude}\nlongitude: ${latAndLong.longitude}');
-                                            if (result == 'true') {
+                                            if (result == true) {
                                               _inTime = DateFormat('hh:mm a')
                                                   .format(DateTime.now());
                                               _inDate = DateFormat('dd-MM-yyyy')
@@ -468,6 +472,10 @@ class _HomeState extends State<Home> {
                                                             phoneNumber: widget
                                                                 .userModel
                                                                 .phoneNumber,
+                                                              lat: latAndLong.latitude.toString(),lon:latAndLong.longitude.toString(),
+                                                              name:widget
+                                                              .userModel.name
+
                                                           );
                                                           var allowCheckIn =
                                                               await AllApi()
@@ -499,6 +507,11 @@ class _HomeState extends State<Home> {
                                                                   .userModel
                                                                   .phoneNumber,
                                                             );
+                                                            await AllApi().postOuterGeoList(phoneNumber: widget
+                                                                .userModel
+                                                                .phoneNumber,date: _inDate,lat: latAndLong.latitude.toString(),lon:latAndLong.longitude.toString());
+                                                            Fluttertoast.showToast(msg:"Logged in");
+
                                                             setState(() {
                                                               _isCheckedIn =
                                                                   true;
@@ -508,6 +521,7 @@ class _HomeState extends State<Home> {
                                                                 loading = false;
                                                               });
                                                             });
+
                                                           } else {
                                                             ScaffoldMessenger
                                                                     .of(context)
@@ -707,7 +721,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Home',
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -715,7 +729,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Attendance',
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -723,15 +737,15 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Location',
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
           icon: Icon(
             Icons.chat_bubble_outline_rounded,
-            color: Colors.amber,
+            color:Colors.amber,
           ),
           label: 'Chat',
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
           icon: Icon(
@@ -739,7 +753,7 @@ class _HomeState extends State<Home> {
             color: Colors.amber,
           ),
           label: 'Settings',
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
         ),
       ],
     );
@@ -772,7 +786,7 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         drawer: const HomeDrawer(),
         appBar: AppBar(
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF6392B0),
           actions: [
             _countDowmTimer(),
           ],

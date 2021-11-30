@@ -106,15 +106,16 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
 
     var response = await http.get(getVicinityUrl);
+    print("vicinity data ${response.body}");
     if (response.statusCode == 200) {
-      print(response.body);
+      print("vicinity data ${response.body}");
       return json.decode(response.body);
     } else {
       return;
     }
   }
 
-  Future<void> postCheckInRequest({String phoneNumber, String date}) async {
+  Future<void> postCheckInRequest({String phoneNumber, String date,String lat , String lon,String name}) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
 
@@ -122,6 +123,9 @@ class AllApi {
       'refid': phoneNumber,
       'date': date,
       'status': 'pending',
+      'lat': lat,
+      'lon':lon,
+      'name':name
     });
     if (response.statusCode == 200) {
       return;
@@ -130,4 +134,25 @@ class AllApi {
       return;
     }
   }
+
+  Future<void> postOuterGeoList({String phoneNumber, String date,String lat,String lon}) async {
+    var postCheckInRequestUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postOuterGeoList");
+
+    var response = await http.post(postCheckInRequestUrl, body: {
+      'refid': phoneNumber,
+      'date': date,
+      'lat': lat,
+      'lon':lon,
+    });
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      Fluttertoast.showToast(msg: response.body);
+      return;
+    }
+  }
+
+
+
 }
