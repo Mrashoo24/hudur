@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -12,7 +13,7 @@ class HomeDrawer extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: Colors.lightGreen,
+              color: portica,
               padding: const EdgeInsets.all(18.0),
               child: Image.asset(
                 'assets/Images/logo.png',
@@ -20,17 +21,17 @@ class HomeDrawer extends StatelessWidget {
             ),
             SizedBox(
               child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(
-                      Icons.question_answer,
-                      color: Colors.lightGreen,
-                    ),
-                    title: const Text('Request'),
-                    onTap: () {
-                      Get.to(const Leaves());
-                    },
-                  ),
+                children: const [
+                  // ListTile(
+                  //   leading: Icon(
+                  //     Icons.question_answer,
+                  //     color: portica,
+                  //   ),
+                  //   title: const Text('Request'),
+                  //   onTap: () {
+                  //     Get.to(const Leaves());
+                  //   },
+                  // ),
                 ],
               ),
             )

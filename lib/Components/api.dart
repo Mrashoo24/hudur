@@ -115,7 +115,12 @@ class AllApi {
     }
   }
 
-  Future<void> postCheckInRequest({String phoneNumber, String date,String lat , String lon,String name}) async {
+  Future<void> postCheckInRequest(
+      {String phoneNumber,
+      String date,
+      String lat,
+      String lon,
+      String name}) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
 
@@ -124,8 +129,8 @@ class AllApi {
       'date': date,
       'status': 'pending',
       'lat': lat,
-      'lon':lon,
-      'name':name
+      'lon': lon,
+      'name': name
     });
     if (response.statusCode == 200) {
       return;
@@ -135,7 +140,8 @@ class AllApi {
     }
   }
 
-  Future<void> postOuterGeoList({String phoneNumber, String date,String lat,String lon}) async {
+  Future<void> postOuterGeoList(
+      {String phoneNumber, String date, String lat, String lon}) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/postOuterGeoList");
 
@@ -143,7 +149,7 @@ class AllApi {
       'refid': phoneNumber,
       'date': date,
       'lat': lat,
-      'lon':lon,
+      'lon': lon,
     });
     if (response.statusCode == 200) {
       return;
@@ -153,6 +159,20 @@ class AllApi {
     }
   }
 
+  Future<List<CoursesModel>> getCourses() async {
+    var getCoursesUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCourses");
 
+    var response = await http.get(getCoursesUrl);
 
+    if (response.statusCode == 200) {
+      List courseList = json.decode(response.body);
+      Iterable<CoursesModel> courses = courseList.map((e) {
+        return CoursesModel().fromJson(e);
+      });
+      return courses.toList();
+    } else {
+      return null;
+    }
+  }
 }

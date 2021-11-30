@@ -72,3 +72,30 @@ class UserModel {
     return data;
   }
 }
+
+class CoursesModel {
+  String title;
+  String date;
+
+  CoursesModel({
+    this.date,
+    this.title,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return CoursesModel(
+      title: json['title'],
+      date: json['date'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['title'] = title;
+    data['date'] = date;
+
+    return data;
+  }
+}
