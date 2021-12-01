@@ -810,7 +810,8 @@ class _HomeState extends State<Home> {
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/Images/background_image.jpg'),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
         ),
       ),
       child: Scaffold(
