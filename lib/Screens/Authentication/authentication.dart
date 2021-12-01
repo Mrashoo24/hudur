@@ -36,7 +36,7 @@ class _AuthenticationState extends State<Authentication> {
         image: DecorationImage(
           image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.8), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.dstATop),
         ),
       ),
       child: Scaffold(
