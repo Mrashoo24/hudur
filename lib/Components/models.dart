@@ -3,8 +3,8 @@ class UserModel {
       email,
       name,
       phoneNumber,
-      uid,
-      uuid,
+      empId,
+      refId,
       allotedOffice,
       designation,
       leaves,
@@ -25,8 +25,8 @@ class UserModel {
     this.notificationToken,
     this.pass,
     this.phoneNumber,
-    this.uid,
-    this.uuid,
+    this.empId,
+    this.refId,
     this.location,
     this.allowCheckin,
   });
@@ -43,8 +43,8 @@ class UserModel {
       notificationToken: json['notificationToken'],
       pass: json['pass'],
       phoneNumber: json['PhoneNumber'],
-      uid: json['UID'],
-      uuid: json['UUID'],
+      empId: json['empid'],
+      refId: json['refid'],
       allowCheckin: json['allow_checkin'],
       location: json['location'],
     );
@@ -64,8 +64,8 @@ class UserModel {
     data['pass'] = pass;
     data['email'] = email;
     data['PhoneNumber'] = phoneNumber;
-    data['UID'] = uid;
-    data['UUID'] = uuid;
+    data['empid'] = empId;
+    data['refid'] = refId;
     data['allow_checkin'] = allowCheckin;
     data['location'] = location;
 

@@ -12,58 +12,13 @@ class AllApi {
     if (response.statusCode == 200) {
       var list = json.decode(response.body);
       if (list != null) {
-        var model = UserModel(
-          address: '',
-          allotedOffice: '',
-          designation: '',
-          leaves: '',
-          manager: '',
-          name: '',
-          notificationToken: '',
-          pass: '',
-          phoneNumber: '',
-          uid: '',
-          uuid: '',
-          allowCheckin: false,
-          email: '',
-          location: {},
-        ).fromJson(list);
+        var model = UserModel().fromJson(list);
         return model;
       } else {
-        return UserModel(
-          address: '',
-          allotedOffice: '',
-          designation: '',
-          leaves: '',
-          manager: '',
-          name: '',
-          notificationToken: '',
-          pass: '',
-          phoneNumber: '',
-          uid: '',
-          uuid: '',
-          allowCheckin: false,
-          email: '',
-          location: {},
-        );
+        return UserModel();
       }
     } else {
-      return UserModel(
-        address: '',
-        allotedOffice: '',
-        designation: '',
-        leaves: '',
-        manager: '',
-        name: '',
-        notificationToken: '',
-        pass: '',
-        phoneNumber: '',
-        uid: '',
-        uuid: '',
-        allowCheckin: false,
-        email: '',
-        location: {},
-      );
+      return UserModel();
     }
   }
 

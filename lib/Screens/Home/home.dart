@@ -1,6 +1,9 @@
 // ignore_for_file: unused_field
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,6 +14,7 @@ import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 
@@ -32,9 +36,7 @@ class _HomeState extends State<Home> {
   var _outDate = '';
   var i = 0;
 
-  // var _remainingTimeHours = 0;
-  // var _remainingTimeMinutes = 0;
-  // var _remainingTimeSeconds = 0;
+  File image;
 
   CountdownTimerController _controller;
   bool loading = false;
@@ -77,6 +79,22 @@ class _HomeState extends State<Home> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future _imagePicker() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) {
+        return;
+      }
+      final imageTemporary = File(image.path);
+      setState(() {
+        this.image = imageTemporary;
+      });
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
   }
 
   Widget _countDowmTimer() {
@@ -206,13 +224,89 @@ class _HomeState extends State<Home> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.userModel.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.userModel.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Id: ' + widget.userModel.empId,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.userModel.email,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.userModel.phoneNumber,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.userModel.designation,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              InkWell(
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.13,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.13,
+                                  child: image != null
+                                      ? Image.file(image)
+                                      : Image.asset(
+                                          'assets/Images/homelogo.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return AlertDialog(
+                                        title: const Text('Change Logo'),
+                                        content: const Text(
+                                            'You can change the logo to any image of your choice.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.back();
+                                              _imagePicker();
+                                            },
+                                            child: const Text('Change'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 10,
@@ -809,9 +903,10 @@ class _HomeState extends State<Home> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/Images/background_image.jpg'),
+          image: const AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.6), BlendMode.dstATop),
         ),
       ),
       child: Scaffold(
