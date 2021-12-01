@@ -807,7 +807,7 @@ class _HomeState extends State<Home> {
       const Text('Settings'),
     ];
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
