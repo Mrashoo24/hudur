@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/Announcement/announcement.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
@@ -787,6 +788,14 @@ class _HomeState extends State<Home> {
         ),
         BottomNavigationBarItem(
           icon: Icon(
+            Icons.announcement,
+            color: Color.fromRGBO(247, 227, 112, 1.0),
+          ),
+          label: 'Announce',
+          backgroundColor: Color(0xFF6392B0),
+        ),    
+        BottomNavigationBarItem(
+          icon: Icon(
             Icons.settings,
             color: Color.fromRGBO(247, 227, 112, 1.0),
           ),
@@ -804,7 +813,9 @@ class _HomeState extends State<Home> {
       const Courses(),
       const Leaves(),
       const Text('Chat'),
+      const Announcement(),
       const Text('Settings'),
+
     ];
     return Container(
       decoration: BoxDecoration(
