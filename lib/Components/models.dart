@@ -99,3 +99,34 @@ class CoursesModel {
     return data;
   }
 }
+
+class AnnounceModel {
+  String image;
+  String name;
+  String text;
+
+  AnnounceModel({
+    this.image,
+    this.name,
+    this.text,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return AnnounceModel(
+      image: json['image'],
+      name: json['name'],
+      text: json['text'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['image'] = image;
+    data['name'] = name;
+    data['text'] = text;
+
+    return data;
+  }
+}
+
