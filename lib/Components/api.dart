@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'models.dart';
+import 'dart:async';
 
 class AllApi {
   Future<UserModel> getUser(String email) async {
@@ -176,3 +177,20 @@ class AllApi {
     }
   }
 }
+Future<List<AnnounceModel>> getAnnounce() async{
+  var getAnnounceUrl = Uri.parse(
+    "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetAnnouncements");
+
+  var response = await http.get(getAnnounceUrl);
+
+  if (response.statusCode == 200) {
+    List announceList = json.decode(response.body);
+    Iterable<AnnounceModel> announce = announceList.map((e) {
+      return AnnounceModel().fromJson(e);
+    });
+    return announce.toList();
+  }
+  else {
+    return null;
+  }
+}  
