@@ -130,4 +130,40 @@ class AllApi {
       return null;
     }
   }
+
+  Future<List<LeaveRequestsModel>> getLeaveRequests() async {
+    var getLeaveRequestsUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetLeaveRequests");
+
+    var response = await http.get(getLeaveRequestsUrl);
+
+    if (response.statusCode == 200) {
+      List leaveRequestsList = json.decode(response.body);
+      Iterable<LeaveRequestsModel> leaveRequests = leaveRequestsList.map((e) {
+        return LeaveRequestsModel().fromJson(e);
+      });
+      return leaveRequests.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> postLeaveRequest(
+      String phoneNumber, String date, String title, List details) async {
+    var postLeaveRequestUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest?refid=$phoneNumber&date=$date");
+
+    var response = await http.post(
+      postLeaveRequestUrl,
+      body: {
+        'title': title,
+        'details': details.toString(),
+      },
+    );
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      return;
+    }
+  }
 }

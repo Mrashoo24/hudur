@@ -99,3 +99,32 @@ class CoursesModel {
     return data;
   }
 }
+
+class LeaveRequestsModel {
+  String title;
+  String subtitle;
+  List details;
+
+  LeaveRequestsModel({
+    this.title,
+    this.subtitle,
+    this.details,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return LeaveRequestsModel(
+        title: json['title'],
+        subtitle: json['subtitle'],
+        details: json['details']);
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['title'] = title;
+    data['subtitle'] = subtitle;
+    data['details'] = details;
+    return data;
+  }
+}

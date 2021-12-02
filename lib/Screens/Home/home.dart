@@ -34,7 +34,6 @@ class _HomeState extends State<Home> {
   var _outTime = '';
   var _inDate = '';
   var _outDate = '';
-  var i = 0;
 
   File image;
 
@@ -199,8 +198,7 @@ class _HomeState extends State<Home> {
 
               print(
                   "checkout  ${(difference.inSeconds / 3600).toDouble().toPrecision(2)}");
-              i++;
-              print('checkout value (build $i): $checkout');
+
               return Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -896,7 +894,9 @@ class _HomeState extends State<Home> {
     List<Widget> _widgetOptions = <Widget>[
       _home(),
       const Courses(),
-      const Leaves(),
+      Leaves(
+        userModel: widget.userModel,
+      ),
       const Text('Chat'),
       const Text('Settings'),
     ];

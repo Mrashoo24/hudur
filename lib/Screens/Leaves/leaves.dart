@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
+import 'package:hudur/Components/models.dart';
+import 'package:intl/intl.dart';
 
 class Leaves extends StatefulWidget {
-  const Leaves({Key key}) : super(key: key);
+  final UserModel userModel;
+  const Leaves({Key key, this.userModel}) : super(key: key);
 
   @override
   _LeavesState createState() => _LeavesState();
@@ -10,158 +15,153 @@ class Leaves extends StatefulWidget {
 
 class _LeavesState extends State<Leaves> {
   int _selectedValue = 0;
+
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  bool _trySubmit() {
+    var _isValid = _formkey.currentState.validate();
+    if (_isValid) {
+      FocusScope.of(context).unfocus();
+      _formkey.currentState.save();
+    }
+    return _isValid;
+  }
+
+  Widget _radioListTile({
+    String title,
+    String subtitle,
+    int value,
+    List details,
+  }) {
+    var textFieldValues = [];
+    return RadioListTile(
+      activeColor: hippieBlue,
+      secondary: ElevatedButton(
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+            backgroundColor: MaterialStateProperty.all<Color>(hippieBlue)),
+        child: const Text('Details'),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text('Details'),
+                content: Form(
+                  key: _formkey,
+                  child: ListView.builder(
+                    itemCount: details.length,
+                    itemBuilder: (ctx, index) {
+                      return TextFormField(
+                        decoration: InputDecoration(
+                          hintText: details[index],
+                        ),
+                        onSaved: (value) {
+                          textFieldValues.add(value);
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please fill out this field';
+                          }
+                          return null;
+                        },
+                      );
+                    },
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () async {
+                      var _canSubmit = _trySubmit();
+                      if (_canSubmit) {
+                        await AllApi().postLeaveRequest(
+                          widget.userModel.phoneNumber,
+                          DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                          title,
+                          textFieldValues,
+                        );
+                        Get.back();
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+      value: value,
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
+      ),
+      subtitle: Text(
+        subtitle,
+      ),
+      groupValue: _selectedValue,
+      onChanged: (value) => setState(
+        () {
+          _selectedValue = value;
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
-              'Select reason for your leave request: ',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+    return FutureBuilder<List<LeaveRequestsModel>>(
+      future: AllApi().getLeaveRequests(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: Image.asset('assets/Images/loading.gif'),
+          );
+        } else {
+          var leaveRequests = snapshot.data;
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: const Text(
+                  'Select reason for your leave request: ',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-            activeColor: hippieBlue,
-            secondary: ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(hippieBlue)),
-              child: const Text('Details'),
-              onPressed: () {},
-            ),
-            value: 1,
-            title: const Text('Official Mission Statement'),
-            subtitle: const Text(
-                'Click the Details button to fill in project details.'),
-            groupValue: _selectedValue,
-            onChanged: (value) => setState(
-              () {
-                _selectedValue = 1;
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-            activeColor: hippieBlue,
-            secondary: ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(hippieBlue)),
-              child: const Text('Attach'),
-              onPressed: () {},
-            ),
-            value: 2,
-            title: const Text('Hospital Appointment Permit'),
-            subtitle: const Text(
-                'Click the Attach button to attach appointment notice.'),
-            groupValue: _selectedValue,
-            onChanged: (value) => setState(
-              () {
-                _selectedValue = 2;
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-            activeColor: hippieBlue,
-            secondary: ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(hippieBlue)),
-              child: const Text('Reason'),
-              onPressed: () {},
-            ),
-            value: 3,
-            title: const Text('Personal Leave'),
-            subtitle:
-                const Text('Click the Reason button to specify leave reason.'),
-            groupValue: _selectedValue,
-            onChanged: (value) => setState(
-              () {
-                _selectedValue = 3;
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-            activeColor: hippieBlue,
-            secondary: ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(hippieBlue)),
-              child: const Text('Details'),
-              onPressed: () {},
-            ),
-            value: 4,
-            title: const Text('Study Hour Permit'),
-            subtitle: const Text(
-                'Click the Details button to fill in study leave details.'),
-            groupValue: _selectedValue,
-            onChanged: (value) => setState(
-              () {
-                _selectedValue = 4;
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RadioListTile(
-            activeColor: hippieBlue,
-            secondary: ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(hippieBlue)),
-              child: const Text('Details'),
-              onPressed: () {},
-            ),
-            value: 5,
-            title: const Text('Maternity Hour Permit'),
-            subtitle: const Text(
-                'Click the Details button to fill in maternity leave details.'),
-            groupValue: _selectedValue,
-            onChanged: (value) => setState(
-              () {
-                _selectedValue = 5;
-              },
-            ),
-          ),
-        ],
-      ),
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(
+                  itemCount: leaveRequests.length,
+                  itemBuilder: (context, index) {
+                    return _radioListTile(
+                      title: leaveRequests[index].title,
+                      subtitle: leaveRequests[index].subtitle,
+                      value: index + 1,
+                      details: leaveRequests[index].details,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }
