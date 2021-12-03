@@ -31,27 +31,31 @@ class _AnnouncementState extends State<Announcement> {
               itemCount: announceList.length,
               itemBuilder: (ctx,  index) {
                 return Card(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(12.0),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        announceList[index].image,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(announceList[index])));
+                    },
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(12.0),
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          announceList[index].image,
+                        ),
+                      ),
+                      title: 
+                        Text(announceList[index].name,
+                          style:  TextStyle(
+                            color: hippieBlue,
+                            fontSize: 20, fontWeight: FontWeight.bold),    
+                      ),
+                      subtitle: 
+                      Text(
+                        announceList[index].text,
+                        style: const TextStyle(
+                          color: Colors.grey
+                        ),           
                       ),
                     ),
-                    title: 
-                      Text(announceList[index].name,
-                        style:  TextStyle(
-                          color: hippieBlue,
-                          fontSize: 20, fontWeight: FontWeight.bold),    
-                    ),
-                    subtitle: 
-                    Text(
-                      announceList[index].text,
-                      style: const TextStyle(
-                        color: Colors.grey
-                      ),           
-                    ),
-                    onTap: () {},
                   ),
                 );
               },
@@ -64,15 +68,16 @@ class _AnnouncementState extends State<Announcement> {
 }
 class DetailPage extends StatelessWidget {
   
-  final AnnounceModel announceModel;
+  final AnnounceModel announceList;
 
-  const DetailPage(data, {Key key, this.announceModel}) : super(key: key);
+  // ignore: use_key_in_widget_constructors
+  const DetailPage(this.announceList);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(announceModel.name),
+        title: Text(announceList.name),
         
       ),
     );
