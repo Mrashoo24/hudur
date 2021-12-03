@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
@@ -14,7 +14,7 @@ import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
-
+import 'package:hudur/Screens/Services/services.dart';
 class Home extends StatefulWidget {
   final UserModel userModel;
   const Home({Key key, this.userModel}) : super(key: key);
@@ -764,10 +764,10 @@ class _HomeState extends State<Home> {
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.book_rounded,
+            Icons.pan_tool,
             color: Color.fromRGBO(247, 227, 112, 1.0),
           ),
-          label: 'Courses',
+          label: 'Services',
           backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
@@ -810,7 +810,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       _home(),
-      const Courses(),
+      const Services(),
       const Leaves(),
       const Text('Chat'),
       const Announcement(),
