@@ -193,4 +193,25 @@ Future<List<AnnounceModel>> getAnnounce() async{
   else {
     return null;
   }
-}  
+}
+
+Future<void> postServices(
+      {String refid , String certid, String date}) async {
+    var postServiceUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
+
+    var response = await http.post(postServiceUrl, body: {
+      'refid': refid,
+      'certid': certid,
+      'date': date,
+    });
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      Fluttertoast.showToast(msg: response.body);
+      return ServiceModel;
+    }
+  }
+
+
+
