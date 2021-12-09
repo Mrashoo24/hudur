@@ -22,42 +22,67 @@ class _ServicesState extends State<Services> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.black),
-            borderRadius: BorderRadius.circular(15)
-          ),
-          child: DropdownButton(
-            hint: Text("Select Options"),
-            dropdownColor: const Color(0xFF6392B0),
-            icon: Icon(Icons.arrow_drop_down),
-            iconSize: 36,
-            isExpanded: true,
-            underline: SizedBox(),
-            style: TextStyle(
-              color: Color.fromRGBO(247, 227, 112, 1.0),
-              fontSize: 22,
-            ),
-            value: valueChoose,
-            onChanged: (newValue) {
-              setState(() {
-                valueChoose = newValue;
-              });
-            },
-            items: listItem.map((valueItem) {
-              return DropdownMenuItem(
-                value: valueItem,
-                child: Text(valueItem),
+    //return SizedBox(
+      //width: MediaQuery.of(context).size.height,
+      //height: MediaQuery.of(context).size.height,
+      //child: FutureBuilder(
+        //future: postServices(),
+        //builder: (context, snapshot){
+          //if(!snapshot.hasData){
+            //return const Center(
+              //child: Image(image: AssetImage('assets/Images/loading.gif')),
+            //);
+          //}
+          //else {
+            // ignore: unused_local_variable
+            //var response = snapshot.data;
+
+
+            //return ListView.builder(
+              //itemCount: response.length,
+              //itemBuilder: (ctx, index) {
+              return Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.black),
+                      borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: DropdownButton(
+                      hint: Text("Select Options"),
+                      dropdownColor: const Color(0xFF6392B0),
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 36,
+                      isExpanded: true,
+                      underline: SizedBox(),
+                      style: TextStyle(
+                        color: Color.fromRGBO(247, 227, 112, 1.0),
+                        fontSize: 22,
+                      ),
+                      value: valueChoose,
+                      onChanged: (newValue) {
+                        setState(() {
+                          valueChoose = newValue;
+                        });
+                      },
+                      items: listItem.map((valueItem) {
+                        return DropdownMenuItem(
+                          value: valueItem,
+                          child: Text(valueItem),
+                        );
+                      },
+                    ).toList(),
+                    ),
+                  ),
+                ),
               );
-            },
-          ).toList(),
-          ),
-        ),
-      ),
-    );
+            //  },
+          //  );
+          //}
+        //}
+      //),
+    //);
   }
 }
