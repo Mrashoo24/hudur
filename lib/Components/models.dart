@@ -130,3 +130,63 @@ class AnnounceModel {
   }
 }
 
+class ServiceModel {
+  String refid;
+  String certid;
+  String date;
+
+  ServiceModel({
+    this.refid,
+    this.certid,
+    this.date,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return ServiceModel(
+      refid: json['refid'],
+      certid: json['certid'],
+      date: json['date'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['refid'] = refid;
+    data['certid'] = certid;
+    data['date'] = date;
+
+    return data;
+  }
+}
+
+class EnquiryModel {
+  String email;
+  String subject;
+  String message;
+
+  EnquiryModel({
+    this.email,
+    this.subject,
+    this.message,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return EnquiryModel(
+      email: json['email'],
+      subject: json['subject'],
+      message: json['message'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = email;
+    data['subject'] = subject;
+    data['message'] = message;
+
+    return data;
+  }
+}
+
