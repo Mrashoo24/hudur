@@ -10,6 +10,7 @@ import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Announcement/announcement.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
+import 'package:hudur/Screens/Enquiry/enquiry.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
 import 'package:intl/intl.dart';
@@ -762,6 +763,14 @@ class _HomeState extends State<Home> {
           label: 'Home',
           backgroundColor: Color(0xFF6392B0),
         ),
+        /*BottomNavigationBarItem(
+          icon: Icon(
+            Icons.book_rounded,
+            color: Color.fromRGBO(247, 227, 112, 1.0),
+          ),
+          label: 'Courses',
+          backgroundColor: Color(0xFF6392B0),
+        ),*/
         BottomNavigationBarItem(
           icon: Icon(
             Icons.pan_tool,
@@ -771,6 +780,14 @@ class _HomeState extends State<Home> {
           backgroundColor: Color(0xFF6392B0),
         ),
         BottomNavigationBarItem(
+          icon: Icon(
+            Icons.import_export_outlined,
+            color: Color.fromRGBO(247, 227, 112, 1.0),
+          ),
+          label: 'Enquiry',
+          backgroundColor: Color(0xFF6392B0),
+        ),
+        /*BottomNavigationBarItem(
           icon: Icon(
             Icons.question_answer_rounded,
             color: Color.fromRGBO(247, 227, 112, 1.0),
@@ -785,7 +802,7 @@ class _HomeState extends State<Home> {
           ),
           label: 'Chat',
           backgroundColor: Color(0xFF6392B0),
-        ),
+        ),*/
         BottomNavigationBarItem(
           icon: Icon(
             Icons.announcement,
@@ -810,9 +827,11 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       _home(),
+      //const Courses(),
       const Services(),
-      const Leaves(),
-      const Text('Chat'),
+      const Enquiry(),
+      //const Leaves(),
+      //const Text('Chat'),
       const Announcement(),
       const Text('Settings'),
 
