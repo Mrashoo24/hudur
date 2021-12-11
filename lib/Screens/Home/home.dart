@@ -801,10 +801,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       _home(),
-      const Courses(),
-      const Leaves(),
-      const Text('Chat'),
-      const Text('Settings'),
+      // const Courses(),
+      // const Leaves(),
+      // const Text('Chat'),
+      // const Text('Settings'),
     ];
     return Container(
       decoration: BoxDecoration(
@@ -815,9 +815,10 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: Scaffold(
-        drawer: const HomeDrawer(),
+        // drawer: const HomeDrawer(),
         appBar: AppBar(
           backgroundColor: const Color(0xFF6392B0),
+          title: Text("HUDUR"),
           actions: [
             _countDowmTimer(),
           ],
@@ -828,7 +829,7 @@ class _HomeState extends State<Home> {
             child: _widgetOptions.elementAt(_selectedIndex),
           ),
         ),
-        bottomNavigationBar: _bottomNavigationBar(),
+        // bottomNavigationBar: _bottomNavigationBar(),
       ),
     );
   }
