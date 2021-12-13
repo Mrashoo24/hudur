@@ -383,7 +383,7 @@ class _HomeState extends State<Home> {
                                       title: const Text(
                                         'You have already checked-in.',
                                       ),
-                                      actions: [
+                                      actions: loading ? [CircularProgressIndicator(color: Colors.yellow,)]  : [
                                         TextButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -396,204 +396,246 @@ class _HomeState extends State<Home> {
                                     );
                                   },
                                 );
+
                               } else {
+
                                 showDialog(
                                   context: context,
                                   builder: (ctx) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        'Confirm Check In',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: const Text(
-                                            'Check-In',
-                                          ),
-                                          onPressed: () async {
-                                            var latAndLong =
-                                                await getUserLocation();
-                                            var result =
-                                                await AllApi().getVicinity(
-                                              phoneNumber:
-                                                  widget.userModel.phoneNumber,
-                                              latitude: latAndLong.latitude,
-                                              longitude: latAndLong.longitude,
-                                            );
-                                            print(
-                                                'latitude: ${latAndLong.latitude}\nlongitude: ${latAndLong.longitude}');
-                                            if (result == true) {
-                                              _inTime = DateFormat('hh:mm a')
-                                                  .format(DateTime.now());
-                                              _inDate = DateFormat('dd-MM-yyyy')
-                                                  .format(DateTime.now());
-                                              Get.back();
-                                              setState(
-                                                () {
-                                                  loading = true;
-                                                },
-                                              );
-                                              await AllApi().postCheckIn(
-                                                checkInTime: _inTime,
-                                                checkOutTime: '-----',
-                                                date: _inDate,
-                                                phoneNumber: widget
-                                                    .userModel.phoneNumber,
-                                              );
+                                    return StatefulBuilder(
+                                      builder: (context, settingstate) {
 
-                                              setState(
-                                                () {
-                                                  _isCheckedIn = true;
-                                                  _isCheckedOut = false;
+
+
+                                        return AlertDialog(
+                                          title: const Text(
+                                            'Confirm Check In',
+                                          ),
+                                          actions: loading ? [CircularProgressIndicator(color: Colors.yellow,)]  : [
+                                          loading ? CircularProgressIndicator(color: Colors.yellow,) :  TextButton(
+                                              child: const Text(
+                                                'Check-In',
+                                              ),
+                                              onPressed: () async {
+                                                settingstate(() {
+                                                  loading = true;
+                                                });
+                                                var latAndLong =
+                                                    await getUserLocation();
+                                                var result =
+                                                    await AllApi().getVicinity(
+                                                  phoneNumber:
+                                                      widget.userModel.phoneNumber,
+                                                  latitude: latAndLong.latitude,
+                                                  longitude: latAndLong.longitude,
+                                                );
+                                                print(
+                                                    'latitude: ${latAndLong.latitude}\nlongitude: ${latAndLong.longitude}');
+                                                if (result == true) {
+
+                                                  _inTime = DateFormat('hh:mm a')
+                                                      .format(DateTime.now());
+                                                  _inDate = DateFormat('dd-MM-yyyy')
+                                                      .format(DateTime.now());
+                                                  Get.back();
+
                                                   setState(
                                                     () {
-                                                      loading = false;
+                                                      loading = true;
                                                     },
                                                   );
-                                                },
-                                              );
-                                            } else {
-                                              Get.back();
-                                              showDialog(
-                                                context: context,
-                                                builder: (ctx) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                      'Check-in not allowed.',
-                                                    ),
-                                                    content: const Text(
-                                                      'You aren\'t in the vicinity of 250 metres from your office.',
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          Get.back();
-                                                          await AllApi()
-                                                              .postCheckInRequest(
-                                                                  date: DateFormat('dd-MM-yyyy')
-                                                                      .format(
-                                                                    DateTime
-                                                                        .now(),
-                                                                  ),
-                                                                  phoneNumber: widget
-                                                                      .userModel
-                                                                      .phoneNumber,
-                                                                  lat: latAndLong
-                                                                      .latitude
-                                                                      .toString(),
-                                                                  lon: latAndLong
-                                                                      .longitude
-                                                                      .toString(),
-                                                                  name: widget
-                                                                      .userModel
-                                                                      .name);
-                                                          var allowCheckIn =
-                                                              await AllApi()
-                                                                  .getUser(widget
-                                                                      .userModel
-                                                                      .email);
-                                                          if (allowCheckIn
-                                                              .allowCheckin) {
-                                                            _inTime =
-                                                                DateFormat(
-                                                              'hh:mm a',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            );
-                                                            _inDate =
-                                                                DateFormat(
-                                                              'dd-MM-yyyy',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            );
-                                                            Get.back();
-                                                            setState(
-                                                              () {
-                                                                loading = true;
-                                                              },
-                                                            );
-                                                            await AllApi()
-                                                                .postCheckIn(
-                                                              checkInTime:
-                                                                  _inTime,
-                                                              checkOutTime:
-                                                                  '-----',
-                                                              date: _inDate,
-                                                              phoneNumber: widget
-                                                                  .userModel
-                                                                  .phoneNumber,
-                                                            );
-                                                            await AllApi()
-                                                                .postOuterGeoList(
-                                                              phoneNumber: widget
-                                                                  .userModel
-                                                                  .phoneNumber,
-                                                              date: _inDate,
-                                                              lat: latAndLong
-                                                                  .latitude
-                                                                  .toString(),
-                                                              lon: latAndLong
-                                                                  .longitude
-                                                                  .toString(),
-                                                            );
-                                                            Fluttertoast
-                                                                .showToast(
-                                                              msg: "Logged in",
-                                                            );
+                                                  await AllApi().postCheckIn(
+                                                    checkInTime: _inTime,
+                                                    checkOutTime: '-----',
+                                                    date: _inDate,
+                                                    phoneNumber: widget
+                                                        .userModel.phoneNumber,
+                                                  );
+                                                  settingstate(() {
+                                                    loading = false;
+                                                  });
+                                                  setState(
+                                                    () {
+                                                      _isCheckedIn = true;
+                                                      _isCheckedOut = false;
+                                                      setState(
+                                                        () {
+                                                          loading = false;
+                                                        },
+                                                      );
+                                                    },
+                                                  );
 
-                                                            setState(
-                                                              () {
-                                                                _isCheckedIn =
-                                                                    true;
-                                                                _isCheckedOut =
-                                                                    false;
-                                                                setState(
-                                                                  () {
-                                                                    loading =
-                                                                        false;
-                                                                  },
-                                                                );
-                                                              },
-                                                            );
-                                                          } else {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Text(
-                                                                  'You are not allowed to check-in.',
+                                                } else {
+                                                  Get.back();
+                                                  settingstate(() {
+                                                    loading = false;
+                                                  });
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (ctx) {
+                                                      return StatefulBuilder(
+                                                        builder: (context, settingState1) {
+
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                              'Check-in not allowed.',
+                                                            ),
+                                                            content: const Text(
+                                                              'You aren\'t in the vicinity of 250 metres from your office.',
+                                                            ),
+                                                            actions:loading ? [CircularProgressIndicator(color: Colors.yellow,)]  :  [
+                                                            loading  ? CircularProgressIndicator(color: Colors.yellow,) :   TextButton(
+                                                                onPressed: () async {
+                                                                  settingState1(() {
+                                                                    loading = true;
+                                                                  });
+
+                                                                  await AllApi()
+                                                                      .postCheckInRequest(
+                                                                          date: DateFormat('dd-MM-yyyy')
+                                                                              .format(
+                                                                            DateTime
+                                                                                .now(),
+                                                                          ),
+                                                                          phoneNumber: widget
+                                                                              .userModel
+                                                                              .phoneNumber,
+                                                                          lat: latAndLong
+                                                                              .latitude
+                                                                              .toString(),
+                                                                          lon: latAndLong
+                                                                              .longitude
+                                                                              .toString(),
+                                                                          name: widget
+                                                                              .userModel
+                                                                              .name);
+                                                                  var allowCheckIn =
+                                                                      await AllApi()
+                                                                          .getUser(widget
+                                                                              .userModel
+                                                                              .email);
+                                                                  if (allowCheckIn
+                                                                      .allowCheckin) {
+
+                                                                    _inTime =
+                                                                        DateFormat(
+                                                                      'hh:mm a',
+                                                                    ).format(
+                                                                      DateTime.now(),
+                                                                    );
+                                                                    _inDate =
+                                                                        DateFormat(
+                                                                      'dd-MM-yyyy',
+                                                                    ).format(
+                                                                      DateTime.now(),
+                                                                    );
+
+
+                                                                    setState(
+                                                                      () {
+                                                                        loading = true;
+                                                                      },
+                                                                    );
+                                                                    await AllApi()
+                                                                        .postCheckIn(
+                                                                      checkInTime:
+                                                                          _inTime,
+                                                                      checkOutTime:
+                                                                          '-----',
+                                                                      date: _inDate,
+                                                                      phoneNumber: widget
+                                                                          .userModel
+                                                                          .phoneNumber,
+                                                                    );
+                                                                    await AllApi()
+                                                                        .postOuterGeoList(
+                                                                      phoneNumber: widget
+                                                                          .userModel
+                                                                          .phoneNumber,
+                                                                      date: _inDate,
+                                                                      lat: latAndLong
+                                                                          .latitude
+                                                                          .toString(),
+                                                                      lon: latAndLong
+                                                                          .longitude
+                                                                          .toString(),
+                                                                    );
+                                                                    settingState1(() {
+                                                                      loading = false;
+                                                                    });
+                                                                    Get.back();
+                                                                    Fluttertoast
+                                                                        .showToast(
+                                                                      msg: "Logged in",
+                                                                    );
+
+                                                                    setState(
+                                                                      () {
+                                                                        _isCheckedIn =
+                                                                            true;
+                                                                        _isCheckedOut =
+                                                                            false;
+                                                                        setState(
+                                                                          () {
+                                                                            loading =
+                                                                                false;
+                                                                          },
+                                                                        );
+                                                                      },
+                                                                    );
+
+                                                                  } else {
+                                                                    settingState1(() {
+                                                                      loading = false;
+                                                                    });
+                                                                    Get.back();
+                                                                    ScaffoldMessenger
+                                                                            .of(context)
+                                                                        .showSnackBar(
+                                                                      const SnackBar(
+                                                                        content: Text(
+                                                                          'You are not allowed to check-in.',
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                },
+                                                                child: const Text(
+                                                                  'Send Request',
                                                                 ),
                                                               ),
-                                                            );
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                          'Send Request',
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Get.back();
-                                                        },
-                                                        child: const Text(
-                                                          'Cancel',
-                                                        ),
-                                                      ),
-                                                    ],
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Get.back();
+                                                                },
+                                                                child: const Text(
+                                                                  'Cancel',
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        }
+                                                      );
+                                                    },
                                                   );
-                                                },
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text(
-                                            'Cancel',
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
-                                      ],
+                                                }
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text(
+                                                'Cancel',
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  loading = false;
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      }
                                     );
                                   },
                                 );
@@ -645,6 +687,9 @@ class _HomeState extends State<Home> {
                                       actions: [
                                         TextButton(
                                           onPressed: () {
+                                            setState(() {
+                                              loading = false;
+                                            });
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(
@@ -657,6 +702,7 @@ class _HomeState extends State<Home> {
                                 );
                               } else {
                                 if (checkout != "-----") {
+
                                   showDialog(
                                     context: context,
                                     builder: (ctx) {
@@ -667,8 +713,11 @@ class _HomeState extends State<Home> {
                                         actions: [
                                           TextButton(
                                             onPressed: () {
+
                                               Navigator.of(context).pop();
-                                            },
+
+                                              },
+
                                             child: const Text(
                                               'Dismiss',
                                             ),
@@ -677,20 +726,28 @@ class _HomeState extends State<Home> {
                                       );
                                     },
                                   );
+
                                 } else {
+
                                   showDialog(
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
                                         title: const Text(
+
                                           'Confirm Check Out',
+
                                         ),
-                                        actions: [
+
+                                        actions:loading ? [CircularProgressIndicator(color: Colors.yellow,)]  : [
+
                                           TextButton(
                                             child: const Text(
                                               'Check-Out',
                                             ),
+
                                             onPressed: () async {
+
                                               _outTime = DateFormat('hh:mm a')
                                                   .format(DateTime.now());
                                               _outDate =
@@ -702,6 +759,7 @@ class _HomeState extends State<Home> {
                                                   loading = true;
                                                 },
                                               );
+
                                               await AllApi().postCheckIn(
                                                 checkInTime: checkin,
                                                 checkOutTime: _outTime,
@@ -709,6 +767,7 @@ class _HomeState extends State<Home> {
                                                 phoneNumber: widget
                                                     .userModel.phoneNumber,
                                               );
+
                                               setState(
                                                 () {
                                                   _isCheckedOut = true;
@@ -716,16 +775,21 @@ class _HomeState extends State<Home> {
                                                   loading = false;
                                                 },
                                               );
+
                                             },
                                           ),
-                                          TextButton(
+                                         loading ? CircularProgressIndicator(color: Colors.yellow,) :  TextButton(
+
                                             child: const Text(
                                               'Cancel',
                                             ),
                                             onPressed: () {
+
                                               Navigator.of(context).pop();
+
                                             },
                                           )
+
                                         ],
                                       );
                                     },
