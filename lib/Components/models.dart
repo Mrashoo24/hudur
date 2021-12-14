@@ -128,3 +128,30 @@ class LeaveRequestsModel {
     return data;
   }
 }
+
+class RelatedSitesModel {
+  String name;
+  String url;
+
+  RelatedSitesModel({
+    this.name,
+    this.url,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return RelatedSitesModel(
+      name: json['name'],
+      url: json['url'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['name'] = name;
+    data['url'] = url;
+
+    return data;
+  }
+}

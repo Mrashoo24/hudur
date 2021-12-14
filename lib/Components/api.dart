@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'models.dart';
@@ -164,6 +165,72 @@ class AllApi {
       return;
     } else {
       return;
+    }
+  }
+
+  Future<UserModel> getemployeeBenchList({@required String name}) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetEmployeeBenchList?name=$name");
+    var response = await http.get(url);
+
+    var employeeDetailsJSON = json.decode(response.body);
+    if (employeeDetailsJSON != "no details found") {
+      var employeeDetails = UserModel().fromJson(employeeDetailsJSON);
+      return employeeDetails;
+    } else {
+      return null;
+    }
+  }
+
+  Future<dynamic> postBenchList({
+    @required UserModel userModel,
+    @required UserModel replacementUserModel,
+    @required String jobDescription,
+    @required String replacementType,
+    String fromDate,
+    String toDate,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostBenchlist");
+    var response = await http.post(url, body: {
+      'user_empid': userModel.empId,
+      'user_name': userModel.name,
+      'user_phone': userModel.phoneNumber,
+      'replacement_empid': replacementUserModel.empId,
+      'replacement_name': replacementUserModel.name,
+      'replacement_phone': replacementUserModel.phoneNumber,
+      'replacement_address': replacementUserModel.address,
+      'replacement_allotedOffice': replacementUserModel.allotedOffice,
+      'replacement_designation': replacementUserModel.designation,
+      'replacement_email': replacementUserModel.email,
+      'replacement_manager': replacementUserModel.manager,
+      'replacement_refId': replacementUserModel.refId,
+      'job_description': jobDescription,
+      'replacement_type': replacementType,
+      'from': fromDate,
+      'to': toDate,
+    });
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+      return 'Request failed';
+    } else {
+      return 'Success';
+    }
+  }
+
+  Future<List<RelatedSitesModel>> getRelatedSites() async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetRelatedSites");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]') {
+      List relatedSitesList = body;
+      Iterable<RelatedSitesModel> relatedSites = relatedSitesList.map((e) {
+        return RelatedSitesModel().fromJson(e);
+      });
+      return relatedSites.toList();
+    } else {
+      return null;
     }
   }
 }

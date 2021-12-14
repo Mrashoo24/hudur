@@ -51,24 +51,28 @@ class _LeavesState extends State<Leaves> {
                 title: const Text('Details'),
                 content: Form(
                   key: _formkey,
-                  child: ListView.builder(
-                    itemCount: details.length,
-                    itemBuilder: (ctx, index) {
-                      return TextFormField(
-                        decoration: InputDecoration(
-                          hintText: details[index],
-                        ),
-                        onSaved: (value) {
-                          textFieldValues.add(value);
-                        },
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please fill out this field';
-                          }
-                          return null;
-                        },
-                      );
-                    },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: ListView.builder(
+                      itemCount: details.length,
+                      itemBuilder: (ctx, index) {
+                        return TextFormField(
+                          decoration: InputDecoration(
+                            hintText: details[index],
+                          ),
+                          onSaved: (value) {
+                            textFieldValues.add(value);
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please fill out this field';
+                            }
+                            return null;
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 actions: [

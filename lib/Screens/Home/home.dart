@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget _countDowmTimer() {
+  Widget _countDownTimer() {
     // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 25200;
 
     return FutureBuilder(
@@ -910,11 +910,13 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: Scaffold(
-        drawer: const HomeDrawer(),
+        drawer: HomeDrawer(
+          userModel: widget.userModel,
+        ),
         appBar: AppBar(
           backgroundColor: const Color(0xFF6392B0),
           actions: [
-            _countDowmTimer(),
+            _countDownTimer(),
           ],
         ),
         backgroundColor: Colors.transparent,
