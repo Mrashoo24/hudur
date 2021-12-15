@@ -155,3 +155,34 @@ class RelatedSitesModel {
     return data;
   }
 }
+
+class CheckInHistoryModel {
+  String checkInTime;
+  String checkOutTime;
+  String refId;
+  String date;
+
+  CheckInHistoryModel(
+      {this.checkInTime, this.checkOutTime, this.date, this.refId});
+
+  fromJson(Map<String, dynamic> json) {
+    return CheckInHistoryModel(
+      checkInTime: json['checkin'],
+      checkOutTime: json['checkout'],
+      date: json['date'],
+      refId: json['refid'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['checkin'] = checkInTime;
+    data['checkout'] = checkOutTime;
+    data['refid'] = refId;
+    data['date'] = date;
+
+    return data;
+  }
+}

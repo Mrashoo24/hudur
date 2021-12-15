@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/BenchList/benchlist_page.dart';
+import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -47,6 +48,20 @@ class HomeDrawer extends StatelessWidget {
                     title: const Text('Related Sites'),
                     onTap: () {
                       Get.to(const RelatedSites());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.history,
+                      color: portica,
+                    ),
+                    title: const Text('Check-In History'),
+                    onTap: () {
+                      Get.to(
+                        CheckInHistory(
+                          userModel: userModel,
+                        ),
+                      );
                     },
                   ),
                 ],

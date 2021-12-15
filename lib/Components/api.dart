@@ -233,4 +233,21 @@ class AllApi {
       return null;
     }
   }
+
+  Future<List<CheckInHistoryModel>> getCheckInHistory(String refId) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckInHistory?refId=$refId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (response.statusCode == 200 && body != '[]') {
+      List checkInHistoryList = body;
+      Iterable<CheckInHistoryModel> checkInHistory =
+          checkInHistoryList.map((e) {
+        return CheckInHistoryModel().fromJson(e);
+      });
+      return checkInHistory.toList();
+    }
+    print('getCheckInHistory: Reason Phrase: ' + response.reasonPhrase);
+    return null;
+  }
 }
