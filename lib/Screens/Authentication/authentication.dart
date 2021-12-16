@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
+import 'package:hudur/Screens/Authentication/registeration.dart';
 import 'package:hudur/Screens/Home/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,7 +64,7 @@ class _AuthenticationState extends State<Authentication> {
                           Container(
                             margin: const EdgeInsets.only(top: 20),
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('assets/Images/big_logo.png'),
+                            child: Image.asset('assets/Images/big_logo.png',width: 100,),
                           ),
                           Container(
                             padding: const EdgeInsets.all(40.0),
@@ -136,24 +138,37 @@ class _AuthenticationState extends State<Authentication> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _isChecked,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _isChecked = value;
-                                          });
-                                        },
+                                  // Row(
+                                  //   children: [
+                                  //     Checkbox(
+                                  //       value: _isChecked,
+                                  //       onChanged: (value) {
+                                  //         setState(() {
+                                  //           _isChecked = value;
+                                  //         });
+                                  //       },
+                                  //     ),
+                                  //     const Text(
+                                  //       'Remember Me',
+                                  //       style: TextStyle(
+                                  //         color: Colors.black,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  ElevatedButton(
+                                    onPressed: (){
+                                      Get.to(Registeration());
+                                    },
+                                    child: Text(
+                                      'No Account SignUp Now',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18
                                       ),
-                                      const Text(
-                                        'Remember Me',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
+                                  SizedBox(height: 10,),
                                   ElevatedButton(
                                     style: ButtonStyle(
                                       backgroundColor:
