@@ -19,70 +19,103 @@ class _ServicesState extends State<Services> {
     "Certificate with Without Salary",
     "Others",
   ]; 
+  final AllApi api = AllApi();
+  final TextEditingController refController = TextEditingController();
+  final TextEditingController certController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    //return SizedBox(
-      //width: MediaQuery.of(context).size.height,
-      //height: MediaQuery.of(context).size.height,
-      //child: FutureBuilder(
-        //future: postServices(),
-        //builder: (context, snapshot){
-          //if(!snapshot.hasData){
-            //return const Center(
-              //child: Image(image: AssetImage('assets/Images/loading.gif')),
-            //);
-          //}
-          //else {
-            // ignore: unused_local_variable
-            //var response = snapshot.data;
+    return SizedBox(
+      
+         child: Center(
+           child: Column(
+             children: [
+               Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Container(
+                          padding: EdgeInsets.only(left: 16, right: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.black),
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                        child: DropdownButton(
+                              hint: Text("Select Options"),
+                              dropdownColor: const Color(0xFF6392B0),
+                              icon: Icon(Icons.arrow_drop_down),
+                              iconSize: 36,
+                              isExpanded: true,
+                              underline: SizedBox(),
+                              style: TextStyle(
+                                color: Color.fromRGBO(247, 227, 112, 1.0),
+                                fontSize: 22,
+                              ),
+                              value: valueChoose,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  valueChoose = newValue;
+                                });
+                              },
+                              items: listItem.map((valueItem) {
+                                return DropdownMenuItem(
+                                  value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              },
+                            ).toList(),
+                            ),
+                             
 
 
-            //return ListView.builder(
-              //itemCount: response.length,
-              //itemBuilder: (ctx, index) {
-              return Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: Colors.black),
-                      borderRadius: BorderRadius.circular(15)
-                    ),
-                    child: DropdownButton(
-                      hint: Text("Select Options"),
-                      dropdownColor: const Color(0xFF6392B0),
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      isExpanded: true,
-                      underline: SizedBox(),
-                      style: TextStyle(
-                        color: Color.fromRGBO(247, 227, 112, 1.0),
-                        fontSize: 22,
+                        ),
                       ),
-                      value: valueChoose,
-                      onChanged: (newValue) {
-                        setState(() {
-                          valueChoose = newValue;
-                        });
-                      },
-                      items: listItem.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      },
-                    ).toList(),
-                    ),
-                  ),
+      ),
+      Container(
+        padding: EdgeInsets.all(32.0),
+        child: Column(
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Refrence Id",
                 ),
-              );
-            //  },
-          //  );
-          //}
-        //}
-      //),
-    //);
+                controller: refController,),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Certificate Id",
+                ),
+                controller: certController,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Date",
+                ),
+                controller: dateController,
+              ),
+              
+              ElevatedButton(onPressed: () async{
+                final String refid = refController.text;
+              final String certid = certController.text;
+              final String date = dateController.text;
+
+              await api.postServices(refid: refid, certid: certid, date: date);
+              
+
+              },
+              child: Text("Submit", style: TextStyle(color: Color.fromRGBO(247, 227, 112, 1.0)),),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFF6392B0),
+              ),
+              ),
+            ],
+            ),
+        ),
+        
+            
+             ],
+           ),
+         ),
+    
+    );
   }
 }
