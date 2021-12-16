@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'models.dart';
 
 class AllApi {
@@ -249,5 +250,32 @@ class AllApi {
     }
     print('getCheckInHistory: Reason Phrase: ' + response.reasonPhrase);
     return null;
+  }
+
+  Future<void> postEnquiry({
+    @required String subject,
+    @required String description,
+    @required String employeeId,
+    @required String companyId,
+    @required String email,
+    @required String password,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostEnquiry");
+    var response = await http.post(
+      url,
+      body: {
+        'empid': employeeId,
+        'companyid': companyId,
+        'subject': subject,
+        'description': description,
+        'email': email,
+        'password': password,
+        'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+      },
+    );
+    if (response.statusCode != 200) {
+      print('postEnquiry failed. Reason: ' + response.reasonPhrase);
+    }
   }
 }

@@ -10,6 +10,7 @@ class UserModel {
       leaves,
       manager,
       notificationToken,
+      companyId,
       pass;
   Map<String, dynamic> location;
   bool allowCheckin;
@@ -29,6 +30,7 @@ class UserModel {
     this.refId,
     this.location,
     this.allowCheckin,
+    this.companyId,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class UserModel {
       refId: json['refid'],
       allowCheckin: json['allow_checkin'],
       location: json['location'],
+      companyId: json['companyid'],
     );
   }
 
@@ -68,6 +71,7 @@ class UserModel {
     data['refid'] = refId;
     data['allow_checkin'] = allowCheckin;
     data['location'] = location;
+    data['companyid'] = companyId;
 
     return data;
   }

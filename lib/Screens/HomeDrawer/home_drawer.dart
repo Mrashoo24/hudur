@@ -4,6 +4,7 @@ import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/BenchList/benchlist_page.dart';
 import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
+import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -59,6 +60,20 @@ class HomeDrawer extends StatelessWidget {
                     onTap: () {
                       Get.to(
                         CheckInHistory(
+                          userModel: userModel,
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.chat_bubble_rounded,
+                      color: portica,
+                    ),
+                    title: const Text('Enquiry'),
+                    onTap: () {
+                      Get.to(
+                        Enquiry(
                           userModel: userModel,
                         ),
                       );
