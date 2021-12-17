@@ -104,11 +104,13 @@ class AnnounceModel {
   String image;
   String name;
   String text;
+  String timestamp;
 
   AnnounceModel({
     this.image,
     this.name,
     this.text,
+    this.timestamp,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -116,6 +118,7 @@ class AnnounceModel {
       image: json['image'],
       name: json['name'],
       text: json['text'],
+      timestamp: json['timestamp'],
     );
   }
 
@@ -125,6 +128,7 @@ class AnnounceModel {
     data['image'] = image;
     data['name'] = name;
     data['text'] = text;
+    data['timestamp'] = timestamp;
 
     return data;
   }
@@ -155,36 +159,6 @@ class ServiceModel {
     data['refid'] = refid;
     data['certid'] = certid;
     data['date'] = date;
-
-    return data;
-  }
-}
-
-class EnquiryModel {
-  String email;
-  String subject;
-  String message;
-
-  EnquiryModel({
-    this.email,
-    this.subject,
-    this.message,
-  });
-
-  fromJson(Map<String, dynamic> json) {
-    return EnquiryModel(
-      email: json['email'],
-      subject: json['subject'],
-      message: json['message'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    // ignore: unnecessary_new, prefer_collection_literals
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['email'] = email;
-    data['subject'] = subject;
-    data['message'] = message;
 
     return data;
   }
