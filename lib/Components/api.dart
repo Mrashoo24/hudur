@@ -210,6 +210,9 @@ class AllApi {
       'replacement_type': replacementType,
       'from': fromDate,
       'to': toDate,
+      'verify': '0',
+      'benchid': DateTime.now().microsecond.toString(),
+      'companyid': replacementUserModel.companyId,
     });
     if (response.statusCode != 200) {
       print(response.reasonPhrase);
@@ -276,6 +279,26 @@ class AllApi {
     );
     if (response.statusCode != 200) {
       print('postEnquiry failed. Reason: ' + response.reasonPhrase);
+    }
+  }
+
+  Future<List<BenchListModel>> getBenchListRequests({
+    String verify,
+    String companyId,
+    String empId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetBenchListRequests?verify=$verify&companyId=$companyId&empId=$empId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (response.statusCode == 200 && body != '[]') {
+      List requestList = body;
+      Iterable<BenchListModel> request = requestList.map((e) {
+        return BenchListModel().fromJson(e);
+      });
+      return request.toList();
+    } else {
+      return null;
     }
   }
 }

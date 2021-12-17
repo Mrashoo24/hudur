@@ -106,7 +106,6 @@ class _LeavesState extends State<Leaves> {
       value: value,
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white),
       ),
       subtitle: Text(
         subtitle,
@@ -122,50 +121,70 @@ class _LeavesState extends State<Leaves> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<LeaveRequestsModel>>(
-      future: AllApi().getLeaveRequests(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: Image.asset('assets/Images/loading.gif'),
-          );
-        } else {
-          var leaveRequests = snapshot.data;
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
-                  'Select reason for your leave request: ',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: const AssetImage('assets/Images/background_image.jpg'),
+          fit: BoxFit.fill,
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.6), BlendMode.dstATop),
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Leaves'),
+          backgroundColor: hippieBlue,
+        ),
+        body: SingleChildScrollView(
+          child: FutureBuilder<List<LeaveRequestsModel>>(
+            future: AllApi().getLeaveRequests(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Image.asset('assets/Images/loading.gif'),
+                );
+              } else {
+                var leaveRequests = snapshot.data;
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Select reason for your leave request: ',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: leaveRequests.length,
+                          itemBuilder: (context, index) {
+                            return _radioListTile(
+                              title: leaveRequests[index].title,
+                              subtitle: leaveRequests[index].subtitle,
+                              value: index + 1,
+                              details: leaveRequests[index].details,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                  itemCount: leaveRequests.length,
-                  itemBuilder: (context, index) {
-                    return _radioListTile(
-                      title: leaveRequests[index].title,
-                      subtitle: leaveRequests[index].subtitle,
-                      value: index + 1,
-                      details: leaveRequests[index].details,
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        }
-      },
+                );
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }

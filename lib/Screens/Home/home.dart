@@ -828,7 +828,98 @@ class _HomeState extends State<Home> {
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Card(
+                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                padding: const EdgeInsets.all(22.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.airplane_ticket,
+                                      // size: 70,
+                                      color: hippieBlue,
+                                    ),
+                                    Text(
+                                      'LEAVES',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: hippieBlue,
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Get.to(
+                                () => Leaves(
+                                  userModel: widget.userModel,
+                                ),
+                              );
+                            },
+                          ),
+                          InkWell(
+                            child: Card(
+                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                padding: const EdgeInsets.all(22.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.book,
+                                      // size: 70,
+                                      color: hippieBlue,
+                                    ),
+                                    Text(
+                                      'COURSES',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: hippieBlue,
+                                        fontSize: 12,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            onTap: () {
+                              Get.to(
+                                () => const Courses(),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -836,70 +927,8 @@ class _HomeState extends State<Home> {
           );
   }
 
-  Widget _bottomNavigationBar() {
-    return BottomNavigationBar(
-      showUnselectedLabels: true,
-      currentIndex: _selectedIndex,
-      selectedItemColor: Colors.white,
-      onTap: (value) {
-        _onItemTapped(value);
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Home',
-          backgroundColor: Color(0xFF6392B0),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.book_rounded,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Courses',
-          backgroundColor: Color(0xFF6392B0),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.question_answer_rounded,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Request',
-          backgroundColor: Color(0xFF6392B0),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.chat_bubble_outline_rounded,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Chat',
-          backgroundColor: Color(0xFF6392B0),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.settings,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Settings',
-          backgroundColor: Color(0xFF6392B0),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOptions = <Widget>[
-      _home(),
-      const Courses(),
-      Leaves(
-        userModel: widget.userModel,
-      ),
-      const Text('Chat'),
-      const Text('Settings'),
-    ];
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -922,10 +951,9 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Container(
-            child: _widgetOptions.elementAt(_selectedIndex),
+            child: _home(),
           ),
         ),
-        bottomNavigationBar: _bottomNavigationBar(),
       ),
     );
   }

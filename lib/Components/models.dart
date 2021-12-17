@@ -190,3 +190,97 @@ class CheckInHistoryModel {
     return data;
   }
 }
+
+class BenchListModel {
+  String userEmpId,
+      userName,
+      userPhone,
+      replacementEmpId,
+      replacementName,
+      replacementPhone,
+      replacementAddress,
+      replacementAllotedOffice,
+      replacementDesignation,
+      replacementEmail,
+      replacementManager,
+      replacementRefId,
+      jobDescription,
+      replacementType,
+      from,
+      to,
+      verify,
+      companyId,
+      benchId;
+
+  BenchListModel({
+    this.benchId,
+    this.from,
+    this.jobDescription,
+    this.replacementAddress,
+    this.replacementAllotedOffice,
+    this.replacementDesignation,
+    this.replacementEmail,
+    this.replacementEmpId,
+    this.replacementManager,
+    this.replacementName,
+    this.replacementPhone,
+    this.replacementRefId,
+    this.replacementType,
+    this.to,
+    this.userEmpId,
+    this.userName,
+    this.userPhone,
+    this.verify,
+    this.companyId,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return BenchListModel(
+      replacementAddress: json['replacement_address'],
+      replacementAllotedOffice: json['replacement_allotedOffice'],
+      replacementDesignation: json['replacement_designation'],
+      benchId: json['benchid'],
+      replacementManager: json['replacement_manager'],
+      replacementEmail: json['replacement_email'],
+      userName: json['user_name'],
+      from: json['from'],
+      jobDescription: json['job_description'],
+      replacementEmpId: json['replacement_empid'],
+      userEmpId: json['user_empid'],
+      replacementRefId: json['replacement_refId'],
+      replacementName: json['replacement_name'],
+      replacementPhone: json['replacement_phone'],
+      replacementType: json['replacement_type'],
+      to: json['to'],
+      userPhone: json['user_phone'],
+      verify: json['verify'],
+      companyId: json['companyid'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['replacement_address'] = replacementAddress;
+    data['replacement_allotedOffice'] = replacementAllotedOffice;
+    data['replacement_designation'] = replacementDesignation;
+    data['benchid'] = benchId;
+    data['replacement_manager'] = replacementManager;
+    data['replacement_email'] = replacementEmail;
+    data['user_name'] = userName;
+    data['from'] = from;
+    data['job_description'] = jobDescription;
+    data['replacement_empid'] = replacementEmpId;
+    data['user_empid'] = userEmpId;
+    data['replacement_refId'] = replacementRefId;
+    data['replacement_name'] = replacementName;
+    data['replacement_phone'] = replacementPhone;
+    data['replacement_type'] = replacementType;
+    data['to'] = to;
+    data['user_phone'] = userPhone;
+    data['verify'] = verify;
+    data['companyid'] = companyId;
+    return data;
+  }
+}
