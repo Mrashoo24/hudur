@@ -10,7 +10,6 @@ import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Announcement/announcement.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
-import 'package:hudur/Screens/Enquiry/enquiry.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
 import 'package:intl/intl.dart';
@@ -779,14 +778,7 @@ class _HomeState extends State<Home> {
           label: 'Services',
           backgroundColor: Color(0xFF6392B0),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.import_export_outlined,
-            color: Color.fromRGBO(247, 227, 112, 1.0),
-          ),
-          label: 'Enquiry',
-          backgroundColor: Color(0xFF6392B0),
-        ),
+        
         /*BottomNavigationBarItem(
           icon: Icon(
             Icons.question_answer_rounded,
@@ -829,7 +821,6 @@ class _HomeState extends State<Home> {
       _home(),
       //const Courses(),
       const Services(),
-      const Enquiry(),
       //const Leaves(),
       //const Text('Chat'),
       const Announcement(),
