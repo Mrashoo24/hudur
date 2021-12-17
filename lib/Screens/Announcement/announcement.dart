@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Components/api.dart';
 
+
 class Announcement extends StatefulWidget {
   const Announcement({ Key key }) : super(key: key);
 
@@ -11,6 +12,9 @@ class Announcement extends StatefulWidget {
 }
 
 class _AnnouncementState extends State<Announcement> {
+  
+  
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -28,6 +32,7 @@ class _AnnouncementState extends State<Announcement> {
             // ignore: unused_local_variable
             var announceList = snapshot.data;
             return ListView.builder(
+              
               itemCount: announceList.length,
               itemBuilder: (ctx,  index) {
                 return Card(
@@ -36,6 +41,7 @@ class _AnnouncementState extends State<Announcement> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(announceList[index])));
                     },
                     child: ListTile(
+                      tileColor: hippieBlue,
                       contentPadding: const EdgeInsets.all(12.0),
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(
@@ -45,14 +51,14 @@ class _AnnouncementState extends State<Announcement> {
                       title: 
                         Text(announceList[index].name,
                           style:  TextStyle(
-                            color: hippieBlue,
+                            color: Color.fromRGBO(247, 227, 112, 1.0),
                             fontSize: 20, fontWeight: FontWeight.bold),    
                       ),
                       subtitle: 
                       Text(
                         announceList[index].text,
                         style: const TextStyle(
-                          color: Colors.grey
+                          color: Colors.white
                         ),           
                       ),
                     ),
@@ -77,8 +83,9 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(announceList.name),
-        
+        title: Text(announceList.name,
+        style: TextStyle(color: Color.fromRGBO(247, 227, 112, 1.0)),),
+        backgroundColor: hippieBlue,
       ),
     );
   }
