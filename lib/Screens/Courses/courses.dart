@@ -4,7 +4,8 @@ import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 
 class Courses extends StatefulWidget {
-  const Courses({Key key}) : super(key: key);
+  final UserModel userModel;
+  const Courses({Key key, this.userModel}) : super(key: key);
 
   @override
   _CoursesState createState() => _CoursesState();
@@ -33,7 +34,7 @@ class _CoursesState extends State<Courses> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: FutureBuilder<List<CoursesModel>>(
-              future: AllApi().getCourses(),
+              future: AllApi().getCourses(widget.userModel.companyId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(

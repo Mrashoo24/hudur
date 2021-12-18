@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/AdministrativeLeaves/administrative_leaves.dart';
 import 'package:hudur/Screens/BenchList/benchlist_page.dart';
 import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
 import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
@@ -74,6 +75,20 @@ class HomeDrawer extends StatelessWidget {
                     onTap: () {
                       Get.to(
                         Enquiry(
+                          userModel: userModel,
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.admin_panel_settings_rounded,
+                      color: portica,
+                    ),
+                    title: const Text('Administrative Leaves'),
+                    onTap: () {
+                      Get.to(
+                        AdministrativeLeaves(
                           userModel: userModel,
                         ),
                       );

@@ -913,7 +913,9 @@ class _HomeState extends State<Home> {
                             ),
                             onTap: () {
                               Get.to(
-                                () => const Courses(),
+                                () => Courses(
+                                  userModel: widget.userModel,
+                                ),
                               );
                             },
                           ),

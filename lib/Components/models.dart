@@ -284,3 +284,38 @@ class BenchListModel {
     return data;
   }
 }
+
+class AdminLeavesModel {
+  String refId, companyId, employeeName, days, verify;
+
+  AdminLeavesModel({
+    this.companyId,
+    this.days,
+    this.employeeName,
+    this.refId,
+    this.verify,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return AdminLeavesModel(
+      companyId: json['companyid'],
+      days: json['days'],
+      employeeName: json['employee_name'],
+      refId: json['refid'],
+      verify: json['verify'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['companyid'] = companyId;
+    data['days'] = days;
+    data['refid'] = refId;
+    data['verify'] = verify;
+    data['employee_name'] = employeeName;
+
+    return data;
+  }
+}

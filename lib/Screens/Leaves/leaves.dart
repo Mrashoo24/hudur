@@ -85,6 +85,7 @@ class _LeavesState extends State<Leaves> {
                           DateFormat('dd-MM-yyyy').format(DateTime.now()),
                           title,
                           textFieldValues,
+                          widget.userModel.companyId,
                         );
                         Get.back();
                       }
@@ -138,7 +139,7 @@ class _LeavesState extends State<Leaves> {
         ),
         body: SingleChildScrollView(
           child: FutureBuilder<List<LeaveRequestsModel>>(
-            future: AllApi().getLeaveRequests(),
+            future: AllApi().getLeaveRequests(widget.userModel.companyId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(

@@ -116,9 +116,9 @@ class AllApi {
     }
   }
 
-  Future<List<CoursesModel>> getCourses() async {
+  Future<List<CoursesModel>> getCourses(String companyId) async {
     var getCoursesUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCourses");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCourses?companyId=$companyId");
 
     var response = await http.get(getCoursesUrl);
 
@@ -133,9 +133,9 @@ class AllApi {
     }
   }
 
-  Future<List<LeaveRequestsModel>> getLeaveRequests() async {
+  Future<List<LeaveRequestsModel>> getLeaveRequests(String companyId) async {
     var getLeaveRequestsUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetLeaveRequests");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetLeaveRequests?companyId=$companyId");
 
     var response = await http.get(getLeaveRequestsUrl);
 
@@ -150,8 +150,8 @@ class AllApi {
     }
   }
 
-  Future<void> postLeaveRequest(
-      String phoneNumber, String date, String title, List details) async {
+  Future<void> postLeaveRequest(String phoneNumber, String date, String title,
+      List details, String companyId) async {
     var postLeaveRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest?refid=$phoneNumber&date=$date");
 
@@ -160,6 +160,8 @@ class AllApi {
       body: {
         'title': title,
         'details': details.toString(),
+        'verify': 0,
+        'companyid': companyId,
       },
     );
     if (response.statusCode == 200) {
@@ -297,6 +299,51 @@ class AllApi {
         return BenchListModel().fromJson(e);
       });
       return request.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<dynamic> postAdminLeave({
+    @required String days,
+    @required String refId,
+    @required String employeeName,
+    @required String companyId,
+    @required String verify,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAdminLeave");
+    var response = await http.post(url, body: {
+      'days': days,
+      'refid': refId,
+      'employee_name': employeeName,
+      'companyid': companyId,
+      'verify': verify,
+    });
+    var body = json.decode(response.body);
+    if (response.statusCode == 200 && body == 'success') {
+      return 'success';
+    } else {
+      print('postAdminLeave failed. Reason: ' + response.reasonPhrase);
+      return 'failed';
+    }
+  }
+
+  Future<List<AdminLeavesModel>> getAdminLeaves({
+    @required String verify,
+    @required String companyId,
+    @required String refId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetAdminLeaves?verify=$verify&companyId=$companyId&refId=$refId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List responseList = body;
+      Iterable<AdminLeavesModel> adminLeaves = responseList.map((e) {
+        return AdminLeavesModel().fromJson(e);
+      });
+      return adminLeaves.toList();
     } else {
       return null;
     }
