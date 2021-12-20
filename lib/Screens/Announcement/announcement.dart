@@ -21,7 +21,7 @@ class _AnnouncementState extends State<Announcement> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: FutureBuilder(
-        future: getAnnounce(),
+        future: AllApi().getAnnounce(),
         builder: (context, snapshot){
           if(!snapshot.hasData){
             return const Center(

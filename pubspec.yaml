@@ -43,7 +43,8 @@ dependencies:
   shared_preferences: ^2.0.6
   location: ^4.2.0
   google_fonts: ^2.1.0
-
+  flutter_email_sender: ^5.0.2
+  image_picker: ^0.8.4+4 
 
 dev_dependencies:
   flutter_test:
@@ -77,7 +78,6 @@ flutter:
   assets:
     - assets/Images/
     - assets/Images/
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

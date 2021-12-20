@@ -4,14 +4,14 @@ import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 
 class Services extends StatefulWidget {
-  const Services({ Key key }) : super(key: key);
+  final ServiceModel serviceModel;
+  const Services({ Key key, this.serviceModel }) : super(key: key);
 
   @override
   _ServicesState createState() => _ServicesState();
 }
 
 class _ServicesState extends State<Services> {
-  
   String valueChoose;
   List listItem = [
     "Certificate with Detailed Salary",
@@ -98,7 +98,14 @@ class _ServicesState extends State<Services> {
               final String certid = certController.text;
               final String date = dateController.text;
 
-              await api.postServices(refid: refid, certid: certid, date: date);
+              await api.postServices(
+                refid: refid, 
+                certid: certid, 
+                date: date, 
+                verify: '0', 
+                companyId: widget.serviceModel.companyId,
+                );
+              
               
 
               },

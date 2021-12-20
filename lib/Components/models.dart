@@ -138,11 +138,15 @@ class ServiceModel {
   String refid;
   String certid;
   String date;
+  String verify;
+  String companyId;
 
   ServiceModel({
     this.refid,
     this.certid,
     this.date,
+    this.verify,
+    this.companyId,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -150,6 +154,9 @@ class ServiceModel {
       refid: json['refid'],
       certid: json['certid'],
       date: json['date'],
+      verify: json['verify'],
+      companyId: json['companyId']
+
     );
   }
 
@@ -159,6 +166,8 @@ class ServiceModel {
     data['refid'] = refid;
     data['certid'] = certid;
     data['date'] = date;
+    data['verify'] = verify;
+    data['companyId'] = companyId;
 
     return data;
   }

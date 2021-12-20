@@ -7,7 +7,7 @@ import 'dart:async';
 class AllApi {
 
   Future<void> postServices(
-      {String refid , String certid, String date}) async {
+      {String refid , String certid, String date, String verify, String companyId}) async {
     var postServiceUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
 
@@ -15,6 +15,8 @@ class AllApi {
       'refid': refid,
       'certid': certid,
       'date': date,
+      'verify' : verify,
+      'companyId' : companyId,
     });
     if (response.statusCode == 200) {
       return;
@@ -195,25 +197,28 @@ class AllApi {
       return null;
     }
   }
-}
+
 Future<List<AnnounceModel>> getAnnounce() async{
   var getAnnounceUrl = Uri.parse(
     "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetAnnouncements");
 
   var response = await http.get(getAnnounceUrl);
+  
 
   if (response.statusCode == 200) {
     List announceList = json.decode(response.body);
+    
     Iterable<AnnounceModel> announce = announceList.map((e) {
       return AnnounceModel().fromJson(e);
+
     });
     return announce.toList();
+    
   }
   else {
     return null;
   }
-
-  
+}
 }
 
 
