@@ -78,6 +78,16 @@ class _HomeState extends State<Home> {
     return _locationData;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    getUserLocation().then((value) {
+      setState(() {
+        _locationData = value;
+      });
+    });
+  }
+
   Future _imagePicker() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -513,17 +523,15 @@ class _HomeState extends State<Home> {
                                                     setState1(() {
                                                       _locationLoading = true;
                                                     });
-                                                    var latAndLong =
-                                                        await getUserLocation();
                                                     var result = await AllApi()
                                                         .getVicinity(
                                                       phoneNumber: widget
                                                           .userModel
                                                           .phoneNumber,
-                                                      latitude:
-                                                          latAndLong.latitude,
-                                                      longitude:
-                                                          latAndLong.longitude,
+                                                      latitude: _locationData
+                                                          .latitude,
+                                                      longitude: _locationData
+                                                          .longitude,
                                                     );
 
                                                     setState1(() {
@@ -594,10 +602,10 @@ class _HomeState extends State<Home> {
                                                                           phoneNumber: widget
                                                                               .userModel
                                                                               .phoneNumber,
-                                                                          lat: latAndLong
+                                                                          lat: _locationData
                                                                               .latitude
                                                                               .toString(),
-                                                                          lon: latAndLong
+                                                                          lon: _locationData
                                                                               .longitude
                                                                               .toString(),
                                                                           name: widget
@@ -649,10 +657,10 @@ class _HomeState extends State<Home> {
                                                                           .phoneNumber,
                                                                       date:
                                                                           _inDate,
-                                                                      lat: latAndLong
+                                                                      lat: _locationData
                                                                           .latitude
                                                                           .toString(),
-                                                                      lon: latAndLong
+                                                                      lon: _locationData
                                                                           .longitude
                                                                           .toString(),
                                                                     );
