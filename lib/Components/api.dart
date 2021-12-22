@@ -348,4 +348,32 @@ class AllApi {
       return null;
     }
   }
+
+  Future<void> postAttendanceReport({
+    @required String empId,
+    @required String companyId,
+    @required String status,
+    @required String checkOutDifference,
+    @required String checkInDelayInHours,
+    @required String checkInDelayInMinutes,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAttendanceReport");
+    var response = await http.post(
+      url,
+      body: {
+        'empid': empId,
+        'companyid': companyId,
+        'status': status,
+        'check_out_difference': checkOutDifference,
+        'check_in_delay_in_hours': checkInDelayInHours,
+        'check_in_delay_in_minutes': checkInDelayInMinutes,
+        'timestamp': DateTime.now().toString(),
+      },
+    );
+    var body = json.decode(response.body);
+    if (body == "null" || response.statusCode != 200) {
+      print('postAttendanceReport failed. Reason: ' + response.reasonPhrase);
+    }
+  }
 }

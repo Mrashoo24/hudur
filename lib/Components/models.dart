@@ -11,7 +11,9 @@ class UserModel {
       manager,
       notificationToken,
       companyId,
-      pass;
+      pass,
+      hoursOfShift,
+      reportingTime;
   Map<String, dynamic> location;
   bool allowCheckin;
 
@@ -31,6 +33,8 @@ class UserModel {
     this.location,
     this.allowCheckin,
     this.companyId,
+    this.hoursOfShift,
+    this.reportingTime,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -50,6 +54,8 @@ class UserModel {
       allowCheckin: json['allow_checkin'],
       location: json['location'],
       companyId: json['companyid'],
+      hoursOfShift: json['hours_of_shift'],
+      reportingTime: json['reporting_time'],
     );
   }
 
@@ -72,6 +78,8 @@ class UserModel {
     data['allow_checkin'] = allowCheckin;
     data['location'] = location;
     data['companyid'] = companyId;
+    data['hours_of_shift'] = hoursOfShift;
+    data['reporting_time'] = reportingTime;
 
     return data;
   }
@@ -286,7 +294,7 @@ class BenchListModel {
 }
 
 class AdminLeavesModel {
-  String refId, companyId, employeeName, days, verify;
+  String refId, companyId, employeeName, days, verify, empId;
 
   AdminLeavesModel({
     this.companyId,
@@ -294,16 +302,17 @@ class AdminLeavesModel {
     this.employeeName,
     this.refId,
     this.verify,
+    this.empId,
   });
 
   fromJson(Map<String, dynamic> json) {
     return AdminLeavesModel(
-      companyId: json['companyid'],
-      days: json['days'],
-      employeeName: json['employee_name'],
-      refId: json['refid'],
-      verify: json['verify'],
-    );
+        companyId: json['companyid'],
+        days: json['days'],
+        employeeName: json['name'],
+        refId: json['refid'],
+        verify: json['verify'],
+        empId: json['empid']);
   }
 
   Map<String, dynamic> toJson() {
@@ -315,6 +324,7 @@ class AdminLeavesModel {
     data['refid'] = refId;
     data['verify'] = verify;
     data['employee_name'] = employeeName;
+    data['empid'] = empId;
 
     return data;
   }

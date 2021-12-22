@@ -193,7 +193,7 @@ class _AdministrativeLeavesState extends State<AdministrativeLeaves> {
                               ),
                             ),
                             Text(
-                              'Accepted',
+                              'Alloted',
                               style: TextStyle(
                                 fontSize: 18,
                               ),
@@ -225,31 +225,29 @@ class _AdministrativeLeavesState extends State<AdministrativeLeaves> {
           ),
         ),
       ),
-      child: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('Administrative Leave'),
-            backgroundColor: hippieBlue,
-            bottom: const TabBar(
-              tabs: [
-                Text(
-                  'Request',
-                ),
-                Text(
-                  'Accepted',
-                ),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              _request(),
-              _accepted(),
-            ],
-          ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Administrative Leave'),
+          backgroundColor: hippieBlue,
+          // bottom: const TabBar(
+          //   tabs: [
+          //     Text(
+          //       'Request',
+          //     ),
+          //     Text(
+          //       'Accepted',
+          //     ),
+          //   ],
+          // ),
         ),
+        // body: TabBarView(
+        //   children: [
+        //     _request(),
+        //     _accepted(),
+        //   ],
+        // ),
+        body: _accepted(),
       ),
     );
   }

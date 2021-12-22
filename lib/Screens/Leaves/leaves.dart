@@ -123,12 +123,14 @@ class _LeavesState extends State<Leaves> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
-          image: const AssetImage('assets/Images/background_image.jpg'),
+          image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.6), BlendMode.dstATop),
+          // colorFilter: ColorFilter.mode(
+          //   Colors.white.withOpacity(0.6),
+          //   BlendMode.dstATop,
+          // ),
         ),
       ),
       child: Scaffold(

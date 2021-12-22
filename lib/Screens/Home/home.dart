@@ -130,7 +130,7 @@ class _HomeState extends State<Home> {
             endTime = checkOutTime == "-----"
                 ? DateTime.parse(date + ' ' + checkInTime)
                         .millisecondsSinceEpoch +
-                    1000 * 25200
+                    (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
                 : 0;
           }
           _controller = CountdownTimerController(endTime: endTime);
@@ -266,9 +266,9 @@ class _HomeState extends State<Home> {
                               InkWell(
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height * 0.13,
+                                      MediaQuery.of(context).size.height * 0.1,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.13,
+                                      MediaQuery.of(context).size.width * 0.2,
                                   child: image != null
                                       ? Image.file(image)
                                       : Image.asset(
@@ -437,7 +437,7 @@ class _HomeState extends State<Home> {
                         children: [
                           InkWell(
                             child: Card(
-                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              color: hippieBlue,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(12.0))),
@@ -452,13 +452,13 @@ class _HomeState extends State<Home> {
                                     Icon(
                                       Icons.login,
                                       // size: 70,
-                                      color: hippieBlue,
+                                      color: portica,
                                     ),
                                     Text(
                                       'CHECK IN',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: hippieBlue,
+                                        color: portica,
                                         fontSize: 12,
                                       ),
                                     )
@@ -694,7 +694,7 @@ class _HomeState extends State<Home> {
                           ),
                           InkWell(
                             child: Card(
-                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              color: prelude,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(12.0),
@@ -707,16 +707,16 @@ class _HomeState extends State<Home> {
                                 padding: const EdgeInsets.all(22.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.logout,
                                       // size: 70,
-                                      color: hippieBlue,
+                                      color: Colors.white,
                                     ),
                                     Text(
                                       'CHECK OUT',
                                       style: TextStyle(
-                                        color: hippieBlue,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
                                       ),
@@ -801,6 +801,46 @@ class _HomeState extends State<Home> {
                                                 phoneNumber: widget
                                                     .userModel.phoneNumber,
                                               );
+                                              var time1 = DateFormat('hh:mm a')
+                                                  .parse(checkin);
+                                              var time2 = DateFormat('hh:mm a')
+                                                  .parse(widget
+                                                      .userModel.reportingTime);
+                                              var delayInHours = time2
+                                                  .difference(time1)
+                                                  .inHours;
+                                              var delayInMinutes = time2
+                                                  .difference(time1)
+                                                  .inMinutes;
+                                              var status = '';
+                                              if (delayInHours < 0 ||
+                                                  delayInMinutes < 0) {
+                                                status = 'late';
+                                              } else if (delayInHours > 0 ||
+                                                  delayInMinutes > 0) {
+                                                status = 'early';
+                                              } else {
+                                                status = 'on-time';
+                                              }
+                                              await AllApi()
+                                                  .postAttendanceReport(
+                                                checkInDelayInHours:
+                                                    delayInHours.toString(),
+                                                checkInDelayInMinutes:
+                                                    delayInMinutes.toString(),
+                                                checkOutDifference:
+                                                    differenceFinal.toString(),
+                                                companyId:
+                                                    widget.userModel.companyId,
+                                                empId: widget.userModel.empId,
+                                                status: status,
+                                              );
+                                              print('time1: $time1');
+                                              print('time2: $time2');
+                                              print(
+                                                  'delayInHours: $delayInHours');
+                                              print(
+                                                  'delayInMinutes: $delayInMinutes');
                                               setState(
                                                 () {
                                                   _isCheckedOut = true;
@@ -839,7 +879,7 @@ class _HomeState extends State<Home> {
                         children: [
                           InkWell(
                             child: Card(
-                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              color: summerGreen,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(12.0),
@@ -856,13 +896,13 @@ class _HomeState extends State<Home> {
                                     Icon(
                                       Icons.airplane_ticket,
                                       // size: 70,
-                                      color: hippieBlue,
+                                      color: portica,
                                     ),
                                     Text(
                                       'LEAVES',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: hippieBlue,
+                                        color: portica,
                                         fontSize: 12,
                                       ),
                                     )
@@ -880,7 +920,7 @@ class _HomeState extends State<Home> {
                           ),
                           InkWell(
                             child: Card(
-                              color: const Color.fromRGBO(247, 227, 112, 1.0),
+                              color: mandysPink,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(12.0),
@@ -932,12 +972,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
-          image: const AssetImage('assets/Images/background_image.jpg'),
+          image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.6), BlendMode.dstATop),
         ),
       ),
       child: Scaffold(

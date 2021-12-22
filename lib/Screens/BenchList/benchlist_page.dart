@@ -400,29 +400,42 @@ class _BenchListState extends State<BenchList> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: hippieBlue,
-          title: const Text('Bench List'),
-          bottom: TabBar(
-            indicatorColor: portica,
-            tabs: const [
-              Tab(
-                text: 'Request From',
-              ),
-              Tab(
-                text: 'Accepted Requests',
-              ),
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/Images/background_image.jpg'),
+          fit: BoxFit.fill,
+          // colorFilter: ColorFilter.mode(
+          //   Colors.white.withOpacity(0.6),
+          //   BlendMode.dstATop,
+          // ),
+        ),
+      ),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: hippieBlue,
+            title: const Text('Bench List'),
+            bottom: TabBar(
+              indicatorColor: portica,
+              tabs: const [
+                Tab(
+                  text: 'Request From',
+                ),
+                Tab(
+                  text: 'Accepted Requests',
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              _requestForm(),
+              _acceptedRequests(),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: [
-            _requestForm(),
-            _acceptedRequests(),
-          ],
         ),
       ),
     );
