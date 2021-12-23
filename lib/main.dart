@@ -43,8 +43,6 @@ class MyApp extends StatelessWidget {
             var users =
                 usersString == null ? "" : UserModel().fromJson(converted1);
 
-            print("converted = $users");
-
             var loggein = pref.getBool("loggedin");
 
             return loggein == true

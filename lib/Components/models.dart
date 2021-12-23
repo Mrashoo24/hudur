@@ -187,7 +187,7 @@ class CheckInHistoryModel {
   }
 
   Map<String, dynamic> toJson() {
-    // ignore: unnecessary_new
+    // ignore: unnecessary_new, prefer_collection_literals
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     data['checkin'] = checkInTime;
@@ -316,7 +316,7 @@ class AdminLeavesModel {
   }
 
   Map<String, dynamic> toJson() {
-    // ignore: unnecessary_new
+    // ignore: unnecessary_new, prefer_collection_literals
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     data['companyid'] = companyId;

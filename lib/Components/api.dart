@@ -24,11 +24,13 @@ class AllApi {
     }
   }
 
-  Future<void> postCheckIn(
-      {String checkInTime,
-      String checkOutTime,
-      String phoneNumber,
-      String date}) async {
+  Future<void> postCheckIn({
+    @required String checkInTime,
+    @required String checkOutTime,
+    @required String phoneNumber,
+    @required String date,
+    @required String companyId,
+  }) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
 
@@ -37,6 +39,7 @@ class AllApi {
       'checkout': checkOutTime,
       'refid': phoneNumber,
       'date': date,
+      'companyid': companyId,
     });
     if (response.statusCode == 200) {
       return;
@@ -63,21 +66,22 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
 
     var response = await http.get(getVicinityUrl);
-    print("vicinity data ${response.body}");
+
     if (response.statusCode == 200) {
-      print("vicinity data ${response.body}");
       return json.decode(response.body);
     } else {
       return;
     }
   }
 
-  Future<void> postCheckInRequest(
-      {String phoneNumber,
-      String date,
-      String lat,
-      String lon,
-      String name}) async {
+  Future<void> postCheckInRequest({
+    @required String phoneNumber,
+    @required String date,
+    @required String lat,
+    @required String lon,
+    @required String name,
+    @required String companyId,
+  }) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
 
@@ -87,7 +91,8 @@ class AllApi {
       'status': 'pending',
       'lat': lat,
       'lon': lon,
-      'name': name
+      'name': name,
+      'companyid': companyId,
     });
     if (response.statusCode == 200) {
       return;
@@ -97,8 +102,13 @@ class AllApi {
     }
   }
 
-  Future<void> postOuterGeoList(
-      {String phoneNumber, String date, String lat, String lon}) async {
+  Future<void> postOuterGeoList({
+    @required String phoneNumber,
+    @required String date,
+    @required String lat,
+    @required String lon,
+    @required String companyId,
+  }) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostOuterGeoList");
 
@@ -107,6 +117,7 @@ class AllApi {
       'date': date,
       'lat': lat,
       'lon': lon,
+      'companyid': companyId,
     });
     if (response.statusCode == 200) {
       return;
@@ -217,7 +228,6 @@ class AllApi {
       'companyid': replacementUserModel.companyId,
     });
     if (response.statusCode != 200) {
-      print(response.reasonPhrase);
       return 'Request failed';
     } else {
       return 'Success';
@@ -253,7 +263,6 @@ class AllApi {
       });
       return checkInHistory.toList();
     }
-    print('getCheckInHistory: Reason Phrase: ' + response.reasonPhrase);
     return null;
   }
 
@@ -280,7 +289,7 @@ class AllApi {
       },
     );
     if (response.statusCode != 200) {
-      print('postEnquiry failed. Reason: ' + response.reasonPhrase);
+      return;
     }
   }
 
@@ -324,7 +333,6 @@ class AllApi {
     if (response.statusCode == 200 && body == 'success') {
       return 'success';
     } else {
-      print('postAdminLeave failed. Reason: ' + response.reasonPhrase);
       return 'failed';
     }
   }
@@ -373,7 +381,7 @@ class AllApi {
     );
     var body = json.decode(response.body);
     if (body == "null" || response.statusCode != 200) {
-      print('postAttendanceReport failed. Reason: ' + response.reasonPhrase);
+      return;
     }
   }
 }

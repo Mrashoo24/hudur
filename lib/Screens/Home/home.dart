@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,13 +25,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _selectedIndex = 0;
-  var _isCheckedIn = false;
-  var _isCheckedOut = false;
   var _inTime = '';
   var _outTime = '';
   var _inDate = '';
   var _outDate = '';
+  var _vicinityLoading = false;
 
   File image;
 
@@ -62,9 +58,12 @@ class _HomeState extends State<Home> {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
             content: Text(
-                'Location permission denied. Please allow it to check-in.')));
+                'Location permission denied. Please allow it to check-in.'),
+          ),
+        );
         return null;
       }
     }
@@ -74,10 +73,14 @@ class _HomeState extends State<Home> {
     return _locationData;
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
+  @override
+  void initState() {
+    getUserLocation().then((value) {
+      setState(() {
+        _locationData = value;
+      });
     });
+    super.initState();
   }
 
   Future _imagePicker() async {
@@ -97,8 +100,6 @@ class _HomeState extends State<Home> {
   }
 
   Widget _countDownTimer() {
-    // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 25200;
-
     return FutureBuilder(
       future: AllApi().getCheckIn(
         phoneNumber: widget.userModel.phoneNumber,
@@ -170,17 +171,9 @@ class _HomeState extends State<Home> {
               }
 
               var report = snapshot.requireData;
-              print("report $report");
               var checkin = report == "No Data" ? "-----" : report["checkin"];
               var checkout = report == "No Data" ? "-----" : report["checkout"];
-              //  var date = report == "No Data" ? "-----": report["date"];
-              // var gotCheckin = DateFormat('hh:mm a').format(DateFormat('hh:mm a').parse(checkin));
-              // var gotCheckout = DateFormat('hh:mm a').format(DateFormat('hh:mm a').parse(checkout));
-              // if (checkin != "-----") {
-              //   _isCheckedIn = true;
-              // } else {
-              //   _isCheckedIn = false;
-              // }
+
               var start = report == "No Data"
                   ? DateFormat('hh:mm a').parse("00:00 AM")
                   : DateFormat('hh:mm a').parse(checkin);
@@ -195,9 +188,6 @@ class _HomeState extends State<Home> {
               var differenceFinal = ((difference.inSeconds / 3600) - 7.0)
                   .toDouble()
                   .toPrecision(2);
-
-              print(
-                  "checkout  ${(difference.inSeconds / 3600).toDouble().toPrecision(2)}");
 
               return Container(
                 padding: const EdgeInsets.all(8.0),
@@ -278,12 +268,14 @@ class _HomeState extends State<Home> {
                                 ),
                                 onTap: () {
                                   showDialog(
+                                    barrierDismissible: false,
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
                                         title: const Text('Change Logo'),
                                         content: const Text(
-                                            'You can change the logo to any image of your choice.'),
+                                          'You can change the logo to any image of your choice.',
+                                        ),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -439,8 +431,10 @@ class _HomeState extends State<Home> {
                             child: Card(
                               color: hippieBlue,
                               shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12.0))),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                              ),
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 height:
@@ -469,6 +463,7 @@ class _HomeState extends State<Home> {
                             onTap: () {
                               if (checkin != "-----" && checkout == "-----") {
                                 showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (ctx) {
                                     return AlertDialog(
@@ -490,202 +485,231 @@ class _HomeState extends State<Home> {
                                 );
                               } else {
                                 showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (ctx) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        'Confirm Check In',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: const Text(
-                                            'Check-In',
-                                          ),
-                                          onPressed: () async {
-                                            var latAndLong =
-                                                await getUserLocation();
-                                            var result =
-                                                await AllApi().getVicinity(
-                                              phoneNumber:
-                                                  widget.userModel.phoneNumber,
-                                              latitude: latAndLong.latitude,
-                                              longitude: latAndLong.longitude,
-                                            );
-                                            print(
-                                                'latitude: ${latAndLong.latitude}\nlongitude: ${latAndLong.longitude}');
-                                            if (result == true) {
-                                              _inTime = DateFormat('hh:mm a')
-                                                  .format(DateTime.now());
-                                              _inDate = DateFormat('dd-MM-yyyy')
-                                                  .format(DateTime.now());
-                                              Get.back();
-                                              setState(
-                                                () {
-                                                  loading = true;
-                                                },
-                                              );
-                                              await AllApi().postCheckIn(
-                                                checkInTime: _inTime,
-                                                checkOutTime: '-----',
-                                                date: _inDate,
-                                                phoneNumber: widget
-                                                    .userModel.phoneNumber,
-                                              );
+                                    return StatefulBuilder(
+                                      builder: (context, setStateDialog) =>
+                                          AlertDialog(
+                                        title: const Text(
+                                          'Confirm Check In',
+                                        ),
+                                        actions: [
+                                          _vicinityLoading
+                                              ? const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                              : TextButton(
+                                                  child: const Text(
+                                                    'Check-In',
+                                                  ),
+                                                  onPressed: () async {
+                                                    setStateDialog(() {
+                                                      _vicinityLoading = true;
+                                                    });
+                                                    var result = await AllApi()
+                                                        .getVicinity(
+                                                      phoneNumber: widget
+                                                          .userModel
+                                                          .phoneNumber,
+                                                      latitude: _locationData
+                                                          .latitude,
+                                                      longitude: _locationData
+                                                          .longitude,
+                                                    );
+                                                    setStateDialog(() {
+                                                      _vicinityLoading = false;
+                                                    });
+                                                    if (result == true) {
+                                                      _inTime = DateFormat(
+                                                              'hh:mm a')
+                                                          .format(
+                                                              DateTime.now());
+                                                      _inDate = DateFormat(
+                                                              'dd-MM-yyyy')
+                                                          .format(
+                                                              DateTime.now());
+                                                      Get.back();
+                                                      setState(
+                                                        () {
+                                                          loading = true;
+                                                        },
+                                                      );
+                                                      await AllApi()
+                                                          .postCheckIn(
+                                                        checkInTime: _inTime,
+                                                        checkOutTime: '-----',
+                                                        date: _inDate,
+                                                        phoneNumber: widget
+                                                            .userModel
+                                                            .phoneNumber,
+                                                        companyId: widget
+                                                            .userModel
+                                                            .companyId,
+                                                      );
 
-                                              setState(
-                                                () {
-                                                  _isCheckedIn = true;
-                                                  _isCheckedOut = false;
-                                                  setState(
-                                                    () {
-                                                      loading = false;
-                                                    },
-                                                  );
-                                                },
-                                              );
-                                            } else {
-                                              Get.back();
-                                              showDialog(
-                                                context: context,
-                                                builder: (ctx) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                      'Check-in not allowed.',
-                                                    ),
-                                                    content: const Text(
-                                                      'You aren\'t in the vicinity of 250 metres from your office.',
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () async {
-                                                          Get.back();
-                                                          await AllApi()
-                                                              .postCheckInRequest(
-                                                                  date: DateFormat('dd-MM-yyyy')
-                                                                      .format(
-                                                                    DateTime
-                                                                        .now(),
-                                                                  ),
-                                                                  phoneNumber: widget
-                                                                      .userModel
-                                                                      .phoneNumber,
-                                                                  lat: latAndLong
-                                                                      .latitude
-                                                                      .toString(),
-                                                                  lon: latAndLong
-                                                                      .longitude
-                                                                      .toString(),
-                                                                  name: widget
-                                                                      .userModel
-                                                                      .name);
-                                                          var allowCheckIn =
-                                                              await AllApi()
-                                                                  .getUser(widget
-                                                                      .userModel
-                                                                      .email);
-                                                          if (allowCheckIn
-                                                              .allowCheckin) {
-                                                            _inTime =
-                                                                DateFormat(
-                                                              'hh:mm a',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            );
-                                                            _inDate =
-                                                                DateFormat(
-                                                              'dd-MM-yyyy',
-                                                            ).format(
-                                                              DateTime.now(),
-                                                            );
-                                                            Get.back();
-                                                            setState(
-                                                              () {
-                                                                loading = true;
-                                                              },
-                                                            );
-                                                            await AllApi()
-                                                                .postCheckIn(
-                                                              checkInTime:
-                                                                  _inTime,
-                                                              checkOutTime:
-                                                                  '-----',
-                                                              date: _inDate,
-                                                              phoneNumber: widget
-                                                                  .userModel
-                                                                  .phoneNumber,
-                                                            );
-                                                            await AllApi()
-                                                                .postOuterGeoList(
-                                                              phoneNumber: widget
-                                                                  .userModel
-                                                                  .phoneNumber,
-                                                              date: _inDate,
-                                                              lat: latAndLong
-                                                                  .latitude
-                                                                  .toString(),
-                                                              lon: latAndLong
-                                                                  .longitude
-                                                                  .toString(),
-                                                            );
-                                                            Fluttertoast
-                                                                .showToast(
-                                                              msg: "Logged in",
-                                                            );
-
-                                                            setState(
-                                                              () {
-                                                                _isCheckedIn =
-                                                                    true;
-                                                                _isCheckedOut =
-                                                                    false;
-                                                                setState(
-                                                                  () {
-                                                                    loading =
-                                                                        false;
-                                                                  },
-                                                                );
-                                                              },
-                                                            );
-                                                          } else {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Text(
-                                                                  'You are not allowed to check-in.',
+                                                      setState(
+                                                        () {
+                                                          loading = false;
+                                                        },
+                                                      );
+                                                    } else {
+                                                      Get.back();
+                                                      showDialog(
+                                                        barrierDismissible:
+                                                            false,
+                                                        context: context,
+                                                        builder: (ctx) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                              'Check-in not allowed.',
+                                                            ),
+                                                            content: const Text(
+                                                              'You aren\'t in the vicinity of 250 metres from your office.',
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  Get.back();
+                                                                  await AllApi()
+                                                                      .postCheckInRequest(
+                                                                          companyId: widget
+                                                                              .userModel
+                                                                              .companyId,
+                                                                          date: DateFormat('dd-MM-yyyy')
+                                                                              .format(
+                                                                            DateTime.now(),
+                                                                          ),
+                                                                          phoneNumber: widget
+                                                                              .userModel
+                                                                              .phoneNumber,
+                                                                          lat: _locationData
+                                                                              .latitude
+                                                                              .toString(),
+                                                                          lon: _locationData
+                                                                              .longitude
+                                                                              .toString(),
+                                                                          name: widget
+                                                                              .userModel
+                                                                              .name);
+                                                                  var allowCheckIn =
+                                                                      await AllApi().getUser(widget
+                                                                          .userModel
+                                                                          .email);
+                                                                  if (allowCheckIn
+                                                                      .allowCheckin) {
+                                                                    _inTime =
+                                                                        DateFormat(
+                                                                      'hh:mm a',
+                                                                    ).format(
+                                                                      DateTime
+                                                                          .now(),
+                                                                    );
+                                                                    _inDate =
+                                                                        DateFormat(
+                                                                      'dd-MM-yyyy',
+                                                                    ).format(
+                                                                      DateTime
+                                                                          .now(),
+                                                                    );
+                                                                    Get.back();
+                                                                    setState(
+                                                                      () {
+                                                                        loading =
+                                                                            true;
+                                                                      },
+                                                                    );
+                                                                    await AllApi()
+                                                                        .postCheckIn(
+                                                                      companyId: widget
+                                                                          .userModel
+                                                                          .companyId,
+                                                                      checkInTime:
+                                                                          _inTime,
+                                                                      checkOutTime:
+                                                                          '-----',
+                                                                      date:
+                                                                          _inDate,
+                                                                      phoneNumber: widget
+                                                                          .userModel
+                                                                          .phoneNumber,
+                                                                    );
+                                                                    await AllApi()
+                                                                        .postOuterGeoList(
+                                                                      companyId: widget
+                                                                          .userModel
+                                                                          .companyId,
+                                                                      phoneNumber: widget
+                                                                          .userModel
+                                                                          .phoneNumber,
+                                                                      date:
+                                                                          _inDate,
+                                                                      lat: _locationData
+                                                                          .latitude
+                                                                          .toString(),
+                                                                      lon: _locationData
+                                                                          .longitude
+                                                                          .toString(),
+                                                                    );
+                                                                    Fluttertoast
+                                                                        .showToast(
+                                                                      msg:
+                                                                          "Logged in",
+                                                                    );
+                                                                    setState(
+                                                                      () {
+                                                                        loading =
+                                                                            false;
+                                                                      },
+                                                                    );
+                                                                  } else {
+                                                                    ScaffoldMessenger.of(
+                                                                            context)
+                                                                        .showSnackBar(
+                                                                      const SnackBar(
+                                                                        content:
+                                                                            Text(
+                                                                          'You are not allowed to check-in.',
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  'Send Request',
                                                                 ),
                                                               ),
-                                                            );
-                                                          }
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Get.back();
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  'Cancel',
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
                                                         },
-                                                        child: const Text(
-                                                          'Send Request',
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Get.back();
-                                                        },
-                                                        child: const Text(
-                                                          'Cancel',
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text(
-                                            'Cancel',
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
-                                      ],
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                          _vicinityLoading == false
+                                              ? TextButton(
+                                                  child: const Text(
+                                                    'Cancel',
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              : const Text('')
+                                        ],
+                                      ),
                                     );
                                   },
                                 );
@@ -728,6 +752,7 @@ class _HomeState extends State<Home> {
                             onTap: () {
                               if (checkin == "-----") {
                                 showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (ctx) {
                                     return AlertDialog(
@@ -750,6 +775,7 @@ class _HomeState extends State<Home> {
                               } else {
                                 if (checkout != "-----") {
                                   showDialog(
+                                    barrierDismissible: false,
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
@@ -771,6 +797,7 @@ class _HomeState extends State<Home> {
                                   );
                                 } else {
                                   showDialog(
+                                    barrierDismissible: false,
                                     context: context,
                                     builder: (ctx) {
                                       return AlertDialog(
@@ -795,6 +822,8 @@ class _HomeState extends State<Home> {
                                                 },
                                               );
                                               await AllApi().postCheckIn(
+                                                companyId:
+                                                    widget.userModel.companyId,
                                                 checkInTime: checkin,
                                                 checkOutTime: _outTime,
                                                 date: _outDate,
@@ -835,16 +864,9 @@ class _HomeState extends State<Home> {
                                                 empId: widget.userModel.empId,
                                                 status: status,
                                               );
-                                              print('time1: $time1');
-                                              print('time2: $time2');
-                                              print(
-                                                  'delayInHours: $delayInHours');
-                                              print(
-                                                  'delayInMinutes: $delayInMinutes');
+
                                               setState(
                                                 () {
-                                                  _isCheckedOut = true;
-                                                  _isCheckedIn = false;
                                                   loading = false;
                                                 },
                                               );
