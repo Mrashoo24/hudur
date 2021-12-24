@@ -13,7 +13,8 @@ class UserModel {
       companyId,
       pass,
       hoursOfShift,
-      reportingTime;
+      reportingTime,
+      adminLeaves;
   Map<String, dynamic> location;
   bool allowCheckin;
 
@@ -35,6 +36,7 @@ class UserModel {
     this.companyId,
     this.hoursOfShift,
     this.reportingTime,
+    this.adminLeaves,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class UserModel {
       companyId: json['companyid'],
       hoursOfShift: json['hours_of_shift'],
       reportingTime: json['reporting_time'],
+      adminLeaves: json['admin_leaves'],
     );
   }
 
@@ -80,6 +83,7 @@ class UserModel {
     data['companyid'] = companyId;
     data['hours_of_shift'] = hoursOfShift;
     data['reporting_time'] = reportingTime;
+    data['admin_leaves'] = adminLeaves;
 
     return data;
   }
