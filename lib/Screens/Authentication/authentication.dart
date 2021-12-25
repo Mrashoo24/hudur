@@ -17,7 +17,7 @@ class _AuthenticationState extends State<Authentication> {
   var _userId = '';
   var _userPassword = '';
   bool loading = false;
-
+  bool eye = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _trySubmit() {
@@ -58,11 +58,11 @@ class _AuthenticationState extends State<Authentication> {
                   : SingleChildScrollView(
                       child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('assets/Images/logo.png'),
-                          ),
+                          // Container(
+                          //   margin: const EdgeInsets.only(top: 20),
+                          //   padding: const EdgeInsets.all(8.0),
+                          //   child: Image.asset('assets/Images/logo.png'),
+                          // ),
                           Container(
                             padding: const EdgeInsets.all(40.0),
                             child: Form(
@@ -104,7 +104,7 @@ class _AuthenticationState extends State<Authentication> {
                                   ),
 
                                   TextFormField(
-                                    obscureText: true,
+                                    obscureText: eye,
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Please enter password';
@@ -114,11 +114,17 @@ class _AuthenticationState extends State<Authentication> {
                                     onSaved: (value) {
                                       _userPassword = value;
                                     },
-                                    decoration: const InputDecoration(
+                                    decoration:  InputDecoration(
                                       prefixIcon: Icon(
                                         Icons.lock,
                                         color: Colors.green,
                                       ),
+                                      suffixIcon:  InkWell(onTap:(){
+                                        setState(() {
+                                          eye ? eye=false : eye = true;
+                                        });
+
+                                      },child: Icon(Icons.remove_red_eye_outlined)),
                                       label: Text(
                                         'Password',
                                         style: TextStyle(
@@ -168,6 +174,7 @@ class _AuthenticationState extends State<Authentication> {
                                         });
                                         var result =
                                             await AllApi().getUser(_userId);
+                                          print("result ${result.email} ${result.pass}");
                                         if (_userPassword == result.pass &&
                                             _userId == result.email) {
                                           ScaffoldMessenger.of(context)
