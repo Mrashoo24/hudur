@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
+import 'package:hudur/Screens/Authentication/registeration.dart';
 import 'package:hudur/Screens/Home/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -222,26 +224,28 @@ class _AuthenticationState extends State<Authentication> {
                                       ),
                                     ),
                                   ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: [
-                                  //     const Text(
-                                  //       'Don\'t have an account?',
-                                  //       style: TextStyle(
-                                  //         color: Colors.black,
-                                  //       ),
-                                  //     ),
-                                  //     TextButton(
-                                  //       onPressed: () {},
-                                  //       child: const Text(
-                                  //         'Sign up',
-                                  //         style: TextStyle(
-                                  //           color: Colors.green,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // )
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Don\'t have an account?',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Get.to(Registeration());
+                                        },
+                                        child: const Text(
+                                          'Sign up',
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                             ),
