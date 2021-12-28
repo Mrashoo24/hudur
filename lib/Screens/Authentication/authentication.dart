@@ -65,11 +65,11 @@ class _AuthenticationState extends State<Authentication> {
 
                           children: [
 
-                            Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset('assets/Images/logo.png'),
-                            ),
+                            // Container(
+                            //   margin: const EdgeInsets.only(top: 20),
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   child: Image.asset('assets/Images/logo.png'),
+                            // ),
 
                             Container(
                               padding: const EdgeInsets.all(40.0),
