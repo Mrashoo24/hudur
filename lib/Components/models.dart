@@ -49,7 +49,7 @@ class UserModel {
       notificationToken: json['notificationToken'],
       pass: json['pass'],
       phoneNumber: json['PhoneNumber'],
-      empId: json['empid'],
+      empId: json['empid'].toString().replaceAll("\$numberLong:", "").replaceAll("{", "").replaceAll("}", ""),
       refId: json['refid'],
       allowCheckin: json['allow_checkin'],
       location: json['location'],

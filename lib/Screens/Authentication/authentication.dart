@@ -57,202 +57,209 @@ class _AuthenticationState extends State<Authentication> {
                   ? Center(
                       child: Image.asset("assets/Images/loading.gif"),
                     )
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          // Container(
-                          //   margin: const EdgeInsets.only(top: 20),
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Image.asset('assets/Images/logo.png'),
-                          // ),
-                          Container(
-                            padding: const EdgeInsets.all(40.0),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Please input correct details';
-                                      }
+                  : Center(
+                    child: SingleChildScrollView(
+                        child: Column(
 
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _userId = value;
-                                    },
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.person,
-                                        color: Colors.green,
-                                      ),
-                                      label: Text(
-                                        'User Id',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+                          mainAxisAlignment: MainAxisAlignment.center,
 
-                                  TextFormField(
-                                    obscureText: eye,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Please enter password';
-                                      }
-                                      return null;
-                                    },
-                                    onSaved: (value) {
-                                      _userPassword = value;
-                                    },
-                                    decoration:  InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.lock,
-                                        color: Colors.green,
-                                      ),
-                                      suffixIcon:  InkWell(onTap:(){
-                                        setState(() {
-                                          eye ? eye=false : eye = true;
-                                        });
+                          children: [
 
-                                      },child: Icon(Icons.remove_red_eye_outlined)),
-                                      label: Text(
-                                        'Password',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _isChecked,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _isChecked = value;
-                                          });
-                                        },
-                                      ),
-                                      const Text(
-                                        'Remember Me',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                        Colors.green,
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      var canSignIn = _trySubmit();
-                                      if (canSignIn) {
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        var result =
-                                            await AllApi().getUser(_userId);
-                                          print("result ${result.email} ${result.pass}");
-                                        if (_userPassword == result.pass &&
-                                            _userId == result.email) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content:
-                                                  Text('Sign in succesful.'),
-                                            ),
-                                          );
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset('assets/Images/logo.png'),
+                            ),
 
-                                          pref.setBool("loggedin", true);
-
-                                          pref.setString(
-                                              "user", jsonEncode(result));
-
-                                          setState(() {
-                                            loading = false;
-                                          });
-
-                                          Navigator.of(context).pushReplacement(
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return Home(
-                                              userModel: result,
-                                            );
-                                          }));
-                                        } else {
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Incorrect User id or password.'),
-                                            ),
-                                          );
+                            Container(
+                              padding: const EdgeInsets.all(40.0),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Please input correct details';
                                         }
-                                      }
-                                    },
-                                    child: const Text(
-                                      'SIGN IN',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        'Don\'t have an account?',
-                                        style: TextStyle(
-                                          color: Colors.black,
+
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        _userId = value;
+                                      },
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.person,
+                                          color: Colors.green,
                                         ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Get.to(Registeration());
-                                        },
-                                        child: const Text(
-                                          'Sign up',
+                                        label: Text(
+                                          'User Id',
                                           style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  )
-                                ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    TextFormField(
+                                      obscureText: eye,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Please enter password';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        _userPassword = value;
+                                      },
+                                      decoration:  InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color: Colors.green,
+                                        ),
+                                        suffixIcon:  InkWell(onTap:(){
+                                          setState(() {
+                                            eye ? eye=false : eye = true;
+                                          });
+
+                                        },child: Icon(Icons.remove_red_eye_outlined)),
+                                        label: Text(
+                                          'Password',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Checkbox(
+                                          value: _isChecked,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _isChecked = value;
+                                            });
+                                          },
+                                        ),
+                                        const Text(
+                                          'Remember Me',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                          Colors.green,
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        var canSignIn = _trySubmit();
+                                        if (canSignIn) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          var result =
+                                              await AllApi().getUser(_userId);
+                                            print("result ${result.email} ${result.pass}");
+                                          if (_userPassword == result.pass &&
+                                              _userId == result.email) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content:
+                                                    Text('Sign in succesful.'),
+                                              ),
+                                            );
+
+                                            pref.setBool("loggedin", true);
+
+                                            pref.setString(
+                                                "user", jsonEncode(result));
+
+                                            setState(() {
+                                              loading = false;
+                                            });
+
+                                            Navigator.of(context).pushReplacement(
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return Home(
+                                                userModel: result,
+                                              );
+                                            }));
+                                          } else {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Incorrect User id or password.'),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                                      child: const Text(
+                                        'SIGN IN',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Don\'t have an account?',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Get.to(Registeration());
+                                          },
+                                          child: const Text(
+                                            'Sign up',
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
-                    );
+                  );
             }),
       ),
     );

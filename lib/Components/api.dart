@@ -11,8 +11,10 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getuser";
 
     var response = await http.get(Uri.parse("$getUserUrl?email=$email"));
+
     if (response.statusCode == 200) {
       var list = json.decode(response.body);
+      print("repsone = ${list}");
       if (list != null) {
         var model = UserModel().fromJson(list);
         return model;
