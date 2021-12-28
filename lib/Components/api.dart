@@ -226,6 +226,7 @@ class AllApi {
       'verify': '0',
       'benchid': DateTime.now().microsecond.toString(),
       'companyid': replacementUserModel.companyId,
+      'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
     });
     if (response.statusCode != 200) {
       return 'Request failed';
@@ -250,16 +251,21 @@ class AllApi {
     }
   }
 
-  Future<List<CheckInHistoryModel>> getCheckInHistory(String refId) async {
+  Future<List<AttendanceReportModel>> getCheckInHistory({
+    @required String empId,
+    @required String companyId,
+    @required String status,
+  }) async {
     var url = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckInHistory?refId=$refId");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckInHistory?empId=$empId&companyId=$companyId&status=$status");
     var response = await http.get(url);
     var body = json.decode(response.body);
     if (response.statusCode == 200 && body != '[]') {
       List checkInHistoryList = body;
-      Iterable<CheckInHistoryModel> checkInHistory =
+
+      Iterable<AttendanceReportModel> checkInHistory =
           checkInHistoryList.map((e) {
-        return CheckInHistoryModel().fromJson(e);
+        return AttendanceReportModel().fromJson(e);
       });
       return checkInHistory.toList();
     }
@@ -294,9 +300,9 @@ class AllApi {
   }
 
   Future<List<BenchListModel>> getBenchListRequests({
-    String verify,
-    String companyId,
-    String empId,
+    @required String verify,
+    @required String companyId,
+    @required String empId,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetBenchListRequests?verify=$verify&companyId=$companyId&empId=$empId");
@@ -364,6 +370,9 @@ class AllApi {
     @required String checkOutDifference,
     @required String checkInDelayInHours,
     @required String checkInDelayInMinutes,
+    @required String checkInTime,
+    @required String checkOutTime,
+    @required String employeeName,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAttendanceReport");
@@ -376,12 +385,51 @@ class AllApi {
         'check_out_difference': checkOutDifference,
         'check_in_delay_in_hours': checkInDelayInHours,
         'check_in_delay_in_minutes': checkInDelayInMinutes,
-        'timestamp': DateTime.now().toString(),
+        'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+        'checkin': checkInTime,
+        'checkout': checkOutTime,
+        'empname': employeeName,
+        'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
       },
     );
     var body = json.decode(response.body);
     if (body == "null" || response.statusCode != 200) {
       return;
+    }
+  }
+
+  Future<List<UserModel>> getAllUsers({@required String companyId}) async {
+    var url =
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUsers?companyid=$companyId";
+
+    var response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      List requestList = json.decode(response.body);
+      Iterable<UserModel> requests = requestList.map((e) {
+        return UserModel().fromJson(e);
+      });
+      return requests.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<AnnounceModel>> getAnnounce({@required String companyId}) async {
+    var getAnnounceUrl = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetAnnouncements?companyid=$companyId");
+
+    var response = await http.get(getAnnounceUrl);
+
+    if (response.statusCode == 200) {
+      List announceList = json.decode(response.body);
+
+      Iterable<AnnounceModel> announce = announceList.map((e) {
+        return AnnounceModel().fromJson(e);
+      });
+      return announce.toList();
+    } else {
+      return null;
     }
   }
 }

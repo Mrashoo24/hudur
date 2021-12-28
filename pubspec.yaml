@@ -44,6 +44,10 @@ dependencies:
   location: ^4.2.0
   google_fonts: ^2.1.0
   image_picker: ^0.8.4+4
+  dropdown_search: ^2.0.1
+  flutter_linkify: ^5.0.2
+  url_launcher: ^6.0.17
+  badges: ^2.0.2
 
 
 dev_dependencies:

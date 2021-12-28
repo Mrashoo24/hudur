@@ -127,16 +127,12 @@ class _LeavesState extends State<Leaves> {
         image: DecorationImage(
           image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
-          // colorFilter: ColorFilter.mode(
-          //   Colors.white.withOpacity(0.6),
-          //   BlendMode.dstATop,
-          // ),
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text('Leaves'),
+          title: const Text('Requests'),
           backgroundColor: hippieBlue,
         ),
         body: SingleChildScrollView(

@@ -14,117 +14,208 @@ class CheckInHistory extends StatefulWidget {
 
 class _CheckInHistoryState extends State<CheckInHistory> {
   final _allApi = AllApi();
+  final List _filters = [
+    'Early',
+    'Late',
+    'Perfect',
+  ];
+  String _selectedFilter;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Check-In History'),
-        centerTitle: true,
-        backgroundColor: hippieBlue,
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/Images/background_image.jpg'),
+          fit: BoxFit.fill,
+        ),
       ),
-      body: FutureBuilder<List<CheckInHistoryModel>>(
-        future: _allApi.getCheckInHistory(widget.userModel.refId),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: Image.asset("assets/Images/loading.gif"),
-            );
-          }
-          var checkInHistoryList = snapshot.data;
-          return ListView.builder(
-            itemCount: checkInHistoryList.length,
-            itemBuilder: (context, index) {
-              var date = DateFormat('dd-MM-yyyy')
-                  .parse(checkInHistoryList[index].date);
-              var differenceInDays = date.difference(DateTime.now()).inDays;
-              if (differenceInDays > -90) {
-                return Card(
-                  elevation: 5,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Check-In History'),
+          centerTitle: true,
+          backgroundColor: hippieBlue,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12.0),
+                  ),
+                ),
+                padding: const EdgeInsets.all(12.0),
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(12.0),
                     ),
+                    isExpanded: true,
+                    value: _selectedFilter,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedFilter = value;
+                      });
+                    },
+                    hint: const Text('Select Filter'),
+                    items: _filters.map(
+                      (e) {
+                        return DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        );
+                      },
+                    ).toList(),
                   ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Date: ',
-                              style: TextStyle(
-                                fontSize: 20,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FutureBuilder<List<AttendanceReportModel>>(
+                future: _allApi.getCheckInHistory(
+                  empId: widget.userModel.empId,
+                  companyId: widget.userModel.companyId,
+                  status: _selectedFilter == 'Early'
+                      ? 'early'
+                      : _selectedFilter == 'Late'
+                          ? 'late'
+                          : 'perfect',
+                ),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: Image.asset("assets/Images/loading.gif"),
+                    );
+                  } else if (snapshot.data.isEmpty) {
+                    return const Center(
+                      child: Text('Nothing to show.'),
+                    );
+                  }
+                  var checkInHistoryList = snapshot.data;
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: checkInHistoryList.length,
+                      itemBuilder: (context, index) {
+                        var date = DateFormat('yyyy-MM-dd')
+                            .parse(checkInHistoryList[index].date);
+                        var differenceInDays =
+                            date.difference(DateTime.now()).inDays;
+                        if (differenceInDays > -90) {
+                          return Card(
+                            elevation: 8,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
                               ),
                             ),
-                            Text(
-                              checkInHistoryList[index].date,
-                              style: const TextStyle(
-                                fontSize: 20,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Date: ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                        checkInHistoryList[index].date,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Check-In Time: ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                        checkInHistoryList[index].checkInTime,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Check-Out Time: ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                        checkInHistoryList[index].checkOutTime,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Status: ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      Text(
+                                        checkInHistoryList[index].status,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Check-In Time: ',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text(
-                              checkInHistoryList[index].checkInTime,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Check-Out Time: ',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text(
-                              checkInHistoryList[index].checkOutTime,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
                     ),
-                  ),
-                );
-              } else {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child:
-                        Text('You can view the check-in history for 3 months'),
-                  ),
-                );
-              }
-            },
-          );
-        },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

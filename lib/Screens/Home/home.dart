@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
@@ -9,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/Announcements/announcements.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
@@ -263,7 +265,7 @@ class _HomeState extends State<Home> {
                                       ? Image.file(image)
                                       : Image.asset(
                                           'assets/Images/homelogo.png',
-                                          fit: BoxFit.cover,
+                                          fit: BoxFit.fill,
                                         ),
                                 ),
                                 onTap: () {
@@ -442,17 +444,17 @@ class _HomeState extends State<Home> {
                                 padding: const EdgeInsets.all(22.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.login,
                                       // size: 70,
-                                      color: portica,
+                                      color: Colors.white,
                                     ),
                                     Text(
                                       'CHECK IN',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: portica,
+                                        color: Colors.white,
                                         fontSize: 12,
                                       ),
                                     )
@@ -849,10 +851,14 @@ class _HomeState extends State<Home> {
                                                   delayInMinutes > 0) {
                                                 status = 'early';
                                               } else {
-                                                status = 'on-time';
+                                                status = 'perfect';
                                               }
                                               await AllApi()
                                                   .postAttendanceReport(
+                                                employeeName:
+                                                    widget.userModel.name,
+                                                checkInTime: _inTime,
+                                                checkOutTime: _outTime,
                                                 checkInDelayInHours:
                                                     delayInHours.toString(),
                                                 checkInDelayInMinutes:
@@ -914,17 +920,16 @@ class _HomeState extends State<Home> {
                                 padding: const EdgeInsets.all(22.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.airplane_ticket,
-                                      // size: 70,
-                                      color: portica,
+                                      color: Colors.white,
                                     ),
                                     Text(
-                                      'LEAVES',
+                                      'REQUESTS',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: portica,
+                                        color: Colors.white,
                                         fontSize: 12,
                                       ),
                                     )
@@ -955,17 +960,16 @@ class _HomeState extends State<Home> {
                                 padding: const EdgeInsets.all(22.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.book,
-                                      // size: 70,
-                                      color: hippieBlue,
+                                      color: Colors.white,
                                     ),
                                     Text(
                                       'COURSES',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: hippieBlue,
+                                        color: Colors.white,
                                         fontSize: 12,
                                       ),
                                     )
@@ -1008,6 +1012,30 @@ class _HomeState extends State<Home> {
           backgroundColor: const Color(0xFF6392B0),
           actions: [
             _countDownTimer(),
+            FutureBuilder<List<AnnounceModel>>(
+              future: AllApi().getAnnounce(
+                companyId: widget.userModel.companyId,
+              ),
+              builder: (context, snapshot) {
+                var announcements = snapshot.data;
+                return IconButton(
+                  onPressed: () {
+                    Get.to(
+                      () => Announcements(
+                        userModel: widget.userModel,
+                      ),
+                    );
+                  },
+                  icon: Badge(
+                    badgeColor: portica,
+                    badgeContent: Text('${announcements.length}'),
+                    child: const Icon(
+                      Icons.notifications,
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
         backgroundColor: Colors.transparent,
