@@ -14,7 +14,6 @@ import 'package:hudur/Components/models.dart';
 // import 'package:hudur/Screens/Courses/courses.dart';
 // import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 // import 'package:hudur/Screens/Leaves/leaves.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 
@@ -88,21 +87,21 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future _imagePicker() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) {
-        return;
-      }
-      final imageTemporary = File(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
-    }
-  }
+  // Future _imagePicker() async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //     if (image == null) {
+  //       return;
+  //     }
+  //     final imageTemporary = File(image.path);
+  //     setState(() {
+  //       this.image = imageTemporary;
+  //     });
+  //   } on PlatformException catch (e) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text(e.message)));
+  //   }
+  // }
 
   Widget _countDownTimer() {
     // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 25200;
@@ -290,32 +289,32 @@ class _HomeState extends State<Home> {
                                         ),
                                 ),
                                 onTap: () {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text('Change Logo'),
-                                        content: const Text(
-                                            'You can change the logo to any image of your choice.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                              _imagePicker();
-                                            },
-                                            child: const Text('Change'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
+                                  // showDialog(
+                                  //   barrierDismissible: false,
+                                  //   context: context,
+                                  //   builder: (ctx) {
+                                  //     return AlertDialog(
+                                  //       title: const Text('Change Logo'),
+                                  //       content: const Text(
+                                  //           'You can change the logo to any image of your choice.'),
+                                  //       actions: [
+                                  //         TextButton(
+                                  //           onPressed: () {
+                                  //             Get.back();
+                                  //             _imagePicker();
+                                  //           },
+                                  //           child: const Text('Change'),
+                                  //         ),
+                                  //         TextButton(
+                                  //           onPressed: () {
+                                  //             Get.back();
+                                  //           },
+                                  //           child: const Text('Cancel'),
+                                  //         ),
+                                  //       ],
+                                  //     );
+                                  //   },
+                                  // );
                                 },
                               ),
                             ],
