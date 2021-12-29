@@ -90,18 +90,23 @@ class UserModel {
 }
 
 class CoursesModel {
-  String title;
-  String date;
+  String title, date, hrId, companyId, venue;
 
   CoursesModel({
     this.date,
     this.title,
+    this.companyId,
+    this.hrId,
+    this.venue,
   });
 
   fromJson(Map<String, dynamic> json) {
     return CoursesModel(
       title: json['title'],
       date: json['date'],
+      companyId: json['companyid'],
+      hrId: json['hrid'],
+      venue: json['venue'],
     );
   }
 
@@ -111,6 +116,9 @@ class CoursesModel {
 
     data['title'] = title;
     data['date'] = date;
+    data['companyid'] = companyId;
+    data['hrid'] = hrId;
+    data['venue'] = venue;
 
     return data;
   }
@@ -120,18 +128,25 @@ class LeaveRequestsModel {
   String title;
   String subtitle;
   List details;
+  String companyId;
+  List attachments;
 
   LeaveRequestsModel({
     this.title,
     this.subtitle,
     this.details,
+    this.companyId,
+    this.attachments,
   });
 
   fromJson(Map<String, dynamic> json) {
     return LeaveRequestsModel(
-        title: json['title'],
-        subtitle: json['subtitle'],
-        details: json['details']);
+      title: json['title'],
+      subtitle: json['subtitle'],
+      details: json['details'],
+      attachments: json['attachments'],
+      companyId: json['companyid'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -141,6 +156,8 @@ class LeaveRequestsModel {
     data['title'] = title;
     data['subtitle'] = subtitle;
     data['details'] = details;
+    data['attachments'] = attachments;
+    data['companyid'] = companyId;
     return data;
   }
 }
@@ -438,6 +455,110 @@ class AnnounceModel {
     data['timestamp'] = timestamp;
     data['companyid'] = companyId;
     data['hr'] = hr;
+
+    return data;
+  }
+}
+
+class PresentCoursesModel {
+  String title;
+  String date;
+  String companyid;
+  String empid;
+  String venue;
+  String checkIn;
+  String checkOut;
+  String hrId;
+  String empName;
+  String empPhone;
+
+  PresentCoursesModel({
+    this.title,
+    this.date,
+    this.companyid,
+    this.empid,
+    this.checkIn,
+    this.checkOut,
+    this.hrId,
+    this.venue,
+    this.empName,
+    this.empPhone,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return PresentCoursesModel(
+      title: json['title'],
+      date: json['date'],
+      companyid: json['companyid'],
+      empid: json['empid'],
+      venue: json['venue'],
+      checkIn: json['checkin'],
+      checkOut: json['checkout'],
+      hrId: json['hrid'],
+      empName: json['emp_name'],
+      empPhone: json['emp_phone'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = title;
+    data['date'] = date;
+    data['companyid'] = companyid;
+    data['empid'] = empid;
+    data['venue'] = venue;
+    data['checkin'] = checkIn;
+    data['checkout'] = checkOut;
+    data['hrid'] = hrId;
+    data['emp_name'] = empName;
+    data['emp_phone'] = empPhone;
+
+    return data;
+  }
+}
+
+class ServicesModel {
+  String refid;
+  String certid;
+  String date;
+  String verify;
+  String companyId;
+  String certificateName;
+  String fileName;
+
+  ServicesModel({
+    this.refid,
+    this.certid,
+    this.date,
+    this.verify,
+    this.companyId,
+    this.certificateName,
+    this.fileName,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return ServicesModel(
+      refid: json['refid'],
+      certid: json['certid'],
+      date: json['date'],
+      verify: json['verify'],
+      companyId: json['companyid'],
+      certificateName: json['certificatename'],
+      fileName: json['filename'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['refid'] = refid;
+    data['certid'] = certid;
+    data['date'] = date;
+    data['verify'] = verify;
+    data['companyId'] = companyId;
+    data['certificatename'] = certificateName;
+    data['filename'] = fileName;
 
     return data;
   }

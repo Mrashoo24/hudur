@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'models.dart';
 
 class AllApi {
@@ -431,5 +433,104 @@ class AllApi {
     } else {
       return null;
     }
+  }
+
+  Future<String> registerCourse({
+    @required CoursesModel coursesModel,
+    @required String empName,
+    @required String empId,
+    @required String empPhone,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugRegisterCourse");
+    var response = await http.post(url, body: {
+      'hrid': coursesModel.hrId,
+      'title': coursesModel.title,
+      'date': coursesModel.date,
+      'companyid': coursesModel.companyId,
+      'venue': coursesModel.venue,
+      'emp_name': empName,
+      'emp_id': empId,
+      'checkin': '',
+      'checkout': '',
+      'emp_phone': empPhone,
+    });
+    var body = json.decode(response.body);
+    return body;
+  }
+
+  Future<List<PresentCoursesModel>> getPresentCourses({
+    @required String companyId,
+    @required String empPhone,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetPresentCourses?companyId=$companyId&empPhone=$empPhone");
+
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List courseList = json.decode(response.body);
+      Iterable<PresentCoursesModel> courses = courseList.map((e) {
+        return PresentCoursesModel().fromJson(e);
+      });
+      return courses.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> postServices({
+    @required String refId,
+    @required String date,
+    @required String verify,
+    @required String companyId,
+    @required String certificateName,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
+
+    var response = await http.post(
+      url,
+      body: {
+        'refid': refId,
+        'date': date,
+        'verify': verify,
+        'companyid': companyId,
+        'certificatename': certificateName,
+      },
+    );
+    var body = json.decode(response.body);
+    return body;
+  }
+
+  Future<List<ServicesModel>> getServices({
+    @required String companyId,
+    @required String verify,
+    @required String refId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetServicesEmployee?companyId=$companyId&refId=$refId&verify=$verify");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List list = body;
+
+      Iterable<ServicesModel> servicesList = list.map((e) {
+        return ServicesModel().fromJson(e);
+      });
+
+      return servicesList.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<File> loadFile({@required String url, @required fileName}) async {
+    final response = await http.get(Uri.parse(url));
+    final bytes = response.bodyBytes;
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/$fileName');
+    await file.writeAsBytes(bytes, flush: true);
+    return file;
   }
 }

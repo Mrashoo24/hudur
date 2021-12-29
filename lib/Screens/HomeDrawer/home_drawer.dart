@@ -7,6 +7,7 @@ import 'package:hudur/Screens/BenchList/benchlist_page.dart';
 import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
 import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
+import 'package:hudur/Screens/Services/services.dart';
 
 class HomeDrawer extends StatelessWidget {
   final UserModel userModel;
@@ -89,6 +90,20 @@ class HomeDrawer extends StatelessWidget {
                     onTap: () {
                       Get.to(
                         AdministrativeLeaves(
+                          userModel: userModel,
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.room_service_rounded,
+                      color: portica,
+                    ),
+                    title: const Text('Services'),
+                    onTap: () {
+                      Get.to(
+                        () => Services(
                           userModel: userModel,
                         ),
                       );

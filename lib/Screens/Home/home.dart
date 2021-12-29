@@ -1017,6 +1017,28 @@ class _HomeState extends State<Home> {
                 companyId: widget.userModel.companyId,
               ),
               builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return IconButton(
+                    onPressed: () {
+                      Get.to(
+                        () => Announcements(
+                          userModel: widget.userModel,
+                        ),
+                      );
+                    },
+                    icon: Badge(
+                      badgeColor: portica,
+                      badgeContent: const FittedBox(
+                        child: Text(
+                          '!',
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.notifications,
+                      ),
+                    ),
+                  );
+                }
                 var announcements = snapshot.data;
                 return IconButton(
                   onPressed: () {
@@ -1028,7 +1050,11 @@ class _HomeState extends State<Home> {
                   },
                   icon: Badge(
                     badgeColor: portica,
-                    badgeContent: Text('${announcements.length}'),
+                    badgeContent: FittedBox(
+                      child: Text(
+                        '${announcements.length}',
+                      ),
+                    ),
                     child: const Icon(
                       Icons.notifications,
                     ),
