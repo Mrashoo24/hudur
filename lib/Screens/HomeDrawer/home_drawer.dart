@@ -6,6 +6,7 @@ import 'package:hudur/Screens/AdministrativeLeaves/administrative_leaves.dart';
 import 'package:hudur/Screens/BenchList/benchlist_page.dart';
 import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
 import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
+import 'package:hudur/Screens/LateCheckInReason/late_reason.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
 import 'package:hudur/Screens/Services/services.dart';
 
@@ -50,7 +51,9 @@ class HomeDrawer extends StatelessWidget {
                     ),
                     title: const Text('Related Sites'),
                     onTap: () {
-                      Get.to(const RelatedSites());
+                      Get.to(RelatedSites(
+                        userModel: userModel,
+                      ));
                     },
                   ),
                   ListTile(
@@ -104,6 +107,20 @@ class HomeDrawer extends StatelessWidget {
                     onTap: () {
                       Get.to(
                         () => Services(
+                          userModel: userModel,
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.watch_later_rounded,
+                      color: portica,
+                    ),
+                    title: const Text('Reason for late check-in'),
+                    onTap: () {
+                      Get.to(
+                        () => LateReason(
                           userModel: userModel,
                         ),
                       );

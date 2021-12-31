@@ -14,7 +14,9 @@ class UserModel {
       pass,
       hoursOfShift,
       reportingTime,
-      adminLeaves;
+      adminLeaves,
+      studyPermit,
+      maternityPermit;
   Map<String, dynamic> location;
   bool allowCheckin;
 
@@ -37,6 +39,8 @@ class UserModel {
     this.hoursOfShift,
     this.reportingTime,
     this.adminLeaves,
+    this.maternityPermit,
+    this.studyPermit,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -59,6 +63,8 @@ class UserModel {
       hoursOfShift: json['hours_of_shift'],
       reportingTime: json['reporting_time'],
       adminLeaves: json['admin_leaves'],
+      maternityPermit: json['maternity_permit'],
+      studyPermit: json['study_permit'],
     );
   }
 
@@ -84,13 +90,15 @@ class UserModel {
     data['hours_of_shift'] = hoursOfShift;
     data['reporting_time'] = reportingTime;
     data['admin_leaves'] = adminLeaves;
+    data['maternity_permit'] = maternityPermit;
+    data['study_permit'] = studyPermit;
 
     return data;
   }
 }
 
 class CoursesModel {
-  String title, date, hrId, companyId, venue;
+  String title, date, hrId, companyId, venue, courseId;
 
   CoursesModel({
     this.date,
@@ -98,6 +106,7 @@ class CoursesModel {
     this.companyId,
     this.hrId,
     this.venue,
+    this.courseId,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -107,6 +116,7 @@ class CoursesModel {
       companyId: json['companyid'],
       hrId: json['hrid'],
       venue: json['venue'],
+      courseId: json['courseid'],
     );
   }
 
@@ -119,6 +129,7 @@ class CoursesModel {
     data['companyid'] = companyId;
     data['hrid'] = hrId;
     data['venue'] = venue;
+    data['courseid'] = courseId;
 
     return data;
   }
@@ -319,7 +330,7 @@ class BenchListModel {
 }
 
 class AdminLeavesModel {
-  String refId, companyId, employeeName, days, verify, empId;
+  String refId, companyId, employeeName, days, verify, empId, from, to, date;
 
   AdminLeavesModel({
     this.companyId,
@@ -328,16 +339,23 @@ class AdminLeavesModel {
     this.refId,
     this.verify,
     this.empId,
+    this.from,
+    this.to,
+    this.date,
   });
 
   fromJson(Map<String, dynamic> json) {
     return AdminLeavesModel(
-        companyId: json['companyid'],
-        days: json['days'],
-        employeeName: json['name'],
-        refId: json['refid'],
-        verify: json['verify'],
-        empId: json['empid']);
+      companyId: json['companyid'],
+      days: json['days'],
+      employeeName: json['empname'],
+      refId: json['refid'],
+      verify: json['verify'],
+      empId: json['empid'],
+      from: json['from'],
+      to: json['to'],
+      date: json['date'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -348,8 +366,11 @@ class AdminLeavesModel {
     data['days'] = days;
     data['refid'] = refId;
     data['verify'] = verify;
-    data['employee_name'] = employeeName;
+    data['empname'] = employeeName;
     data['empid'] = empId;
+    data['from'] = from;
+    data['to'] = to;
+    data['date'] = date;
 
     return data;
   }
@@ -471,6 +492,7 @@ class PresentCoursesModel {
   String hrId;
   String empName;
   String empPhone;
+  String courseId;
 
   PresentCoursesModel({
     this.title,
@@ -483,6 +505,7 @@ class PresentCoursesModel {
     this.venue,
     this.empName,
     this.empPhone,
+    this.courseId,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -497,6 +520,7 @@ class PresentCoursesModel {
       hrId: json['hrid'],
       empName: json['emp_name'],
       empPhone: json['emp_phone'],
+      courseId: json['courseid'],
     );
   }
 
@@ -513,6 +537,7 @@ class PresentCoursesModel {
     data['hrid'] = hrId;
     data['emp_name'] = empName;
     data['emp_phone'] = empPhone;
+    data['courseid'] = courseId;
 
     return data;
   }
@@ -560,6 +585,49 @@ class ServicesModel {
     data['certificatename'] = certificateName;
     data['filename'] = fileName;
 
+    return data;
+  }
+}
+
+class EmployeeLeaveRequestsModel {
+  String title, refId, date, details, verify, companyId, from, to;
+
+  EmployeeLeaveRequestsModel({
+    this.title,
+    this.companyId,
+    this.date,
+    this.details,
+    this.from,
+    this.refId,
+    this.to,
+    this.verify,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return EmployeeLeaveRequestsModel(
+      title: json['title'],
+      companyId: json['companyid'],
+      date: json['date'],
+      details: json['details'],
+      from: json['from'],
+      refId: json['refid'],
+      to: json['to'],
+      verify: json['verify'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['title'] = title;
+    data['companyid'] = companyId;
+    data['details'] = details;
+    data['date'] = date;
+    data['from'] = from;
+    data['refid'] = refId;
+    data['to'] = to;
+    data['verify'] = verify;
     return data;
   }
 }

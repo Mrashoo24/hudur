@@ -204,7 +204,7 @@ class _CoursesState extends State<Courses> {
       child: FutureBuilder<List<PresentCoursesModel>>(
         future: _allApi.getPresentCourses(
           companyId: widget.userModel.companyId,
-          empPhone: widget.userModel.phoneNumber,
+          empId: widget.userModel.empId,
         ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -318,26 +318,45 @@ class _CoursesState extends State<Courses> {
                           setStateDialog(() {
                             isLoading = true;
                           });
-                          var result = await _allApi.registerCourse(
-                            coursesModel: coursesModel,
-                            empName: empName,
+                          var isRegistered =
+                              await _allApi.checkIfRegisteredCourse(
+                            courseId: coursesModel.courseId,
                             empId: empId,
-                            empPhone: empPhone,
                           );
-                          setStateDialog(() {
-                            isLoading = false;
-                          });
-                          Navigator.of(context).pop();
-                          if (result == 'registered') {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Registered successfully.'),
-                              ),
+                          if (isRegistered == 'not registered') {
+                            var result = await _allApi.registerCourse(
+                              coursesModel: coursesModel,
+                              empName: empName,
+                              empId: empId,
+                              empPhone: empPhone,
                             );
+                            setStateDialog(() {
+                              isLoading = false;
+                            });
+                            Navigator.of(context).pop();
+                            if (result == 'registered') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Registered successfully.'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Failed to register.'),
+                                ),
+                              );
+                            }
                           } else {
+                            setStateDialog(() {
+                              isLoading = false;
+                            });
+                            Navigator.of(context).pop();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Failed to register.'),
+                                content: Text(
+                                  'You have already registered.',
+                                ),
                               ),
                             );
                           }

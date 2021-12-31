@@ -6,7 +6,8 @@ import 'package:hudur/Components/models.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RelatedSites extends StatefulWidget {
-  const RelatedSites({Key key}) : super(key: key);
+  final UserModel userModel;
+  const RelatedSites({Key key, this.userModel}) : super(key: key);
 
   @override
   State<RelatedSites> createState() => _RelatedSitesState();
@@ -31,7 +32,9 @@ class _RelatedSitesState extends State<RelatedSites> {
           backgroundColor: hippieBlue,
         ),
         body: FutureBuilder<List<RelatedSitesModel>>(
-          future: _allApi.getRelatedSites(),
+          future: _allApi.getRelatedSites(
+            companyId: widget.userModel.companyId,
+          ),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(

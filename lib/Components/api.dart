@@ -29,9 +29,10 @@ class AllApi {
   Future<void> postCheckIn({
     @required String checkInTime,
     @required String checkOutTime,
-    @required String phoneNumber,
+    @required String refId,
     @required String date,
     @required String companyId,
+    @required String designation,
   }) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
@@ -39,7 +40,7 @@ class AllApi {
     var response = await http.post(postCheckInUrl, body: {
       'checkin': checkInTime,
       'checkout': checkOutTime,
-      'refid': phoneNumber,
+      'refid': refId,
       'date': date,
       'companyid': companyId,
     });
@@ -50,9 +51,12 @@ class AllApi {
     }
   }
 
-  Future<dynamic> getCheckIn({String phoneNumber, String date}) async {
+  Future<dynamic> getCheckIn({
+    @required String refId,
+    @required String date,
+  }) async {
     var postCheckInUrl = Uri.parse(
-        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckIn?date=$date&refid=$phoneNumber');
+        'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckIn?date=$date&refid=$refId');
 
     var response = await http.get(postCheckInUrl);
     if (response.statusCode == 200) {
@@ -62,10 +66,13 @@ class AllApi {
     }
   }
 
-  Future<dynamic> getVicinity(
-      {String phoneNumber, double latitude, double longitude}) async {
+  Future<dynamic> getVicinity({
+    @required String refId,
+    @required double latitude,
+    @required double longitude,
+  }) async {
     var getVicinityUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$phoneNumber");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$refId");
 
     var response = await http.get(getVicinityUrl);
 
@@ -77,24 +84,26 @@ class AllApi {
   }
 
   Future<void> postCheckInRequest({
-    @required String phoneNumber,
+    @required String refId,
     @required String date,
     @required String lat,
     @required String lon,
     @required String name,
     @required String companyId,
+    @required String designation,
   }) async {
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckInRequest");
 
     var response = await http.post(postCheckInRequestUrl, body: {
-      'refid': phoneNumber,
+      'refid': refId,
       'date': date,
       'status': 'pending',
       'lat': lat,
       'lon': lon,
       'name': name,
       'companyid': companyId,
+      'designation': designation,
     });
     if (response.statusCode == 200) {
       return;
@@ -105,21 +114,27 @@ class AllApi {
   }
 
   Future<void> postOuterGeoList({
-    @required String phoneNumber,
+    @required String refId,
     @required String date,
     @required String lat,
     @required String lon,
     @required String companyId,
+    @required String empName,
+    @required String designation,
   }) async {
+    var reqno = 'cr' + DateTime.now().microsecond.toString();
     var postCheckInRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostOuterGeoList");
 
     var response = await http.post(postCheckInRequestUrl, body: {
-      'refid': phoneNumber,
+      'refid': refId,
       'date': date,
       'lat': lat,
       'lon': lon,
       'companyid': companyId,
+      'reqno': reqno,
+      'empname': empName,
+      'designation': designation,
     });
     if (response.statusCode == 200) {
       return;
@@ -163,24 +178,37 @@ class AllApi {
     }
   }
 
-  Future<void> postLeaveRequest(String phoneNumber, String date, String title,
-      List details, String companyId) async {
+  Future<String> postLeaveRequest({
+    @required String refId,
+    @required String date,
+    @required String title,
+    @required List details,
+    @required String companyId,
+    @required String fromDate,
+    @required String toDate,
+    @required String empName,
+  }) async {
     var postLeaveRequestUrl = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest?refid=$phoneNumber&date=$date");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest");
 
     var response = await http.post(
       postLeaveRequestUrl,
       body: {
+        'refid': refId,
+        'date': date,
         'title': title,
         'details': details.toString(),
-        'verify': 0,
+        'verify': '0',
         'companyid': companyId,
+        'from': fromDate,
+        'to': toDate,
+        'empname': empName,
       },
     );
     if (response.statusCode == 200) {
-      return;
+      return 'success';
     } else {
-      return;
+      return 'failed';
     }
   }
 
@@ -237,9 +265,10 @@ class AllApi {
     }
   }
 
-  Future<List<RelatedSitesModel>> getRelatedSites() async {
+  Future<List<RelatedSitesModel>> getRelatedSites(
+      {@required String companyId}) async {
     var url = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetRelatedSites");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetRelatedSites?companyId=$companyId");
     var response = await http.get(url);
     var body = json.decode(response.body);
     if (body != '[]') {
@@ -279,8 +308,7 @@ class AllApi {
     @required String description,
     @required String employeeId,
     @required String companyId,
-    @required String email,
-    @required String password,
+    @required String empName,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostEnquiry");
@@ -291,9 +319,8 @@ class AllApi {
         'companyid': companyId,
         'subject': subject,
         'description': description,
-        'email': email,
-        'password': password,
         'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+        'empname': empName,
       },
     );
     if (response.statusCode != 200) {
@@ -375,6 +402,7 @@ class AllApi {
     @required String checkInTime,
     @required String checkOutTime,
     @required String employeeName,
+    @required String designation,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAttendanceReport");
@@ -392,6 +420,7 @@ class AllApi {
         'checkout': checkOutTime,
         'empname': employeeName,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+        'designation': designation,
       },
     );
     var body = json.decode(response.body);
@@ -454,6 +483,7 @@ class AllApi {
       'checkin': '',
       'checkout': '',
       'emp_phone': empPhone,
+      'courseid': coursesModel.courseId,
     });
     var body = json.decode(response.body);
     return body;
@@ -461,10 +491,10 @@ class AllApi {
 
   Future<List<PresentCoursesModel>> getPresentCourses({
     @required String companyId,
-    @required String empPhone,
+    @required String empId,
   }) async {
     var url = Uri.parse(
-        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetPresentCourses?companyId=$companyId&empPhone=$empPhone");
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetPresentCourses?companyId=$companyId&empId=$empId");
 
     var response = await http.get(url);
 
@@ -485,6 +515,7 @@ class AllApi {
     @required String verify,
     @required String companyId,
     @required String certificateName,
+    @required String empName,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
@@ -497,6 +528,7 @@ class AllApi {
         'verify': verify,
         'companyid': companyId,
         'certificatename': certificateName,
+        'empname': empName,
       },
     );
     var body = json.decode(response.body);
@@ -532,5 +564,115 @@ class AllApi {
     final file = File('${dir.path}/$fileName');
     await file.writeAsBytes(bytes, flush: true);
     return file;
+  }
+
+  Future<String> setFile(File file) async {
+    var url = Uri.parse("http://faizeetech.com/pdf-upload.php");
+
+    String value1 = "";
+
+    var request = http.MultipartRequest('POST', url);
+    request.files.add(http.MultipartFile(
+        'file', file.readAsBytes().asStream(), file.lengthSync(),
+        filename: file.path));
+    await request.send().then((response) async {
+      if (response.statusCode == 200) {
+        response.stream
+            .transform(utf8.decoder)
+            .listen((value) {})
+            .onData((data) {
+          value1 = data;
+        });
+        return value1;
+      } else {
+        value1 = "Error";
+        return value1;
+      }
+    });
+    return value1;
+  }
+
+  Future<List<EmployeeLeaveRequestsModel>> getEmployeeLeaveRequests({
+    @required String refId,
+    @required String verify,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetEmployeeLeaveRequests?refId=$refId&verify=$verify");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List list = body;
+      Iterable<EmployeeLeaveRequestsModel> requests = list.map((e) {
+        return EmployeeLeaveRequestsModel().fromJson(e);
+      });
+      return requests.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<String> sendEmail({
+    @required String subject,
+    @required String content,
+  }) async {
+    var url = Uri.parse(
+        "http://faizeetech.com/post-mail.php?to=zulfekarshaikh0@gmail.com&subject=$subject&content=$content");
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return 'success';
+    } else {
+      return 'failed';
+    }
+  }
+
+  Future<String> putToken({
+    @required String email,
+    @required String token,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/putTokenEmployee?email=$email&token=$token");
+    var response = await http.put(url);
+    if (response.statusCode == 200) {
+      return 'success';
+    } else {
+      return 'failed';
+    }
+  }
+
+  Future<void> postLateCheckInReason({
+    @required String subject,
+    @required String description,
+    @required String employeeId,
+    @required String companyId,
+    @required String empName,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLateCheckInReason");
+    var response = await http.post(
+      url,
+      body: {
+        'empid': employeeId,
+        'companyid': companyId,
+        'subject': subject,
+        'description': description,
+        'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+        'empname': empName,
+      },
+    );
+    if (response.statusCode != 200) {
+      return;
+    }
+  }
+
+  Future<String> checkIfRegisteredCourse({
+    @required String courseId,
+    @required String empId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugCheckIfRegisteredCourse?courseId=$courseId&empId=$empId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    return body;
   }
 }

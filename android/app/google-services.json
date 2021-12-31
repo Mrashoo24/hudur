@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1012156795825",
+    "project_id": "hudur-63ffc",
+    "storage_bucket": "hudur-63ffc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012156795825:android:adf80ac734ad196e860b90",
+        "android_client_info": {
+          "package_name": "com.ak.hudur"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012156795825-0lulofn0fbfp11pp5p13hu3m5kb7cshq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ak.hudur",
+            "certificate_hash": "b594c95323fd6f96c6b85238701453b7e03a3833"
+          }
+        },
+        {
+          "client_id": "1012156795825-qe4d1vv026bdh70h9msctpluilsmkffm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj2zI3jHvpNpQzsLqCxrgDhZCP45-hJE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012156795825-qe4d1vv026bdh70h9msctpluilsmkffm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

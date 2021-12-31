@@ -351,6 +351,7 @@ class _ServicesState extends State<Services> {
                             isLoading = true;
                           });
                           var result = await _allApi.postServices(
+                            empName: widget.userModel.name,
                             companyId: widget.userModel.companyId,
                             date: DateFormat('yyyy-MM-dd').format(
                               DateTime.now(),

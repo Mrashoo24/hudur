@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,7 +13,6 @@ import 'package:hudur/Screens/Announcements/announcements.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 
@@ -31,6 +29,7 @@ class _HomeState extends State<Home> {
   var _outTime = '';
   var _inDate = '';
   var _outDate = '';
+  var _status = '';
   var _vicinityLoading = false;
 
   File image;
@@ -85,28 +84,30 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  Future _imagePicker() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) {
-        return;
-      }
-      final imageTemporary = File(image.path);
-      setState(() {
-        this.image = imageTemporary;
-      });
-    } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message)));
-    }
-  }
+  // Future _imagePicker() async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //     if (image == null) {
+  //       return;
+  //     }
+  //     final imageTemporary = File(image.path);
+  //     setState(() {
+  //       this.image = imageTemporary;
+  //     });
+  //   } on PlatformException catch (e) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text(e.message)));
+  //   }
+  // }
 
   Widget _countDownTimer() {
     return FutureBuilder(
       future: AllApi().getCheckIn(
-        phoneNumber: widget.userModel.phoneNumber,
+        refId: widget.userModel.refId,
         date: DateFormat('dd-MM-yyyy').format(DateTime.now()),
       ),
+      // AllApi().getUser(widget.userModel.email),
+
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
@@ -114,6 +115,7 @@ class _HomeState extends State<Home> {
           );
         } else {
           var report = snapshot.requireData;
+          // var timing = snapshot.requireData[1];
           String checkInTime = "-----";
           String checkOutTime = "-----";
           String date = "-----";
@@ -130,11 +132,19 @@ class _HomeState extends State<Home> {
             String month = date.substring(3, 5);
             String year = date.substring(6, 10);
             date = year + '-' + month + '-' + day;
+            // if (timing.studyPermit == '0' && timing.maternityPermit == '0') {
             endTime = checkOutTime == "-----"
                 ? DateTime.parse(date + ' ' + checkInTime)
                         .millisecondsSinceEpoch +
                     (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
                 : 0;
+            // } else {
+            //   endTime = checkOutTime == "-----"
+            //       ? DateTime.parse(date + ' ' + checkInTime)
+            //               .millisecondsSinceEpoch +
+            //           (1000 * (5 * 3600))
+            //       : 0;
+            // }
           }
           _controller = CountdownTimerController(endTime: endTime);
 
@@ -148,6 +158,17 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                 ),
                 controller: _controller,
+                onEnd: () {
+                  if (checkOutTime == '-----') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Shift over. You can check out now.',
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           );
@@ -163,7 +184,7 @@ class _HomeState extends State<Home> {
           )
         : FutureBuilder(
             future: AllApi().getCheckIn(
-                phoneNumber: widget.userModel.phoneNumber,
+                refId: widget.userModel.refId,
                 date: DateFormat('dd-MM-yyyy').format(DateTime.now())),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
@@ -255,48 +276,16 @@ class _HomeState extends State<Home> {
                                   ),
                                 ],
                               ),
-                              InkWell(
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.1,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  child: image != null
-                                      ? Image.file(image)
-                                      : Image.asset(
-                                          'assets/Images/homelogo.png',
-                                          fit: BoxFit.fill,
-                                        ),
-                                ),
-                                onTap: () {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text('Change Logo'),
-                                        content: const Text(
-                                          'You can change the logo to any image of your choice.',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                              _imagePicker();
-                                            },
-                                            child: const Text('Change'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.back();
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                child: image != null
+                                    ? Image.file(image)
+                                    : Image.asset(
+                                        'assets/Images/homelogo.png',
+                                        fit: BoxFit.fill,
+                                      ),
                               ),
                             ],
                           ),
@@ -329,8 +318,9 @@ class _HomeState extends State<Home> {
                               ),
                               shape: BoxShape.rectangle,
                               borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(8.0),
-                                  bottomRight: Radius.circular(8.0)),
+                                bottomLeft: Radius.circular(8.0),
+                                bottomRight: Radius.circular(8.0),
+                              ),
                             ),
                             padding: const EdgeInsets.all(20.0),
                             child: Column(
@@ -394,25 +384,25 @@ class _HomeState extends State<Home> {
                                     const SizedBox(
                                       width: 30,
                                     ),
-                                    // Column(
-                                    //   crossAxisAlignment:
-                                    //       CrossAxisAlignment.start,
-                                    //   children: const [
-                                    //     Text(
-                                    //       'Status',
-                                    //       style: TextStyle(
-                                    //         fontWeight: FontWeight.bold,
-                                    //         color: Colors.white,
-                                    //       ),
-                                    //     ),
-                                    //     Text(
-                                    //       'Perfect',
-                                    //       style: TextStyle(
-                                    //         color: Colors.white,
-                                    //       ),
-                                    //     )
-                                    //   ],
-                                    // ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Status',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          _status,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 )
                               ],
@@ -486,235 +476,7 @@ class _HomeState extends State<Home> {
                                   },
                                 );
                               } else {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (ctx) {
-                                    return StatefulBuilder(
-                                      builder: (context, setStateDialog) =>
-                                          AlertDialog(
-                                        title: const Text(
-                                          'Confirm Check In',
-                                        ),
-                                        actions: [
-                                          _vicinityLoading
-                                              ? const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                )
-                                              : TextButton(
-                                                  child: const Text(
-                                                    'Check-In',
-                                                  ),
-                                                  onPressed: () async {
-                                                    setStateDialog(() {
-                                                      _vicinityLoading = true;
-                                                    });
-                                                    var result = await AllApi()
-                                                        .getVicinity(
-                                                      phoneNumber: widget
-                                                          .userModel
-                                                          .phoneNumber,
-                                                      latitude: _locationData
-                                                          .latitude,
-                                                      longitude: _locationData
-                                                          .longitude,
-                                                    );
-                                                    setStateDialog(() {
-                                                      _vicinityLoading = false;
-                                                    });
-                                                    if (result == true) {
-                                                      _inTime = DateFormat(
-                                                              'hh:mm a')
-                                                          .format(
-                                                              DateTime.now());
-                                                      _inDate = DateFormat(
-                                                              'dd-MM-yyyy')
-                                                          .format(
-                                                              DateTime.now());
-                                                      Get.back();
-                                                      setState(
-                                                        () {
-                                                          loading = true;
-                                                        },
-                                                      );
-                                                      await AllApi()
-                                                          .postCheckIn(
-                                                        checkInTime: _inTime,
-                                                        checkOutTime: '-----',
-                                                        date: _inDate,
-                                                        phoneNumber: widget
-                                                            .userModel
-                                                            .phoneNumber,
-                                                        companyId: widget
-                                                            .userModel
-                                                            .companyId,
-                                                      );
-
-                                                      setState(
-                                                        () {
-                                                          loading = false;
-                                                        },
-                                                      );
-                                                    } else {
-                                                      Get.back();
-                                                      showDialog(
-                                                        barrierDismissible:
-                                                            false,
-                                                        context: context,
-                                                        builder: (ctx) {
-                                                          return AlertDialog(
-                                                            title: const Text(
-                                                              'Check-in not allowed.',
-                                                            ),
-                                                            content: const Text(
-                                                              'You aren\'t in the vicinity of 250 metres from your office.',
-                                                            ),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  Get.back();
-                                                                  await AllApi()
-                                                                      .postCheckInRequest(
-                                                                          companyId: widget
-                                                                              .userModel
-                                                                              .companyId,
-                                                                          date: DateFormat('dd-MM-yyyy')
-                                                                              .format(
-                                                                            DateTime.now(),
-                                                                          ),
-                                                                          phoneNumber: widget
-                                                                              .userModel
-                                                                              .phoneNumber,
-                                                                          lat: _locationData
-                                                                              .latitude
-                                                                              .toString(),
-                                                                          lon: _locationData
-                                                                              .longitude
-                                                                              .toString(),
-                                                                          name: widget
-                                                                              .userModel
-                                                                              .name);
-                                                                  var allowCheckIn =
-                                                                      await AllApi().getUser(widget
-                                                                          .userModel
-                                                                          .email);
-                                                                  if (allowCheckIn
-                                                                      .allowCheckin) {
-                                                                    _inTime =
-                                                                        DateFormat(
-                                                                      'hh:mm a',
-                                                                    ).format(
-                                                                      DateTime
-                                                                          .now(),
-                                                                    );
-                                                                    _inDate =
-                                                                        DateFormat(
-                                                                      'dd-MM-yyyy',
-                                                                    ).format(
-                                                                      DateTime
-                                                                          .now(),
-                                                                    );
-                                                                    Get.back();
-                                                                    setState(
-                                                                      () {
-                                                                        loading =
-                                                                            true;
-                                                                      },
-                                                                    );
-                                                                    await AllApi()
-                                                                        .postCheckIn(
-                                                                      companyId: widget
-                                                                          .userModel
-                                                                          .companyId,
-                                                                      checkInTime:
-                                                                          _inTime,
-                                                                      checkOutTime:
-                                                                          '-----',
-                                                                      date:
-                                                                          _inDate,
-                                                                      phoneNumber: widget
-                                                                          .userModel
-                                                                          .phoneNumber,
-                                                                    );
-                                                                    await AllApi()
-                                                                        .postOuterGeoList(
-                                                                      companyId: widget
-                                                                          .userModel
-                                                                          .companyId,
-                                                                      phoneNumber: widget
-                                                                          .userModel
-                                                                          .phoneNumber,
-                                                                      date:
-                                                                          _inDate,
-                                                                      lat: _locationData
-                                                                          .latitude
-                                                                          .toString(),
-                                                                      lon: _locationData
-                                                                          .longitude
-                                                                          .toString(),
-                                                                    );
-                                                                    Fluttertoast
-                                                                        .showToast(
-                                                                      msg:
-                                                                          "Logged in",
-                                                                    );
-                                                                    setState(
-                                                                      () {
-                                                                        loading =
-                                                                            false;
-                                                                      },
-                                                                    );
-                                                                  } else {
-                                                                    ScaffoldMessenger.of(
-                                                                            context)
-                                                                        .showSnackBar(
-                                                                      const SnackBar(
-                                                                        content:
-                                                                            Text(
-                                                                          'You are not allowed to check-in.',
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                  'Send Request',
-                                                                ),
-                                                              ),
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  Get.back();
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                  'Cancel',
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
-                                                    }
-                                                  },
-                                                ),
-                                          _vicinityLoading == false
-                                              ? TextButton(
-                                                  child: const Text(
-                                                    'Cancel',
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              : const Text('')
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
+                                _confirmCheckInDialogBox();
                               }
                             },
                           ),
@@ -798,97 +560,9 @@ class _HomeState extends State<Home> {
                                     },
                                   );
                                 } else {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                          'Confirm Check Out',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text(
-                                              'Check-Out',
-                                            ),
-                                            onPressed: () async {
-                                              _outTime = DateFormat('hh:mm a')
-                                                  .format(DateTime.now());
-                                              _outDate =
-                                                  DateFormat('dd-MM-yyyy')
-                                                      .format(DateTime.now());
-                                              Get.back();
-                                              setState(
-                                                () {
-                                                  loading = true;
-                                                },
-                                              );
-                                              await AllApi().postCheckIn(
-                                                companyId:
-                                                    widget.userModel.companyId,
-                                                checkInTime: checkin,
-                                                checkOutTime: _outTime,
-                                                date: _outDate,
-                                                phoneNumber: widget
-                                                    .userModel.phoneNumber,
-                                              );
-                                              var time1 = DateFormat('hh:mm a')
-                                                  .parse(checkin);
-                                              var time2 = DateFormat('hh:mm a')
-                                                  .parse(widget
-                                                      .userModel.reportingTime);
-                                              var delayInHours = time2
-                                                  .difference(time1)
-                                                  .inHours;
-                                              var delayInMinutes = time2
-                                                  .difference(time1)
-                                                  .inMinutes;
-                                              var status = '';
-                                              if (delayInHours < 0 ||
-                                                  delayInMinutes < 0) {
-                                                status = 'late';
-                                              } else if (delayInHours > 0 ||
-                                                  delayInMinutes > 0) {
-                                                status = 'early';
-                                              } else {
-                                                status = 'perfect';
-                                              }
-                                              await AllApi()
-                                                  .postAttendanceReport(
-                                                employeeName:
-                                                    widget.userModel.name,
-                                                checkInTime: _inTime,
-                                                checkOutTime: _outTime,
-                                                checkInDelayInHours:
-                                                    delayInHours.toString(),
-                                                checkInDelayInMinutes:
-                                                    delayInMinutes.toString(),
-                                                checkOutDifference:
-                                                    differenceFinal.toString(),
-                                                companyId:
-                                                    widget.userModel.companyId,
-                                                empId: widget.userModel.empId,
-                                                status: status,
-                                              );
-
-                                              setState(
-                                                () {
-                                                  loading = false;
-                                                },
-                                              );
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text(
-                                              'Cancel',
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    },
+                                  _confirmCheckOutDialogBox(
+                                    checkin: checkin,
+                                    differenceFinal: differenceFinal,
                                   );
                                 }
                               }
@@ -1071,6 +745,352 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+    );
+  }
+
+  void _confirmCheckInDialogBox() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) => AlertDialog(
+            title: _vicinityLoading
+                ? null
+                : const Text(
+                    'Confirm Check In',
+                  ),
+            content: _vicinityLoading
+                ? Container(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    alignment: Alignment.center,
+                    child: Row(
+                      children: const [
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Text('Please wait'),
+                      ],
+                    ),
+                  )
+                : null,
+            actions: _vicinityLoading
+                ? null
+                : [
+                    TextButton(
+                      child: const Text(
+                        'Check-In',
+                      ),
+                      onPressed: () async {
+                        setStateDialog(() {
+                          _vicinityLoading = true;
+                        });
+                        var result = await AllApi().getVicinity(
+                          refId: widget.userModel.refId,
+                          latitude: _locationData.latitude,
+                          longitude: _locationData.longitude,
+                        );
+                        setStateDialog(() {
+                          _vicinityLoading = false;
+                        });
+                        if (result == true || widget.userModel.allowCheckin) {
+                          _inTime =
+                              DateFormat('hh:mm a').format(DateTime.now());
+                          _inDate =
+                              DateFormat('dd-MM-yyyy').format(DateTime.now());
+                          Get.back();
+                          setState(
+                            () {
+                              loading = true;
+                            },
+                          );
+                          await AllApi().postCheckIn(
+                            designation: widget.userModel.designation,
+                            checkInTime: _inTime,
+                            checkOutTime: '-----',
+                            date: _inDate,
+                            refId: widget.userModel.refId,
+                            companyId: widget.userModel.companyId,
+                          );
+
+                          setState(
+                            () {
+                              loading = false;
+                            },
+                          );
+                        } else {
+                          Get.back();
+                          _sendRequestDialogBox();
+                        }
+                      },
+                    ),
+                    TextButton(
+                      child: const Text(
+                        'Cancel',
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _confirmCheckOutDialogBox({
+    @required dynamic checkin,
+    @required double differenceFinal,
+  }) {
+    var isLoading = false;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: isLoading
+                  ? null
+                  : const Text(
+                      'Confirm Check Out',
+                    ),
+              content: isLoading
+                  ? Container(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: const [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Text('Please wait'),
+                        ],
+                      ),
+                    )
+                  : null,
+              actions: isLoading
+                  ? null
+                  : [
+                      TextButton(
+                        child: const Text(
+                          'Check-Out',
+                        ),
+                        onPressed: () async {
+                          _outTime =
+                              DateFormat('hh:mm a').format(DateTime.now());
+                          _outDate =
+                              DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+                          setStateDialog(() {
+                            isLoading = true;
+                          });
+
+                          setState(() {
+                            loading = true;
+                          });
+
+                          await AllApi().postCheckIn(
+                            designation: widget.userModel.designation,
+                            companyId: widget.userModel.companyId,
+                            checkInTime: checkin,
+                            checkOutTime: _outTime,
+                            date: _outDate,
+                            refId: widget.userModel.refId,
+                          );
+                          var time1 = DateFormat('hh:mm a').parse(checkin);
+                          var time2 = DateFormat('hh:mm a')
+                              .parse(widget.userModel.reportingTime);
+                          var delayInHours = time2.difference(time1).inHours;
+                          var delayInMinutes =
+                              time2.difference(time1).inMinutes;
+
+                          if (delayInHours < 0 || delayInMinutes < 0) {
+                            setStateDialog(() {
+                              _status = 'late';
+                            });
+                          } else if (delayInHours > 0 || delayInMinutes > 0) {
+                            setStateDialog(() {
+                              _status = 'early';
+                            });
+                          } else {
+                            setStateDialog(() {
+                              _status = 'perfect';
+                            });
+                          }
+                          await AllApi().postAttendanceReport(
+                            employeeName: widget.userModel.name,
+                            checkInTime: _inTime,
+                            checkOutTime: _outTime,
+                            checkInDelayInHours: delayInHours.toString(),
+                            checkInDelayInMinutes: delayInMinutes.toString(),
+                            checkOutDifference: differenceFinal.toString(),
+                            companyId: widget.userModel.companyId,
+                            empId: widget.userModel.empId,
+                            status: _status,
+                            designation: widget.userModel.designation,
+                          );
+
+                          setStateDialog(() {
+                            isLoading = false;
+                          });
+
+                          setState(() {
+                            loading = false;
+                          });
+
+                          Get.back();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text(
+                          'Cancel',
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _sendRequestDialogBox() {
+    var isLoading = false;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: isLoading
+                  ? null
+                  : const Text(
+                      'Check-in not allowed.',
+                    ),
+              content: isLoading
+                  ? Container(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: const [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Text('Please wait'),
+                        ],
+                      ),
+                    )
+                  : const Text(
+                      'You aren\'t in the vicinity of 250 metres from your office.',
+                    ),
+              actions: isLoading
+                  ? null
+                  : [
+                      TextButton(
+                        onPressed: () async {
+                          setStateDialog(() {
+                            isLoading = true;
+                          });
+                          await AllApi().postCheckInRequest(
+                              designation: widget.userModel.designation,
+                              companyId: widget.userModel.companyId,
+                              date: DateFormat('dd-MM-yyyy').format(
+                                DateTime.now(),
+                              ),
+                              refId: widget.userModel.refId,
+                              lat: _locationData.latitude.toString(),
+                              lon: _locationData.longitude.toString(),
+                              name: widget.userModel.name);
+                          var allowCheckIn = await AllApi().getUser(
+                            widget.userModel.email,
+                          );
+
+                          if (allowCheckIn.allowCheckin) {
+                            _inTime = DateFormat(
+                              'hh:mm a',
+                            ).format(
+                              DateTime.now(),
+                            );
+                            _inDate = DateFormat(
+                              'dd-MM-yyyy',
+                            ).format(
+                              DateTime.now(),
+                            );
+
+                            setStateDialog(() {
+                              isLoading = false;
+                            });
+
+                            Get.back();
+
+                            setState(
+                              () {
+                                loading = true;
+                              },
+                            );
+
+                            await AllApi().postCheckIn(
+                              designation: widget.userModel.designation,
+                              companyId: widget.userModel.companyId,
+                              checkInTime: _inTime,
+                              checkOutTime: '-----',
+                              date: _inDate,
+                              refId: widget.userModel.refId,
+                            );
+                            await AllApi().postOuterGeoList(
+                              designation: widget.userModel.designation,
+                              empName: widget.userModel.name,
+                              companyId: widget.userModel.companyId,
+                              refId: widget.userModel.refId,
+                              date: _inDate,
+                              lat: _locationData.latitude.toString(),
+                              lon: _locationData.longitude.toString(),
+                            );
+
+                            Fluttertoast.showToast(
+                              msg: "Logged in",
+                            );
+                            setState(
+                              () {
+                                loading = false;
+                              },
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'You are not allowed to check-in.',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text(
+                          'Send Request',
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text(
+                          'Cancel',
+                        ),
+                      ),
+                    ],
+            );
+          },
+        );
+      },
     );
   }
 }

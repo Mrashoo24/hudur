@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Screens/Home/home.dart';
@@ -170,30 +171,53 @@ class _AuthenticationState extends State<Authentication> {
                                             await AllApi().getUser(_userId);
                                         if (_userPassword == result.pass &&
                                             _userId == result.email) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content:
-                                                  Text('Sign in succesful.'),
-                                            ),
+                                          var token = await FirebaseMessaging
+                                              .instance
+                                              .getToken();
+                                          var tokenResult =
+                                              await AllApi().putToken(
+                                            email: _userId,
+                                            token: token,
                                           );
-
-                                          pref.setBool("loggedin", true);
-
-                                          pref.setString(
-                                              "user", jsonEncode(result));
-
-                                          setState(() {
-                                            loading = false;
-                                          });
-
-                                          Navigator.of(context).pushReplacement(
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return Home(
-                                              userModel: result,
+                                          if (tokenResult == 'success') {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content:
+                                                    Text('Sign in succesful.'),
+                                              ),
                                             );
-                                          }));
+
+                                            pref.setBool("loggedin", true);
+
+                                            pref.setString(
+                                                "user", jsonEncode(result));
+
+                                            setState(() {
+                                              loading = false;
+                                            });
+
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                              return Home(
+                                                userModel: result,
+                                              );
+                                            }));
+                                          } else {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Something went wrong. Try again.',
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         } else {
                                           setState(() {
                                             loading = false;
