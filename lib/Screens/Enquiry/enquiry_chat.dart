@@ -66,7 +66,7 @@ class _EnquiryChatState extends State<EnquiryChat> {
             itemBuilder: (context, index) {
               return _messageBox(
                 text: enquiries[index].description,
-                isMe: widget.userModel.empId == enquiries[index].empId,
+                isMe: !enquiries[index].subject.contains('Reply'),
               );
             },
           );
@@ -161,9 +161,11 @@ class _EnquiryChatState extends State<EnquiryChat> {
       empName: widget.userModel.name,
       subject: _subject,
       description: _message,
-      employeeId: widget.userModel.empId,
+      refId: widget.userModel.refId,
       companyId: widget.userModel.companyId,
       empEmail: widget.userModel.email,
+      hrId: widget.userModel.hrId,
+      hrName: widget.userModel.hrName,
     );
     await _allApi.sendEmail(
       subject: _subject,

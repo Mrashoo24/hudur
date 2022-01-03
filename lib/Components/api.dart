@@ -189,6 +189,7 @@ class AllApi {
     @required String fromDate,
     @required String toDate,
     @required String empName,
+    @required String requestId,
   }) async {
     var postLeaveRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest");
@@ -205,6 +206,7 @@ class AllApi {
         'from': fromDate,
         'to': toDate,
         'empname': empName,
+        'requestid': requestId,
       },
     );
     if (response.statusCode == 200) {
@@ -308,23 +310,27 @@ class AllApi {
   Future<void> postEnquiry({
     @required String subject,
     @required String description,
-    @required String employeeId,
+    @required String refId,
     @required String companyId,
     @required String empName,
     @required String empEmail,
+    @required String hrId,
+    @required String hrName,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostEnquiry");
     var response = await http.post(
       url,
       body: {
-        'empid': employeeId,
+        'refid': refId,
         'companyid': companyId,
         'subject': subject,
         'description': description,
         'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
         'empname': empName,
         'empemail': empEmail,
+        'hrid': hrId,
+        'hrname': hrName,
       },
     );
     if (response.statusCode != 200) {
@@ -696,5 +702,21 @@ class AllApi {
       return enquiries.toList();
     }
     return null;
+  }
+
+  Future<String> putAttachment({
+    @required String companyId,
+    @required String requestId,
+    @required String fileName,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/putAttachment?companyId=$companyId&requestId=$requestId&fileName=$fileName");
+    var response = await http.put(url);
+    var body = json.decode(response.body);
+    if (body == 'updated') {
+      return 'updated';
+    } else {
+      return 'failed';
+    }
   }
 }

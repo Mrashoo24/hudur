@@ -16,7 +16,9 @@ class UserModel {
       reportingTime,
       adminLeaves,
       studyPermit,
-      maternityPermit;
+      maternityPermit,
+      hrId,
+      hrName;
   Map<String, dynamic> location;
   bool allow_checkin;
 
@@ -41,6 +43,8 @@ class UserModel {
     this.adminLeaves,
     this.maternityPermit,
     this.studyPermit,
+    this.hrId,
+    this.hrName,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -65,6 +69,8 @@ class UserModel {
       adminLeaves: json['admin_leaves'],
       maternityPermit: json['maternity_permit'],
       studyPermit: json['study_permit'],
+      hrId: json['hrid'],
+      hrName: json['hrname'],
     );
   }
 
@@ -92,6 +98,8 @@ class UserModel {
     data['admin_leaves'] = adminLeaves;
     data['maternity_permit'] = maternityPermit;
     data['study_permit'] = studyPermit;
+    data['hrid'] = hrId;
+    data['hrname'] = hrName;
 
     return data;
   }
@@ -590,7 +598,16 @@ class ServicesModel {
 }
 
 class EmployeeLeaveRequestsModel {
-  String title, refId, date, details, verify, companyId, from, to;
+  String title,
+      refId,
+      date,
+      details,
+      verify,
+      companyId,
+      from,
+      to,
+      requestId,
+      fileName;
 
   EmployeeLeaveRequestsModel({
     this.title,
@@ -601,6 +618,8 @@ class EmployeeLeaveRequestsModel {
     this.refId,
     this.to,
     this.verify,
+    this.requestId,
+    this.fileName,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -613,6 +632,8 @@ class EmployeeLeaveRequestsModel {
       refId: json['refid'],
       to: json['to'],
       verify: json['verify'],
+      requestId: json['requestid'],
+      fileName: json['filename'],
     );
   }
 
@@ -628,21 +649,33 @@ class EmployeeLeaveRequestsModel {
     data['refid'] = refId;
     data['to'] = to;
     data['verify'] = verify;
+    data['filename'] = fileName;
+    data['requestid'] = requestId;
     return data;
   }
 }
 
 class EnquiryModel {
-  String empName, empEmail, empId, companyId, subject, description, timeStamp;
+  String empName,
+      empEmail,
+      refId,
+      companyId,
+      subject,
+      description,
+      timeStamp,
+      hrId,
+      hrName;
 
   EnquiryModel({
     this.companyId,
     this.description,
     this.empEmail,
-    this.empId,
+    this.refId,
     this.empName,
     this.subject,
     this.timeStamp,
+    this.hrId,
+    this.hrName,
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -650,10 +683,12 @@ class EnquiryModel {
       companyId: json['companyid'],
       description: json['description'],
       empEmail: json['empemail'],
-      empId: json['empid'],
+      refId: json['refid'],
       empName: json['empname'],
       subject: json['subject'],
       timeStamp: json['timestamp'],
+      hrId: json['hrid'],
+      hrName: json['hrname'],
     );
   }
 
@@ -664,10 +699,12 @@ class EnquiryModel {
     data['description'] = description;
     data['companyid'] = companyId;
     data['empemail'] = empEmail;
-    data['empid'] = empId;
+    data['refid'] = refId;
     data['empname'] = empName;
     data['subject'] = subject;
     data['timestamp'] = timeStamp;
+    data['hrid'] = hrId;
+    data['hrname'] = hrName;
     return data;
   }
 }

@@ -540,6 +540,8 @@ class _LeavesState extends State<Leaves> {
                   : [
                       TextButton(
                         onPressed: () async {
+                          var requestId =
+                              'REQ' + DateTime.now().microsecond.toString();
                           var _canSubmit = _trySubmit();
                           if (attachments == null) {
                             if (_canSubmit &&
@@ -548,7 +550,9 @@ class _LeavesState extends State<Leaves> {
                               setStateDialog(() {
                                 isLoading = true;
                               });
+
                               var result = await AllApi().postLeaveRequest(
+                                requestId: requestId,
                                 empName: widget.userModel.name,
                                 companyId: widget.userModel.companyId,
                                 date: DateFormat('dd-MM-yyyy')
@@ -559,10 +563,6 @@ class _LeavesState extends State<Leaves> {
                                 fromDate: _selectedFromDate,
                                 toDate: _selectedToDate,
                               );
-
-                              setStateDialog(() {
-                                isLoading = false;
-                              });
 
                               Get.back();
 
@@ -599,7 +599,27 @@ class _LeavesState extends State<Leaves> {
                               setStateDialog(() {
                                 isLoading = true;
                               });
+                              await AllApi().postLeaveRequest(
+                                requestId: requestId,
+                                empName: widget.userModel.name,
+                                companyId: widget.userModel.companyId,
+                                date: DateFormat('dd-MM-yyyy')
+                                    .format(DateTime.now()),
+                                details: textFieldValues,
+                                refId: widget.userModel.refId,
+                                title: title,
+                                fromDate: _selectedFromDate,
+                                toDate: _selectedToDate,
+                              );
                               var result = await AllApi().setFile(_attachment);
+                              await AllApi().putAttachment(
+                                companyId: widget.userModel.companyId,
+                                requestId: requestId,
+                                fileName: _attachmentPlatformFile.name,
+                              );
+                              setStateDialog(() {
+                                isLoading = false;
+                              });
                               setStateDialog(() {
                                 isLoading = false;
                               });
