@@ -13,6 +13,7 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUser";
 
     var response = await http.get(Uri.parse("$getUserUrl?email=$email"));
+    print('respnse use ${response.body}');
     if (response.statusCode == 200) {
       var list = json.decode(response.body);
       if (list != null) {
@@ -75,7 +76,7 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$refId");
 
     var response = await http.get(getVicinityUrl);
-
+      print('viicnity ${response.body}');
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -106,6 +107,7 @@ class AllApi {
       'designation': designation,
     });
     if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg: response.body);
       return;
     } else {
       Fluttertoast.showToast(msg: response.body);

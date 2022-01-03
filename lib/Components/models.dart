@@ -18,7 +18,7 @@ class UserModel {
       studyPermit,
       maternityPermit;
   Map<String, dynamic> location;
-  bool allowCheckin;
+  bool allow_checkin;
 
   UserModel({
     this.address,
@@ -34,7 +34,7 @@ class UserModel {
     this.empId,
     this.refId,
     this.location,
-    this.allowCheckin,
+    this.allow_checkin,
     this.companyId,
     this.hoursOfShift,
     this.reportingTime,
@@ -57,7 +57,7 @@ class UserModel {
       phoneNumber: json['PhoneNumber'],
       empId: json['empid'],
       refId: json['refid'],
-      allowCheckin: json['allow_checkin'],
+      allow_checkin: json['allow_checkin'],
       location: json['location'],
       companyId: json['companyid'],
       hoursOfShift: json['hours_of_shift'],
@@ -84,7 +84,7 @@ class UserModel {
     data['PhoneNumber'] = phoneNumber;
     data['empid'] = empId;
     data['refid'] = refId;
-    data['allow_checkin'] = allowCheckin;
+    data['allow_checkin'] = allow_checkin;
     data['location'] = location;
     data['companyid'] = companyId;
     data['hours_of_shift'] = hoursOfShift;

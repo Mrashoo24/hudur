@@ -794,7 +794,12 @@ class _HomeState extends State<Home> {
                         setStateDialog(() {
                           _vicinityLoading = false;
                         });
-                        if (result == true || widget.userModel.allowCheckin) {
+                        UserModel allowCheckIn = await AllApi().getUser(
+                          widget.userModel.email,
+                        );
+
+                        print('$result + ${allowCheckIn}');
+                        if (result == true || allowCheckIn.allow_checkin) {
                           _inTime =
                               DateFormat('hh:mm a').format(DateTime.now());
                           _inDate =
@@ -1000,21 +1005,11 @@ class _HomeState extends State<Home> {
                           setStateDialog(() {
                             isLoading = true;
                           });
-                          await AllApi().postCheckInRequest(
-                              designation: widget.userModel.designation,
-                              companyId: widget.userModel.companyId,
-                              date: DateFormat('dd-MM-yyyy').format(
-                                DateTime.now(),
-                              ),
-                              refId: widget.userModel.refId,
-                              lat: _locationData.latitude.toString(),
-                              lon: _locationData.longitude.toString(),
-                              name: widget.userModel.name);
                           var allowCheckIn = await AllApi().getUser(
                             widget.userModel.email,
                           );
 
-                          if (allowCheckIn.allowCheckin) {
+                          if (allowCheckIn.allow_checkin) {
                             _inTime = DateFormat(
                               'hh:mm a',
                             ).format(
@@ -1059,12 +1054,38 @@ class _HomeState extends State<Home> {
                             Fluttertoast.showToast(
                               msg: "Logged in",
                             );
+
                             setState(
                               () {
                                 loading = false;
                               },
                             );
+
                           } else {
+
+                            await AllApi().postCheckInRequest(
+                                designation: widget.userModel.designation,
+                                companyId: widget.userModel.companyId,
+                                date: DateFormat('dd-MM-yyyy').format(
+                                  DateTime.now(),
+                                ),
+                                refId: widget.userModel.refId,
+                                lat: _locationData.latitude.toString(),
+                                lon: _locationData.longitude.toString(),
+                                name: widget.userModel.name);
+
+                            setStateDialog(() {
+                              isLoading = false;
+                            });
+
+                            setState(
+                                  () {
+                                loading = false;
+                              },
+                            );
+
+                            Get.back();
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
