@@ -76,7 +76,7 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetOfficeLocation?lat=$latitude&long=$longitude&refid=$refId");
 
     var response = await http.get(getVicinityUrl);
-      print('viicnity ${response.body}');
+    print('viicnity ${response.body}');
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -311,6 +311,7 @@ class AllApi {
     @required String employeeId,
     @required String companyId,
     @required String empName,
+    @required String empEmail,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostEnquiry");
@@ -323,6 +324,7 @@ class AllApi {
         'description': description,
         'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
         'empname': empName,
+        'empemail': empEmail,
       },
     );
     if (response.statusCode != 200) {
@@ -676,5 +678,23 @@ class AllApi {
     var response = await http.get(url);
     var body = json.decode(response.body);
     return body;
+  }
+
+  Future<List<EnquiryModel>> getEnquiries({
+    @required String empEmail,
+    @required String companyId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/getEnquiries?empEmail=$empEmail&companyId=$companyId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List responseList = body;
+      Iterable<EnquiryModel> enquiries = responseList.map((e) {
+        return EnquiryModel().fromJson(e);
+      });
+      return enquiries.toList();
+    }
+    return null;
   }
 }

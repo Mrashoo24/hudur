@@ -5,6 +5,7 @@ import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/AdministrativeLeaves/administrative_leaves.dart';
 import 'package:hudur/Screens/BenchList/benchlist_page.dart';
 import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
+import 'package:hudur/Screens/Enquiry/enquiry_chat.dart';
 import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
 import 'package:hudur/Screens/LateCheckInReason/late_reason.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
@@ -77,8 +78,13 @@ class HomeDrawer extends StatelessWidget {
                     ),
                     title: const Text('Enquiry'),
                     onTap: () {
+                      // Get.to(
+                      //   Enquiry(
+                      //     userModel: userModel,
+                      //   ),
+                      // );
                       Get.to(
-                        Enquiry(
+                        () => EnquiryChat(
                           userModel: userModel,
                         ),
                       );

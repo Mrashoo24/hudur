@@ -631,3 +631,43 @@ class EmployeeLeaveRequestsModel {
     return data;
   }
 }
+
+class EnquiryModel {
+  String empName, empEmail, empId, companyId, subject, description, timeStamp;
+
+  EnquiryModel({
+    this.companyId,
+    this.description,
+    this.empEmail,
+    this.empId,
+    this.empName,
+    this.subject,
+    this.timeStamp,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return EnquiryModel(
+      companyId: json['companyid'],
+      description: json['description'],
+      empEmail: json['empemail'],
+      empId: json['empid'],
+      empName: json['empname'],
+      subject: json['subject'],
+      timeStamp: json['timestamp'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['description'] = description;
+    data['companyid'] = companyId;
+    data['empemail'] = empEmail;
+    data['empid'] = empId;
+    data['empname'] = empName;
+    data['subject'] = subject;
+    data['timestamp'] = timeStamp;
+    return data;
+  }
+}
