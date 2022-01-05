@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:badges/badges.dart';
+// import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -9,10 +9,10 @@ import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
-import 'package:hudur/Screens/Announcements/announcements.dart';
-import 'package:hudur/Screens/Courses/courses.dart';
-import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
-import 'package:hudur/Screens/Leaves/leaves.dart';
+// import 'package:hudur/Screens/Announcements/announcements.dart';
+// import 'package:hudur/Screens/Courses/courses.dart';
+// import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
+// import 'package:hudur/Screens/Leaves/leaves.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 
@@ -571,97 +571,97 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            child: Card(
-                              color: summerGreen,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.airplane_ticket,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'REQUESTS',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Get.to(
-                                () => Leaves(
-                                  userModel: widget.userModel,
-                                ),
-                              );
-                            },
-                          ),
-                          InkWell(
-                            child: Card(
-                              color: mandysPink,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.book,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'COURSES',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Get.to(
-                                () => Courses(
-                                  userModel: widget.userModel,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.only(
+                    //     top: 10,
+                    //     bottom: 10,
+                    //   ),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       InkWell(
+                    //         child: Card(
+                    //           color: summerGreen,
+                    //           shape: const RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.all(
+                    //               Radius.circular(12.0),
+                    //             ),
+                    //           ),
+                    //           child: Container(
+                    //             width: MediaQuery.of(context).size.width * 0.4,
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.2,
+                    //             padding: const EdgeInsets.all(22.0),
+                    //             child: Column(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: const [
+                    //                 Icon(
+                    //                   Icons.airplane_ticket,
+                    //                   color: Colors.white,
+                    //                 ),
+                    //                 Text(
+                    //                   'REQUESTS',
+                    //                   style: TextStyle(
+                    //                     fontWeight: FontWeight.bold,
+                    //                     color: Colors.white,
+                    //                     fontSize: 12,
+                    //                   ),
+                    //                 )
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         onTap: () {
+                    //           Get.to(
+                    //             () => Leaves(
+                    //               userModel: widget.userModel,
+                    //             ),
+                    //           );
+                    //         },
+                    //       ),
+                    //       InkWell(
+                    //         child: Card(
+                    //           color: mandysPink,
+                    //           shape: const RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.all(
+                    //               Radius.circular(12.0),
+                    //             ),
+                    //           ),
+                    //           child: Container(
+                    //             width: MediaQuery.of(context).size.width * 0.4,
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.2,
+                    //             padding: const EdgeInsets.all(22.0),
+                    //             child: Column(
+                    //               mainAxisAlignment: MainAxisAlignment.center,
+                    //               children: const [
+                    //                 Icon(
+                    //                   Icons.book,
+                    //                   color: Colors.white,
+                    //                 ),
+                    //                 Text(
+                    //                   'COURSES',
+                    //                   style: TextStyle(
+                    //                     fontWeight: FontWeight.bold,
+                    //                     color: Colors.white,
+                    //                     fontSize: 12,
+                    //                   ),
+                    //                 )
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         onTap: () {
+                    //           Get.to(
+                    //             () => Courses(
+                    //               userModel: widget.userModel,
+                    //             ),
+                    //           );
+                    //         },
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               );
@@ -679,63 +679,63 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: Scaffold(
-        drawer: HomeDrawer(
-          userModel: widget.userModel,
-        ),
+        // drawer: HomeDrawer(
+        //   userModel: widget.userModel,
+        // ),
         appBar: AppBar(
           backgroundColor: const Color(0xFF6392B0),
           actions: [
             _countDownTimer(),
-            FutureBuilder<List<AnnounceModel>>(
-              future: AllApi().getAnnounce(
-                companyId: widget.userModel.companyId,
-              ),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return IconButton(
-                    onPressed: () {
-                      Get.to(
-                        () => Announcements(
-                          userModel: widget.userModel,
-                        ),
-                      );
-                    },
-                    icon: Badge(
-                      badgeColor: portica,
-                      badgeContent: const FittedBox(
-                        child: Text(
-                          '!',
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.notifications,
-                      ),
-                    ),
-                  );
-                }
-                var announcements = snapshot.data;
-                return IconButton(
-                  onPressed: () {
-                    Get.to(
-                      () => Announcements(
-                        userModel: widget.userModel,
-                      ),
-                    );
-                  },
-                  icon: Badge(
-                    badgeColor: portica,
-                    badgeContent: FittedBox(
-                      child: Text(
-                        '${announcements.length}',
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.notifications,
-                    ),
-                  ),
-                );
-              },
-            ),
+            // FutureBuilder<List<AnnounceModel>>(
+            //   future: AllApi().getAnnounce(
+            //     companyId: widget.userModel.companyId,
+            //   ),
+            //   builder: (context, snapshot) {
+            //     if (!snapshot.hasData) {
+            //       return IconButton(
+            //         onPressed: () {
+            //           Get.to(
+            //             () => Announcements(
+            //               userModel: widget.userModel,
+            //             ),
+            //           );
+            //         },
+            //         icon: Badge(
+            //           badgeColor: portica,
+            //           badgeContent: const FittedBox(
+            //             child: Text(
+            //               '!',
+            //             ),
+            //           ),
+            //           child: const Icon(
+            //             Icons.notifications,
+            //           ),
+            //         ),
+            //       );
+            //     }
+            //     var announcements = snapshot.data;
+            //     return IconButton(
+            //       onPressed: () {
+            //         Get.to(
+            //           () => Announcements(
+            //             userModel: widget.userModel,
+            //           ),
+            //         );
+            //       },
+            //       icon: Badge(
+            //         badgeColor: portica,
+            //         badgeContent: FittedBox(
+            //           child: Text(
+            //             '${announcements.length}',
+            //           ),
+            //         ),
+            //         child: const Icon(
+            //           Icons.notifications,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -791,13 +791,13 @@ class _HomeState extends State<Home> {
                           latitude: _locationData.latitude,
                           longitude: _locationData.longitude,
                         );
-                        setStateDialog(() {
-                          _vicinityLoading = false;
-                        });
+
                         UserModel allowCheckIn = await AllApi().getUser(
                           widget.userModel.email,
                         );
-
+                        setStateDialog(() {
+                          _vicinityLoading = false;
+                        });
                         print('$result + ${allowCheckIn}');
                         if (result == true || allowCheckIn.allow_checkin) {
                           _inTime =
@@ -1060,9 +1060,7 @@ class _HomeState extends State<Home> {
                                 loading = false;
                               },
                             );
-
                           } else {
-
                             await AllApi().postCheckInRequest(
                                 designation: widget.userModel.designation,
                                 companyId: widget.userModel.companyId,
@@ -1079,7 +1077,7 @@ class _HomeState extends State<Home> {
                             });
 
                             setState(
-                                  () {
+                              () {
                                 loading = false;
                               },
                             );

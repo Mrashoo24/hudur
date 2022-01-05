@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Authentication/authentication.dart';
@@ -10,37 +10,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Screens/Home/home.dart';
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  description: 'This channel is used for important notifications.',
-  importance: Importance.max,
-  playSound: true,
-  // sound: RawResourceAndroidNotificationSound('notification'),
-  enableLights: true,
-);
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//   'high_importance_channel', // id
+//   'High Importance Notifications', // title
+//   description: 'This channel is used for important notifications.',
+//   importance: Importance.max,
+//   playSound: true,
+//   // sound: RawResourceAndroidNotificationSound('notification'),
+//   enableLights: true,
+// );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-Future<void> firebaseMessgaingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
+// Future<void> firebaseMessgaingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+// }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessgaingBackgroundHandler);
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(firebaseMessgaingBackgroundHandler);
 
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true, // Required to display a heads up notification
-    badge: true,
-    sound: true,
-  );
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true, // Required to display a heads up notification
+  //   badge: true,
+  //   sound: true,
+  // );
   runApp(const MyApp());
 }
 
@@ -55,35 +55,35 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var listofuser = [];
 
-  @override
-  void initState() {
-    super.initState();
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) {
-        RemoteNotification notification = message.notification;
-        AndroidNotification android = message.notification?.android;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   FirebaseMessaging.onMessage.listen(
+  //     (RemoteMessage message) {
+  //       RemoteNotification notification = message.notification;
+  //       AndroidNotification android = message.notification?.android;
 
-        if (notification != null && android != null) {
-          flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channelDescription: channel.description,
-                // sound:
-                //     const RawResourceAndroidNotificationSound('notification'),
-                // other properties...
-                importance: channel.importance,
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
+  //       if (notification != null && android != null) {
+  //         flutterLocalNotificationsPlugin.show(
+  //           notification.hashCode,
+  //           notification.title,
+  //           notification.body,
+  //           NotificationDetails(
+  //             android: AndroidNotificationDetails(
+  //               channel.id,
+  //               channel.name,
+  //               channelDescription: channel.description,
+  //               // sound:
+  //               //     const RawResourceAndroidNotificationSound('notification'),
+  //               // other properties...
+  //               importance: channel.importance,
+  //             ),
+  //           ),
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
