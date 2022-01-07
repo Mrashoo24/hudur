@@ -149,6 +149,12 @@ class LeaveRequestsModel {
   List details;
   String companyId;
   List attachments;
+  String tenure;
+  String timebased;
+  String countbased;
+  String limit;
+  String reducedtime;
+  String hourslimit;
 
   LeaveRequestsModel({
     this.title,
@@ -156,6 +162,12 @@ class LeaveRequestsModel {
     this.details,
     this.companyId,
     this.attachments,
+    this.countbased,
+    this.hourslimit,
+    this.limit,
+    this.reducedtime,
+    this.tenure,
+    this.timebased
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -165,6 +177,12 @@ class LeaveRequestsModel {
       details: json['details'],
       attachments: json['attachments'],
       companyId: json['companyid'],
+      countbased: json['countbased'],
+      hourslimit: json['hourslimit'],
+      limit: json['limit'],
+      reducedtime: json['reducedtime'],
+      tenure: json['tenure'],
+      timebased: json['timebased'],
     );
   }
 

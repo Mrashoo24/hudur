@@ -748,4 +748,29 @@ class AllApi {
       return 'failed';
     }
   }
+
+
+  Future<List<EmployeeLeaveRequestsModel>> getLeavesCount({
+    @required String title,
+    @required String verify,
+    @required String companyid,
+    @required String refid,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getLeaveCounts?verify=$verify&companyid=$companyid&refid=$refid&title=$title");
+    var response = await http.get(url);
+    print(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List responseList = body;
+      Iterable<EmployeeLeaveRequestsModel> adminLeaves = responseList.map((e) {
+        return EmployeeLeaveRequestsModel().fromJson(e);
+      });
+      return adminLeaves.toList();
+    } else {
+      return null;
+    }
+  }
+
+
 }

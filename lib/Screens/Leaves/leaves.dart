@@ -50,45 +50,69 @@ class _LeavesState extends State<Leaves> {
     @required String subtitle,
     @required int value,
     @required List details,
-    List attachments,
+    List attachments,LeaveRequestsModel leaves
   }) {
-    return RadioListTile(
-      activeColor: hippieBlue,
-      secondary: ElevatedButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(12.0),
+    return FutureBuilder(
+      future: AllApi().getLeavesCount(title: title, verify: '1', companyid: widget.userModel.companyId, refid: widget.userModel.refId),
+      builder: (context, snapshot) {
+
+        if(!snapshot.hasData){
+          return Center(child: Text('Please Wait Fetching Details'));
+        }else{
+
+        List<EmployeeLeaveRequestsModel> leavedata = snapshot.requireData;
+
+        return RadioListTile(
+          activeColor: hippieBlue,
+          secondary: ElevatedButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12.0),
+                  ),
+                ),
               ),
+              backgroundColor: MaterialStateProperty.all<Color>(hippieBlue),
             ),
+            child: const Text('Details'),
+            onPressed: value == _selectedValue
+                ? () {
+                    _onPressedDetails(
+                      details: details,
+                      title: title,
+                      attachments: attachments,
+                      timebased: leaves.tenure,
+                      countbased: leaves.countbased,
+                      limit: leaves.limit,
+                      hourslimit: leaves.hourslimit,
+                      reducedtime: leaves.reducedtime,
+                      tenure: leaves.tenure
+                    );
+                  }
+                : null,
           ),
-          backgroundColor: MaterialStateProperty.all<Color>(hippieBlue),
-        ),
-        child: const Text('Details'),
-        onPressed: value == _selectedValue
-            ? () {
-                _onPressedDetails(
-                  details: details,
-                  title: title,
-                  attachments: attachments,
-                );
-              }
-            : null,
-      ),
-      value: value,
-      title: Text(
-        title,
-      ),
-      subtitle: Text(
-        subtitle,
-      ),
-      groupValue: _selectedValue,
-      onChanged: (value) => setState(
-        () {
-          _selectedValue = value;
-        },
-      ),
+          value: value,
+          title: Text(
+            title,
+          ),
+          subtitle: Column(
+            children: [
+              Text(
+                subtitle,
+              ),
+              Text(leavedata.length.toString())
+            ],
+          ),
+
+          groupValue: _selectedValue,
+          onChanged: (value) => setState(
+            () {
+              _selectedValue = value;
+            },
+          ),
+        );}
+      }
     );
   }
 
@@ -130,6 +154,8 @@ class _LeavesState extends State<Leaves> {
                         value: index + 1,
                         details: leaveRequests[index].details,
                         attachments: leaveRequests[index].attachments,
+                        leaves:leaveRequests[index]
+
                       );
                     },
                   ),
@@ -346,7 +372,8 @@ class _LeavesState extends State<Leaves> {
   void _onPressedDetails({
     @required List details,
     @required String title,
-    List attachments,
+    List attachments,String tenure,String limit,String timebased,String reducedtime,String countbased,
+    String hourslimit
   }) {
     showDialog(
       barrierDismissible: false,
@@ -396,7 +423,7 @@ class _LeavesState extends State<Leaves> {
                                       ),
                                     ),
                                     onTap: () {
-                                      DatePicker.showDatePicker(
+                                      DatePicker.showDateTimePicker(
                                         context,
                                         showTitleActions: true,
                                         minTime: DateTime.now(),
@@ -433,7 +460,7 @@ class _LeavesState extends State<Leaves> {
                                       enabled: false,
                                     ),
                                     onTap: () {
-                                      DatePicker.showDatePicker(
+                                      DatePicker.showDateTimePicker(
                                         context,
                                         showTitleActions: true,
                                         minTime: DateTime.now(),
