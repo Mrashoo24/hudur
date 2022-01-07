@@ -167,10 +167,24 @@ class _AuthenticationState extends State<Authentication> {
                                         setState(() {
                                           loading = true;
                                         });
+
                                         var result =
                                             await AllApi().getUser(_userId);
+
                                         if (_userPassword == result.pass &&
                                             _userId == result.email) {
+                                          if(result.designation == 'hr' || result.designation == 'manager'){
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content:
+                                                Text('You cannot login with this email'),
+                                              ),
+                                            );
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          }else{
                                           var token = await FirebaseMessaging
                                               .instance
                                               .getToken();
@@ -217,7 +231,7 @@ class _AuthenticationState extends State<Authentication> {
                                                 ),
                                               ),
                                             );
-                                          }
+                                          }}
                                         } else {
                                           setState(() {
                                             loading = false;

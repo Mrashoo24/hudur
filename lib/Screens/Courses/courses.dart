@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:intl/intl.dart';
 
 class Courses extends StatefulWidget {
   final UserModel userModel;
@@ -19,71 +22,89 @@ class _CoursesState extends State<Courses> {
     @required int index,
     @required Function onPressedRegister,
   }) {
-    return Card(
-      elevation: 8,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(12.0),
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+    return  FutureBuilder(
+      future: _allApi.checkIfRegisteredCourse(
+    courseId: courseList[index].courseId,
+      empId: widget.userModel.empId,
+    ),
+      builder: (context, snapshot) {
+
+        if(!snapshot.hasData){
+          return CircularProgressIndicator(color:Colors.transparent,);
+        }
+
+        var response = snapshot.requireData;
+        print('empId $widget.userModel.empId');
+        print('response $response');
+
+        return response != 'not registered' ? SizedBox() : Card(
+          elevation: 8,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12.0),
+            ),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  courseList[index].title,
-                  style: TextStyle(
-                    color: hippieBlue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      courseList[index].title,
+                      style: TextStyle(
+                        color: hippieBlue,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      courseList[index].hrId,
+                      style: TextStyle(
+                        color: hippieBlue,
+                      ),
+                    ),
+                    Text(
+                      courseList[index].venue,
+                      style: TextStyle(
+                        color: hippieBlue,
+                      ),
+                    ),
+                    Text(
+                      courseList[index].date,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  courseList[index].hrId,
-                  style: TextStyle(
-                    color: hippieBlue,
-                  ),
-                ),
-                Text(
-                  courseList[index].venue,
-                  style: TextStyle(
-                    color: hippieBlue,
-                  ),
-                ),
-                Text(
-                  courseList[index].date,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                ElevatedButton(
+                  onPressed: onPressedRegister,
+                  child: const Text('Register'),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          8.0,
+                        ),
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      hippieBlue,
+                    ),
                   ),
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: onPressedRegister,
-              child: const Text('Register'),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      8.0,
-                    ),
-                  ),
-                ),
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  hippieBlue,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 
@@ -151,6 +172,83 @@ class _CoursesState extends State<Courses> {
                 ),
               ],
             ),
+            ElevatedButton(onPressed: () async {
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  bool isLoading = false;
+                  return StatefulBuilder(
+                    builder: (context, setStateDialog) {
+                      return AlertDialog(
+                        title: isLoading
+                            ? null
+                            : const Text(
+                          'Exit the course?',
+                        ),
+                        content: isLoading
+                            ? Container(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          alignment: Alignment.center,
+                          child: Row(
+                            children: const [
+                              CircularProgressIndicator(),
+                              SizedBox(
+                                width: 30,
+                              ),
+                              Text('Please wait'),
+                            ],
+                          ),
+                        )
+                            : const Text(
+                          'Are you sure you want to Exit the course?',
+                        ),
+                        actions: isLoading
+                            ? null
+                            : [
+                          TextButton(
+                            child: const Text('Exit'),
+                            onPressed: () async {
+                              setStateDialog(() {
+                                isLoading = true;
+                              });
+
+                              await _allApi.removeRegisteration(courseId:  courseList[index].courseId, empId: widget.userModel.empId).then((value) {
+                                Fluttertoast.showToast(msg: value);
+                                setStateDialog((){
+                                  isLoading = false;
+                                });
+                                Get.back();
+                                setState(() {
+
+                                });
+                              });
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Cancel'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+
+
+
+
+
+
+
+            }, child: Text('Exit'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red)
+              ),
+            )
           ],
         ),
       ),
@@ -180,12 +278,16 @@ class _CoursesState extends State<Courses> {
                   courseList: courseList,
                   index: index,
                   onPressedRegister: () {
+
                     _onPressedRegister(
+
                       coursesModel: courseList[index],
                       empId: widget.userModel.empId,
                       empName: widget.userModel.name,
                       empPhone: widget.userModel.phoneNumber,
+
                     );
+
                   },
                 );
               },
@@ -340,6 +442,9 @@ class _CoursesState extends State<Courses> {
                                   content: Text('Registered successfully.'),
                                 ),
                               );
+                              setState(() {
+
+                              });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

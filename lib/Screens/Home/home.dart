@@ -187,6 +187,7 @@ class _HomeState extends State<Home> {
                 refId: widget.userModel.refId,
                 date: DateFormat('dd-MM-yyyy').format(DateTime.now())),
             builder: (context, snapshot) {
+
               if (!snapshot.hasData) {
                 return Center(
                   child: Image.asset("assets/Images/loading.gif"),
@@ -196,6 +197,7 @@ class _HomeState extends State<Home> {
               var report = snapshot.requireData;
               var checkin = report == "No Data" ? "-----" : report["checkin"];
               var checkout = report == "No Data" ? "-----" : report["checkout"];
+
 
               var start = report == "No Data"
                   ? DateFormat('hh:mm a').parse("00:00 AM")
@@ -207,11 +209,23 @@ class _HomeState extends State<Home> {
                       ? DateFormat('hh:mm a').parse("00:00 AM")
                       : DateFormat('hh:mm a').parse(checkout);
 
+            
+
               Duration difference = end.difference(start);
-              var differenceFinal = ((difference.inSeconds / 3600) - 7.0)
+
+              var differenceFinal = ((difference.inSeconds / 3600))
                   .toDouble()
                   .toPrecision(2);
+              
+              _status = report == "No Data" ? "-----" :
+              (start.isAfter(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15)))) ? 'late' :
+              (start.isBefore(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(hours: int.parse(widget.userModel.hoursOfShift))))) ? 'early' :
+                  'perfect'
+              ;
 
+
+
+              
               return Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -326,6 +340,15 @@ class _HomeState extends State<Home> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+
+                             Text(
+                                DateFormat('dd-MM-yyyy').format(DateTime.now()),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                                 const Text(
                                   'Attendance',
                                   style: TextStyle(
@@ -885,6 +908,7 @@ class _HomeState extends State<Home> {
                           'Check-Out',
                         ),
                         onPressed: () async {
+
                           _outTime =
                               DateFormat('hh:mm a').format(DateTime.now());
                           _outDate =
@@ -899,36 +923,42 @@ class _HomeState extends State<Home> {
                           });
 
                           await AllApi().postCheckIn(
+
                             designation: widget.userModel.designation,
                             companyId: widget.userModel.companyId,
                             checkInTime: checkin,
                             checkOutTime: _outTime,
                             date: _outDate,
                             refId: widget.userModel.refId,
+
                           );
+
                           var time1 = DateFormat('hh:mm a').parse(checkin);
                           var time2 = DateFormat('hh:mm a')
                               .parse(widget.userModel.reportingTime);
+
                           var delayInHours = time2.difference(time1).inHours;
+
                           var delayInMinutes =
                               time2.difference(time1).inMinutes;
 
-                          if (delayInHours < 0 || delayInMinutes < 0) {
-                            setStateDialog(() {
-                              _status = 'late';
-                            });
-                          } else if (delayInHours > 0 || delayInMinutes > 0) {
-                            setStateDialog(() {
-                              _status = 'early';
-                            });
-                          } else {
-                            setStateDialog(() {
-                              _status = 'perfect';
-                            });
-                          }
+                          // if (delayInHours < 0 || delayInMinutes < 0) {
+                          //   setStateDialog(() {
+                          //     _status = 'late';
+                          //   });
+                          // } else if (delayInHours > 0 || delayInMinutes > 0) {
+                          //   setStateDialog(() {
+                          //     _status = 'early';
+                          //   });
+                          // } else {
+                          //   setStateDialog(() {
+                          //     _status = 'perfect';
+                          //   });
+                          // }
+
                           await AllApi().postAttendanceReport(
                             employeeName: widget.userModel.name,
-                            checkInTime: _inTime,
+                            checkInTime: checkin,
                             checkOutTime: _outTime,
                             checkInDelayInHours: delayInHours.toString(),
                             checkInDelayInMinutes: delayInMinutes.toString(),
@@ -937,6 +967,7 @@ class _HomeState extends State<Home> {
                             empId: widget.userModel.empId,
                             status: _status,
                             designation: widget.userModel.designation,
+                            hours: int.parse(widget.userModel.hoursOfShift)
                           );
 
                           setStateDialog(() {

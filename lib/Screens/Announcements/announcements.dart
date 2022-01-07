@@ -56,7 +56,7 @@ class _AnnouncementsState extends State<Announcements> {
                   ),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    // height: MediaQuery.of(context).size.height * 0.15,
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -103,6 +103,7 @@ class _AnnouncementsState extends State<Announcements> {
                           height: 5,
                         ),
                         Row(
+
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
@@ -111,13 +112,17 @@ class _AnnouncementsState extends State<Announcements> {
                                 fontSize: 20,
                               ),
                             ),
+
                             Text(
+
                               announcementList[index].timestamp,
                               style: const TextStyle(
                                 fontSize: 20,
                               ),
+
                             ),
                           ],
+
                         ),
                       ],
                     ),

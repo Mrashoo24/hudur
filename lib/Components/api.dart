@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_utils/src/extensions/double_extensions.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,6 +10,7 @@ import 'models.dart';
 
 class AllApi {
   Future<UserModel> getUser(String email) async {
+
     var getUserUrl =
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUser";
 
@@ -25,6 +27,7 @@ class AllApi {
     } else {
       return UserModel();
     }
+
   }
 
   Future<void> postCheckIn({
@@ -413,16 +416,29 @@ class AllApi {
     @required String checkOutTime,
     @required String employeeName,
     @required String designation,
+    @required int hours,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAttendanceReport");
+
+   var checkOutDifference1 = DateFormat('hh:mm a').parse(checkOutTime).difference(DateFormat('hh:mm a').parse(checkInTime));
+
+    var differenceFinal = ((checkOutDifference1.inSeconds / 3600))
+        .toDouble()
+        .toPrecision(2);
+
+   print('differenc ${differenceFinal.toString()}');
+
+      var workingstatus =  differenceFinal > double.parse(hours.toString()) ? 'extra' : differenceFinal < double.parse(hours.toString()) ? 'early' : 'perfect';
+
+
     var response = await http.post(
       url,
       body: {
         'empid': empId,
         'companyid': companyId,
         'status': status,
-        'check_out_difference': checkOutDifference,
+        'check_out_difference': differenceFinal.toString(),
         'check_in_delay_in_hours': checkInDelayInHours,
         'check_in_delay_in_minutes': checkInDelayInMinutes,
         'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
@@ -431,6 +447,7 @@ class AllApi {
         'empname': employeeName,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
         'designation': designation,
+        'workingstatus':workingstatus
       },
     );
     var body = json.decode(response.body);
@@ -673,6 +690,18 @@ class AllApi {
     if (response.statusCode != 200) {
       return;
     }
+  }
+
+  Future<String> removeRegisteration({
+    @required String courseId,
+    @required String empId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/removeCourseEnrollment?courseId=$courseId&empId=$empId");
+    var response = await http.get(url);
+    print(response.body);
+    var body = json.decode(response.body);
+    return body;
   }
 
   Future<String> checkIfRegisteredCourse({
