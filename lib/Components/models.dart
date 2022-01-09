@@ -154,7 +154,7 @@ class LeaveRequestsModel {
   String countbased;
   String limit;
   String reducedtime;
-  String hourslimit;
+  String hourslimit;String financial_month;
 
   LeaveRequestsModel({
     this.title,
@@ -167,7 +167,7 @@ class LeaveRequestsModel {
     this.limit,
     this.reducedtime,
     this.tenure,
-    this.timebased
+    this.timebased,this.financial_month
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -183,6 +183,7 @@ class LeaveRequestsModel {
       reducedtime: json['reducedtime'],
       tenure: json['tenure'],
       timebased: json['timebased'],
+      financial_month: json['financial_month']
     );
   }
 

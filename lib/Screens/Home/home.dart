@@ -256,6 +256,7 @@ class _HomeState extends State<Home> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+
                                   Text(
                                     widget.userModel.name,
                                     style: const TextStyle(
@@ -264,30 +265,35 @@ class _HomeState extends State<Home> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+
                                   Text(
                                     'Id: ' + widget.userModel.empId,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
+
                                   Text(
                                     widget.userModel.email,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
+
                                   Text(
                                     widget.userModel.phoneNumber,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
+
                                   Text(
                                     widget.userModel.designation,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
+
                                 ],
                               ),
                               SizedBox(

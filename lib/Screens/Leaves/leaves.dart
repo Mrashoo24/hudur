@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
@@ -53,14 +54,12 @@ class _LeavesState extends State<Leaves> {
     List attachments,LeaveRequestsModel leaves
   }) {
     return FutureBuilder(
-      future: AllApi().getLeavesCount(title: title, verify: '1', companyid: widget.userModel.companyId, refid: widget.userModel.refId),
+      future: AllApi().getLeavesCount(title: title, verify: '1', companyid: widget.userModel.companyId, refid: widget.userModel.refId,financial_month:leaves.financial_month),
       builder: (context, snapshot) {
 
         if(!snapshot.hasData){
           return Center(child: Text('Please Wait Fetching Details'));
         }else{
-
-        List<EmployeeLeaveRequestsModel> leavedata = snapshot.requireData;
 
         return RadioListTile(
           activeColor: hippieBlue,
@@ -77,18 +76,113 @@ class _LeavesState extends State<Leaves> {
             ),
             child: const Text('Details'),
             onPressed: value == _selectedValue
-                ? () {
-                    _onPressedDetails(
-                      details: details,
-                      title: title,
-                      attachments: attachments,
-                      timebased: leaves.tenure,
-                      countbased: leaves.countbased,
-                      limit: leaves.limit,
-                      hourslimit: leaves.hourslimit,
-                      reducedtime: leaves.reducedtime,
-                      tenure: leaves.tenure
-                    );
+                ? () async {
+
+
+              List<EmployeeLeaveRequestsModel> leavedata = snapshot.requireData;
+
+              var year1 = DateTime(DateTime.now().year,int.parse(leaves.financial_month));
+              var year2 = DateTime(DateTime.now().year-1,int.parse(leaves.financial_month)-1);
+
+              // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
+
+              var month1 = DateTime(DateTime.now().year,DateTime.now().month);
+              var month2 = DateTime(DateTime.now().year,DateTime.now().month -1);
+
+
+              print('year1 $year1');
+              print('year2 $year2');
+              print('month1 $month1');
+              print('month2 $month2');
+
+              if(leaves.tenure == 'yearly'){
+
+
+
+                leavedata =  leavedata.where(
+                        (element){
+                      return  DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isAfter(year2)
+                          && DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isBefore(year1);
+
+                    }
+                ).toList();
+
+
+
+                var totalLeaveHours = 0;
+
+                await  Future.forEach(leavedata,(element) {
+
+                  totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a').parse(element.to).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(element.from)).inHours;
+
+                });
+
+                print('totalLeave ${totalLeaveHours}');
+
+                var remainingHours = (double.parse(leaves.hourslimit) - totalLeaveHours).round();
+
+
+
+                _onPressedDetails(
+                    details: details,
+                    title: title,
+                    attachments: attachments,
+                    timebased: leaves.tenure,
+                    countbased: leaves.countbased,
+                    limit: leaves.limit,
+                    hourslimit: leaves.hourslimit,
+                    reducedtime: leaves.reducedtime,
+                    tenure: leaves.tenure,
+                    totalCountConsumed: leavedata.length.toString(),
+                    totalLeaveHours:totalLeaveHours.toString(),
+                    remainingHours:remainingHours.toString()
+                );
+
+              }else{
+
+
+
+               leavedata = leavedata.where(
+                        (element){
+                      return  DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isAfter(month2)
+                          && DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isBefore(month1);
+
+                    }
+                ).toList();
+
+
+
+                var totalLeaveHours = 0;
+
+                await  Future.forEach(leavedata,(element) {
+
+                  totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a').parse(element.to).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(element.from)).inHours;
+
+                });
+
+                print('totalLeave ${totalLeaveHours}');
+
+                var remainingHours = (double.parse(leaves.hourslimit) - totalLeaveHours).round();
+
+
+
+                _onPressedDetails(
+                    details: details,
+                    title: title,
+                    attachments: attachments,
+                    timebased: leaves.tenure,
+                    countbased: leaves.countbased,
+                    limit: leaves.limit,
+                    hourslimit: leaves.hourslimit,
+                    reducedtime: leaves.reducedtime,
+                    tenure: leaves.tenure,
+                    totalCountConsumed: leavedata.length.toString(),
+                    totalLeaveHours:totalLeaveHours.toString(),
+                    remainingHours:remainingHours.toString()
+                );
+
+              }
+
                   }
                 : null,
           ),
@@ -98,10 +192,10 @@ class _LeavesState extends State<Leaves> {
           ),
           subtitle: Column(
             children: [
+
               Text(
                 subtitle,
               ),
-              Text(leavedata.length.toString())
             ],
           ),
 
@@ -115,6 +209,106 @@ class _LeavesState extends State<Leaves> {
       }
     );
   }
+
+  sendLeaveRequest(String requestId,String title) async {
+
+    print('no limit on count and hours are pending');
+
+    var result = await AllApi().postLeaveRequest(
+      requestId: requestId,
+      empName: widget.userModel.name,
+      companyId: widget.userModel.companyId,
+      date: DateFormat('yyyy-MM-dd')
+          .format(DateTime.now()),
+      details: textFieldValues,
+      refId: widget.userModel.refId,
+      title: title,
+      fromDate: _selectedFromDate,
+      toDate: _selectedToDate,
+    );
+
+    Get.back();
+
+    if (result == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Request Sent.'),
+        ),
+      );
+      setState(() {
+        _selectedFromDate = '';
+        _selectedToDate = '';
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to sent request.'),
+        ),
+      );
+      setState(() {
+        _selectedFromDate = '';
+        _selectedToDate = '';
+      });
+    }
+    print('no limits');
+  }
+
+  sendfileleaverequest(String requestId,String title,setStateDialog,isLoading) async {
+
+
+    await AllApi().postLeaveRequest(
+      requestId: requestId,
+      empName: widget.userModel.name,
+      companyId: widget.userModel.companyId,
+      date: DateFormat('yyyy-MM-dd')
+          .format(DateTime.now()),
+      details: textFieldValues,
+      refId: widget.userModel.refId,
+      title: title,
+      fromDate: _selectedFromDate,
+      toDate: _selectedToDate,
+    );
+    var result = await AllApi().setFile(_attachment);
+    await AllApi().putAttachment(
+      companyId: widget.userModel.companyId,
+      requestId: requestId,
+      fileName: _attachmentPlatformFile.name,
+    );
+    setStateDialog(() {
+      isLoading = false;
+    });
+
+
+    if (result == '1') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Request Sent.'),
+        ),
+      );
+      setState(() {
+        _selectedFromDate = '';
+        _selectedToDate = '';
+        _attachment = null;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to sent request.'),
+        ),
+      );
+      setState(() {
+        _selectedFromDate = '';
+        _selectedToDate = '';
+        _attachment = null;
+      });
+    }
+    Get.back();
+  }
+
+
+
+
+
 
   Widget _requestTab() {
     return FutureBuilder<List<LeaveRequestsModel>>(
@@ -373,7 +567,7 @@ class _LeavesState extends State<Leaves> {
     @required List details,
     @required String title,
     List attachments,String tenure,String limit,String timebased,String reducedtime,String countbased,
-    String hourslimit
+    String hourslimit,String totalLeaveHours,String remainingHours,String totalCountConsumed
   }) {
     showDialog(
       barrierDismissible: false,
@@ -403,6 +597,11 @@ class _LeavesState extends State<Leaves> {
                         key: _formkey,
                         child: Column(
                           children: [
+                            Text('Number of Count: $totalCountConsumed'),
+                         limit == '0' ?SizedBox()  :  Text('Leaves Pending: ${(double.parse(limit) - double.parse(totalCountConsumed)).round()}'),
+                            hourslimit == '0' ? SizedBox() :   Text('Total Hours Consumed: $totalLeaveHours'),
+                         hourslimit == '0' ? SizedBox() :  Text('Total Hours Remaining: $remainingHours'),
+
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height * 0.15,
@@ -428,6 +627,7 @@ class _LeavesState extends State<Leaves> {
                                         showTitleActions: true,
                                         minTime: DateTime.now(),
                                         maxTime: DateTime(2050, 6, 7),
+
                                         onChanged: (date) {
                                           setStateDialog(() {
                                             _selectedFromDate =
@@ -567,10 +767,12 @@ class _LeavesState extends State<Leaves> {
                   : [
                       TextButton(
                         onPressed: () async {
+
                           var requestId =
                               'REQ' + DateTime.now().microsecond.toString();
                           var _canSubmit = _trySubmit();
                           if (attachments == null) {
+
                             if (_canSubmit &&
                                 (_selectedFromDate != '' &&
                                     _selectedToDate != '')) {
@@ -578,42 +780,108 @@ class _LeavesState extends State<Leaves> {
                                 isLoading = true;
                               });
 
-                              var result = await AllApi().postLeaveRequest(
-                                requestId: requestId,
-                                empName: widget.userModel.name,
-                                companyId: widget.userModel.companyId,
-                                date: DateFormat('dd-MM-yyyy')
-                                    .format(DateTime.now()),
-                                details: textFieldValues,
-                                refId: widget.userModel.refId,
-                                title: title,
-                                fromDate: _selectedFromDate,
-                                toDate: _selectedToDate,
-                              );
 
-                              Get.back();
+                              if(countbased == '1'){
 
-                              if (result == 'success') {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Request Sent.'),
-                                  ),
-                                );
-                                setState(() {
-                                  _selectedFromDate = '';
-                                  _selectedToDate = '';
-                                });
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Failed to sent request.'),
-                                  ),
-                                );
-                                setState(() {
-                                  _selectedFromDate = '';
-                                  _selectedToDate = '';
-                                });
+                                if(double.parse(totalCountConsumed) < double.parse(limit)){
+
+                                  if(hourslimit == '0'){
+
+                                    print('no limits');
+
+                                    sendLeaveRequest(requestId, title);
+
+                                  }else{
+
+                                    if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
+
+                                      print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
+
+                                      if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
+
+                                        sendLeaveRequest(requestId, title);
+
+                                      }else{
+                                        setStateDialog(() {
+                                          isLoading = false;
+                                        });
+
+                                        Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
+
+                                      }
+
+
+
+                                    }else{
+                                      setStateDialog(() {
+                                        isLoading = false;
+                                      });
+
+                                      Fluttertoast.showToast(msg: 'Hours Limit Exhausted');
+
+                                    }
+
+
+
+
+                                  }
+
+                                }else{
+                                  setStateDialog(() {
+                                    isLoading = false;
+                                  });
+                                  Fluttertoast.showToast(msg:'Count Limit Exhausted');
+
+                                }
+
+
+
+                              }else{
+
+                                if(hourslimit == '0'){
+
+                                  sendLeaveRequest(requestId, title);
+
+                                }else{
+
+                                  if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
+
+                                    print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                        .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
+
+                                    if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                        .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
+
+                                      sendLeaveRequest(requestId, title);
+
+                                    }else{
+                                      setStateDialog(() {
+                                        isLoading = false;
+                                      });
+
+                                      Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
+
+                                    }
+
+                                  }else{
+
+                                    setStateDialog(() {
+                                      isLoading = false;
+                                    });
+                                    Fluttertoast.showToast(msg:'Hours Limit Exhausted');
+
+                                  }
+
+
+
+
+                                }
+
+
                               }
+
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -622,58 +890,124 @@ class _LeavesState extends State<Leaves> {
                               );
                             }
                           } else {
+
                             if (_attachment != null) {
-                              setStateDialog(() {
-                                isLoading = true;
-                              });
-                              await AllApi().postLeaveRequest(
-                                requestId: requestId,
-                                empName: widget.userModel.name,
-                                companyId: widget.userModel.companyId,
-                                date: DateFormat('dd-MM-yyyy')
-                                    .format(DateTime.now()),
-                                details: textFieldValues,
-                                refId: widget.userModel.refId,
-                                title: title,
-                                fromDate: _selectedFromDate,
-                                toDate: _selectedToDate,
-                              );
-                              var result = await AllApi().setFile(_attachment);
-                              await AllApi().putAttachment(
-                                companyId: widget.userModel.companyId,
-                                requestId: requestId,
-                                fileName: _attachmentPlatformFile.name,
-                              );
-                              setStateDialog(() {
-                                isLoading = false;
-                              });
-                              setStateDialog(() {
-                                isLoading = false;
-                              });
-                              if (result == '1') {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Request Sent.'),
-                                  ),
-                                );
-                                setState(() {
-                                  _selectedFromDate = '';
-                                  _selectedToDate = '';
-                                  _attachment = null;
+
+                              if (_canSubmit &&
+                                  (_selectedFromDate != '' &&
+                                      _selectedToDate != '')) {
+                                setStateDialog(() {
+                                  isLoading = true;
                                 });
+
+
+                                if(countbased == '1'){
+
+                                  if(double.parse(totalCountConsumed) < double.parse(limit)){
+
+                                    if(hourslimit == '0'){
+
+                                      print('no limits');
+
+                                      sendfileleaverequest(requestId, title,setStateDialog,isLoading);
+
+                                    }else{
+
+                                      if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
+
+                                        print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                            .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
+
+                                        if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                            .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
+
+                                          sendfileleaverequest(requestId, title,setStateDialog,isLoading);
+
+                                        }else{
+                                          setStateDialog(() {
+                                            isLoading = false;
+                                          });
+
+                                          Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
+
+                                        }
+
+
+                                      }else{
+                                        setStateDialog(() {
+                                          isLoading = false;
+                                        });
+                                        Fluttertoast.showToast(msg:'Hours Limit Exhausted');
+
+                                      }
+
+
+
+
+                                    }
+
+                                  }else{
+                                    setStateDialog(() {
+                                      isLoading = false;
+                                    });
+                                    Fluttertoast.showToast(msg:'Counts Limit Exhausted');
+
+                                  }
+
+
+
+                                }else{
+
+                                  if(hourslimit == '0'){
+
+                                    sendfileleaverequest(requestId, title,setStateDialog,isLoading);
+
+                                  }else{
+
+                                    if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
+
+                                      print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
+
+                                      if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
+                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
+
+                                        sendfileleaverequest(requestId, title,setStateDialog,isLoading);
+
+                                      }else{
+                                        setStateDialog(() {
+                                          isLoading = false;
+                                        });
+
+                                        Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
+
+                                      }
+
+                                    }else{
+                                      setStateDialog(() {
+                                        isLoading = false;
+                                      });
+                                      Fluttertoast.showToast(msg:'Hours Limit Exhausted');
+
+                                    }
+
+
+
+
+                                  }
+
+
+                                }
+
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Failed to sent request.'),
+                                    content: Text('Please fill all the details.'),
                                   ),
                                 );
-                                setState(() {
-                                  _selectedFromDate = '';
-                                  _selectedToDate = '';
-                                  _attachment = null;
-                                });
                               }
-                              Get.back();
+
+
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -681,6 +1015,8 @@ class _LeavesState extends State<Leaves> {
                                 ),
                               );
                             }
+
+
                           }
                         },
                         child: const Text('Submit'),
