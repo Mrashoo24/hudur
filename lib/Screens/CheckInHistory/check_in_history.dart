@@ -98,119 +98,184 @@ class _CheckInHistoryState extends State<CheckInHistory> {
                     );
                   }
                   var checkInHistoryList = snapshot.data;
+                  List<TableRow> tableRow = [
+                    TableRow(
+                      decoration: BoxDecoration(color: mandysPink),
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Date'),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Check In',
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Check Out',
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Working Status',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ];
+                  for (int i = 0; i < checkInHistoryList.length; i++) {
+                    tableRow.add(
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(checkInHistoryList[i].date),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              checkInHistoryList[i].checkInTime,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              checkInHistoryList[i].checkOutTime,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              checkInHistoryList[i].workingstatus,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                   return Expanded(
-                    child: ListView.builder(
-                      itemCount: checkInHistoryList.length,
-                      itemBuilder: (context, index) {
-                        var date = DateFormat('yyyy-MM-dd')
-                            .parse(checkInHistoryList[index].date);
-                        var differenceInDays =
-                            date.difference(DateTime.now()).inDays;
-                        if (differenceInDays > -90) {
-                          return Card(
-                            elevation: 8,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Date: ',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                        checkInHistoryList[index].date,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Check-In Time: ',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                        checkInHistoryList[index].checkInTime,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Check-Out Time: ',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                        checkInHistoryList[index].checkOutTime,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Status: ',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                        checkInHistoryList[index].status,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
+                    child: Table(
+                      border: TableBorder.all(),
+                      children: tableRow,
                     ),
                   );
+                  // return Expanded(
+                  //   child: ListView.builder(
+                  //     itemCount: checkInHistoryList.length,
+                  //     itemBuilder: (context, index) {
+                  //       var date = DateFormat('yyyy-MM-dd')
+                  //           .parse(checkInHistoryList[index].date);
+                  //       var differenceInDays =
+                  //           date.difference(DateTime.now()).inDays;
+                  //       if (differenceInDays > -90) {
+                  //         return Card(
+                  //           elevation: 8,
+                  //           shape: const RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.all(
+                  //               Radius.circular(12.0),
+                  //             ),
+                  //           ),
+                  //           child: Container(
+                  //             width: MediaQuery.of(context).size.width,
+                  //             height: MediaQuery.of(context).size.height * 0.2,
+                  //             padding: const EdgeInsets.all(12.0),
+                  //             child: Column(
+                  //               mainAxisAlignment:
+                  //                   MainAxisAlignment.spaceEvenly,
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Row(
+                  //                   mainAxisAlignment:
+                  //                       MainAxisAlignment.spaceBetween,
+                  //                   children: [
+                  //                     const Text(
+                  //                       'Date: ',
+                  //                       style: TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       checkInHistoryList[index].date,
+                  //                       style: const TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 const SizedBox(
+                  //                   height: 5,
+                  //                 ),
+                  //                 Row(
+                  //                   mainAxisAlignment:
+                  //                       MainAxisAlignment.spaceBetween,
+                  //                   children: [
+                  //                     const Text(
+                  //                       'Check-In Time: ',
+                  //                       style: TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       checkInHistoryList[index].checkInTime,
+                  //                       style: const TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 const SizedBox(
+                  //                   height: 5,
+                  //                 ),
+                  //                 Row(
+                  //                   mainAxisAlignment:
+                  //                       MainAxisAlignment.spaceBetween,
+                  //                   children: [
+                  //                     const Text(
+                  //                       'Check-Out Time: ',
+                  //                       style: TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       checkInHistoryList[index].checkOutTime,
+                  //                       style: const TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 Row(
+                  //                   mainAxisAlignment:
+                  //                       MainAxisAlignment.spaceBetween,
+                  //                   children: [
+                  //                     const Text(
+                  //                       'Status: ',
+                  //                       style: TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                     Text(
+                  //                       checkInHistoryList[index].status,
+                  //                       style: const TextStyle(
+                  //                         fontSize: 20,
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         );
+                  //       } else {
+                  //         return Container();
+                  //       }
+                  //     },
+                  //   ),
+                  // );
                 },
               ),
             ],

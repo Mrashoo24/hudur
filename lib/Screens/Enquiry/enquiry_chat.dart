@@ -20,10 +20,12 @@ class _EnquiryChatState extends State<EnquiryChat> {
   Widget _messageBox({
     @required String text,
     @required bool isMe,
+    @required String timeStamp,
   }) {
     return Container(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Card(
+        color: isMe ? mandysPink : summerGreen,
         shape: isMe
             ? const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -41,7 +43,24 @@ class _EnquiryChatState extends State<EnquiryChat> {
               ),
         child: Container(
           padding: const EdgeInsets.all(12.0),
-          child: Text(text),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+              Text(
+                timeStamp,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -67,6 +86,7 @@ class _EnquiryChatState extends State<EnquiryChat> {
               return _messageBox(
                 text: enquiries[index].description,
                 isMe: !enquiries[index].subject.contains('Reply'),
+                timeStamp: enquiries[index].timeStamp,
               );
             },
           );
@@ -155,8 +175,17 @@ class _EnquiryChatState extends State<EnquiryChat> {
   }
 
   void _sendMessage() async {
+    var toEmail = '';
     final _subject = 'Enquiry email by ${widget.userModel.name}';
     FocusScope.of(context).unfocus();
+    var users = await _allApi.getAllUsers(
+      companyId: widget.userModel.companyId,
+    );
+    for (int i = 0; i < users.length; i++) {
+      if (users[i].empId == widget.userModel.hrId) {
+        toEmail = users[i].email;
+      }
+    }
     await _allApi.postEnquiry(
       empName: widget.userModel.name,
       subject: _subject,
@@ -170,6 +199,7 @@ class _EnquiryChatState extends State<EnquiryChat> {
     await _allApi.sendEmail(
       subject: _subject,
       content: _message,
+      toEmail: toEmail,
     );
     _messageController.clear();
     setState(() {

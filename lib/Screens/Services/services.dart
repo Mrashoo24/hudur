@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
@@ -14,6 +16,7 @@ class Services extends StatefulWidget {
 }
 
 class _ServicesState extends State<Services> {
+  final _formKey = GlobalKey<FormState>();
   final _allApi = AllApi();
   final _services = [
     'Certificate with detailed salary',
@@ -26,6 +29,7 @@ class _ServicesState extends State<Services> {
     'Rejected',
   ];
   String _selectedFilter;
+  List<String> _textFieldValues = [];
 
   Widget _servicesList() {
     return Container(
@@ -240,7 +244,9 @@ class _ServicesState extends State<Services> {
                   list[index].verify == '1'
                       ? 'Accepted'
                       : list[index].verify == '0'
-                          ? 'Pending'
+                          ? list[index].fileName == null
+                              ? 'Pending from HR'
+                              : 'Pending from Manager'
                           : 'Rejected',
                 ),
               ],
@@ -283,6 +289,14 @@ class _ServicesState extends State<Services> {
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            backgroundColor: hippieBlue,
+            onPressed: _customRequest,
+          ),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: const Text('Services'),
@@ -308,6 +322,149 @@ class _ServicesState extends State<Services> {
         ),
       ),
     );
+  }
+
+  void _customRequest() {
+    var isLoading = false;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: isLoading ? null : const Text('Other'),
+              content: isLoading
+                  ? Container(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: const [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Text('Please wait'),
+                        ],
+                      ),
+                    )
+                  : FutureBuilder<List<ServiceDynamicModel>>(
+                      future: _allApi.getDynamicServices(
+                        companyId: widget.userModel.companyId,
+                      ),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                            heightFactor: 0.3,
+                          );
+                        }
+                        var dynamicServices = snapshot.data;
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          child: Form(
+                            key: _formKey,
+                            child: ListView.builder(
+                              itemCount: dynamicServices.length,
+                              itemBuilder: (context, index) {
+                                return _textField(
+                                  fields: dynamicServices[index].fields,
+                                  index: index,
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+              actions: isLoading
+                  ? null
+                  : [
+                      TextButton(
+                        onPressed: () async {
+                          setStateDialog(() {
+                            isLoading = true;
+                          });
+                          final canSubmit = _trySubmit();
+                          if (canSubmit) {
+                            await _allApi.postDynamicServices(
+                              refId: widget.userModel.refId,
+                              date: DateFormat('yyyy-MM-dd').format(
+                                DateTime.now(),
+                              ),
+                              verify: '0',
+                              companyId: widget.userModel.companyId,
+                              empName: widget.userModel.name,
+                              fields: _textFieldValues,
+                            );
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: 'Please fill all details.',
+                            );
+                          }
+                          setStateDialog(() {
+                            isLoading = false;
+                          });
+                          Get.back();
+                          Fluttertoast.showToast(
+                            msg: 'Request Sent',
+                          );
+                        },
+                        child: const Text("Submit"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text("Cancel"),
+                      ),
+                    ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _textField({
+    @required List fields,
+    @required int index,
+  }) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.2,
+      child: ListView.builder(
+        itemCount: fields.length,
+        itemBuilder: (context, index) {
+          return TextFormField(
+            decoration: InputDecoration(
+              label: Text(
+                fields[index],
+              ),
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please fill this field';
+              }
+              return null;
+            },
+            onSaved: (value) {
+              _textFieldValues.add(value);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  bool _trySubmit() {
+    FocusScope.of(context).unfocus();
+    final isValid = _formKey.currentState.validate();
+    if (isValid) {
+      _formKey.currentState.save();
+    }
+    return isValid;
   }
 
   void _onPressedRequest({@required String certificateName}) {

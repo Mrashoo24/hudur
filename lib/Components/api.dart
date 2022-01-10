@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_utils/src/extensions/double_extensions.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -10,7 +11,6 @@ import 'models.dart';
 
 class AllApi {
   Future<UserModel> getUser(String email) async {
-
     var getUserUrl =
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetUser";
 
@@ -27,18 +27,17 @@ class AllApi {
     } else {
       return UserModel();
     }
-
   }
 
-  Future<void> postCheckIn({
-    @required String checkInTime,
-    @required String checkOutTime,
-    @required String refId,
-    @required String date,
-    @required String companyId,
-    @required String designation,String status,
-    String reason
-  }) async {
+  Future<void> postCheckIn(
+      {@required String checkInTime,
+      @required String checkOutTime,
+      @required String refId,
+      @required String date,
+      @required String companyId,
+      @required String designation,
+      String status,
+      String reason}) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
 
@@ -47,7 +46,9 @@ class AllApi {
       'checkout': checkOutTime,
       'refid': refId,
       'date': date,
-      'companyid': companyId,'reason':reason??'','status':status
+      'companyid': companyId,
+      'reason': reason ?? '',
+      'status': status
     });
     if (response.statusCode == 200) {
       return;
@@ -416,22 +417,27 @@ class AllApi {
     @required String checkInTime,
     @required String checkOutTime,
     @required String employeeName,
-    @required String designation,String reason,
+    @required String designation,
+    String reason,
     @required int hours,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostAttendanceReport");
 
-   var checkOutDifference1 = DateFormat('hh:mm a').parse(checkOutTime).difference(DateFormat('hh:mm a').parse(checkInTime));
+    var checkOutDifference1 = DateFormat('hh:mm a')
+        .parse(checkOutTime)
+        .difference(DateFormat('hh:mm a').parse(checkInTime));
 
-    var differenceFinal = ((checkOutDifference1.inSeconds / 3600))
-        .toDouble()
-        .toPrecision(2);
+    var differenceFinal =
+        ((checkOutDifference1.inSeconds / 3600)).toDouble().toPrecision(2);
 
-   print('differenc ${differenceFinal.toString()}');
+    print('differenc ${differenceFinal.toString()}');
 
-      var workingstatus =  differenceFinal > double.parse(hours.toString()) ? 'extra' : differenceFinal < double.parse(hours.toString()) ? 'early' : 'perfect';
-
+    var workingstatus = differenceFinal > double.parse(hours.toString())
+        ? 'extra'
+        : differenceFinal < double.parse(hours.toString())
+            ? 'early'
+            : 'perfect';
 
     var response = await http.post(
       url,
@@ -448,7 +454,8 @@ class AllApi {
         'empname': employeeName,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
         'designation': designation,
-        'workingstatus':workingstatus,'reason':reason??''
+        'workingstatus': workingstatus,
+        'reason': reason ?? ''
       },
     );
     var body = json.decode(response.body);
@@ -545,6 +552,7 @@ class AllApi {
     @required String certificateName,
     @required String empName,
   }) async {
+    var serviceId = 'SERVICE' + DateTime.now().microsecond.toString();
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
 
@@ -557,6 +565,7 @@ class AllApi {
         'companyid': companyId,
         'certificatename': certificateName,
         'empname': empName,
+        'serviceid': serviceId,
       },
     );
     var body = json.decode(response.body);
@@ -642,9 +651,10 @@ class AllApi {
   Future<String> sendEmail({
     @required String subject,
     @required String content,
+    @required String toEmail,
   }) async {
     var url = Uri.parse(
-        "http://faizeetech.com/post-mail.php?to=zulfekarshaikh0@gmail.com&subject=$subject&content=$content");
+        "http://faizeetech.com/post-mail.php?to=$toEmail&subject=$subject&content=$content");
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -750,21 +760,18 @@ class AllApi {
     }
   }
 
-
-  Future<List<EmployeeLeaveRequestsModel>> getLeavesCount({
-    @required String title,
-    @required String verify,
-    @required String companyid,
-    @required String refid,String financial_month
-  }) async {
-
+  Future<List<EmployeeLeaveRequestsModel>> getLeavesCount(
+      {@required String title,
+      @required String verify,
+      @required String companyid,
+      @required String refid,
+      String financial_month}) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getLeaveCounts?verify=$verify&companyid=$companyid&refid=$refid&title=$title");
     var response = await http.get(url);
     print(url);
     var body = json.decode(response.body);
     if (body != '[]' && response.statusCode == 200) {
-
       List responseList = body;
 
       Iterable<EmployeeLeaveRequestsModel> adminLeaves = responseList.map((e) {
@@ -772,7 +779,6 @@ class AllApi {
       });
 
       return adminLeaves.toList();
-
     } else {
       return null;
     }
@@ -782,7 +788,6 @@ class AllApi {
     @required String empname,
     @required String companyid,
   }) async {
-
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getAttendenceCounts?companyid=$companyid&empname=$empname");
 
@@ -793,22 +798,17 @@ class AllApi {
     var body = json.decode(response.body);
 
     if (body != '[]' && response.statusCode == 200) {
-
       List responseList = body;
 
-      print(body
-      );
+      print(body);
 
       Iterable<AttendanceReportModel> adminLeaves = responseList.map((e) {
         return AttendanceReportModel().fromJson(e);
       });
 
       return adminLeaves.toList();
-
     } else {
-
       return [];
-
     }
   }
 
@@ -817,14 +817,12 @@ class AllApi {
     @required String companyid,
     @required String refid,
   }) async {
-
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getCountofLeaves?verify=$verify&companyid=$companyid&refid=$refid");
     var response = await http.get(url);
     print(url);
     var body = json.decode(response.body);
     if (body != '[]' && response.statusCode == 200) {
-
       List responseList = body;
 
       Iterable<EmployeeLeaveRequestsModel> adminLeaves = responseList.map((e) {
@@ -832,7 +830,6 @@ class AllApi {
       });
 
       return adminLeaves.toList();
-
     } else {
       return [];
     }
@@ -841,7 +838,6 @@ class AllApi {
   Future getCompanyDetails({
     @required String companyid,
   }) async {
-
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getCompanyDetails?companyid=$companyid");
     var response = await http.get(url);
@@ -851,4 +847,50 @@ class AllApi {
     return body;
   }
 
+  Future<List<ServiceDynamicModel>> getDynamicServices({
+    @required String companyId,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getDynamicServices?companyid=$companyId");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List responseList = body;
+      Iterable<ServiceDynamicModel> dynamicServices = responseList.map((e) {
+        return ServiceDynamicModel().fromJson(e);
+      });
+      return dynamicServices.toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> postDynamicServices({
+    @required String refId,
+    @required String date,
+    @required String verify,
+    @required String companyId,
+    @required String empName,
+    @required List fields,
+  }) async {
+    var serviceId = 'SERVICE' + DateTime.now().microsecond.toString();
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/postDynamicService");
+
+    var response = await http.post(
+      url,
+      body: {
+        'refid': refId,
+        'date': date,
+        'verify': verify,
+        'companyid': companyId,
+        'empname': empName,
+        'serviceid': serviceId,
+        'fields': json.encode(fields),
+      },
+    );
+    if (response.statusCode != 200) {
+      print(response.reasonPhrase);
+    }
+  }
 }

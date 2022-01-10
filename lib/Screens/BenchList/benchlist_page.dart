@@ -1,8 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:intl/intl.dart';
 
 class BenchList extends StatefulWidget {
   final UserModel userModel;
@@ -163,39 +166,72 @@ class _BenchListState extends State<BenchList> {
                     if (_selectedValue == 1)
                       Column(
                         children: [
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              label: Text('From'),
-                              hintText:
-                                  'Enter the date from when replacement begins',
-                              icon: Icon(Icons.calendar_today),
+                          InkWell(
+                            child: TextFormField(
+                              enabled: false,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  _fromDate == '' ? 'From' : _fromDate,
+                                ),
+                                icon: const Icon(Icons.calendar_today),
+                              ),
+                              keyboardType: TextInputType.datetime,
                             ),
-                            keyboardType: TextInputType.datetime,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please fill out this field';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _fromDate = value;
+                            onTap: () {
+                              DatePicker.showDateTimePicker(
+                                context,
+                                showTitleActions: true,
+                                minTime: DateTime.now(),
+                                maxTime: DateTime(2050, 6, 7),
+                                onChanged: (date) {
+                                  setState(() {
+                                    _fromDate = DateFormat('dd/MM/yyyy hh:mm a')
+                                        .format(date);
+                                  });
+                                },
+                                onConfirm: (date) {
+                                  setState(() {
+                                    _fromDate = DateFormat('dd/MM/yyyy hh:mm a')
+                                        .format(date);
+                                  });
+                                },
+                                currentTime: DateTime.now(),
+                                locale: LocaleType.en,
+                              );
                             },
                           ),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              label: Text('To'),
-                              hintText: 'Enter the date when replacement ends',
-                              icon: Icon(Icons.calendar_today),
+                          InkWell(
+                            child: TextFormField(
+                              enabled: false,
+                              decoration: InputDecoration(
+                                label: Text(
+                                  _toDate == '' ? 'To' : _toDate,
+                                ),
+                                icon: const Icon(Icons.calendar_today),
+                              ),
+                              keyboardType: TextInputType.datetime,
                             ),
-                            keyboardType: TextInputType.datetime,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please fill out this field';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _toDate = value;
+                            onTap: () {
+                              DatePicker.showDateTimePicker(
+                                context,
+                                showTitleActions: true,
+                                minTime: DateTime.now(),
+                                maxTime: DateTime(2050, 6, 7),
+                                onChanged: (date) {
+                                  setState(() {
+                                    _toDate = DateFormat('dd/MM/yyyy hh:mm a')
+                                        .format(date);
+                                  });
+                                },
+                                onConfirm: (date) {
+                                  setState(() {
+                                    _toDate = DateFormat('dd/MM/yyyy hh:mm a')
+                                        .format(date);
+                                  });
+                                },
+                                currentTime: DateTime.now(),
+                                locale: LocaleType.en,
+                              );
                             },
                           ),
                         ],
@@ -326,6 +362,10 @@ class _BenchListState extends State<BenchList> {
                                     ),
                                   );
                                 }
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: 'Please fill all the details',
+                                );
                               }
                             },
                           ),
@@ -494,6 +534,18 @@ class _BenchListState extends State<BenchList> {
                                   Text(
                                     list[index].replacementEmpId,
                                   )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Date: ',
+                                  ),
+                                  Text(
+                                    list[index].timeStamp,
+                                  ),
                                 ],
                               ),
                               Row(

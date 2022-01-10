@@ -53,8 +53,6 @@ class _RelatedSitesState extends State<RelatedSites> {
                     ),
                     elevation: 5,
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.1,
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,6 +60,12 @@ class _RelatedSitesState extends State<RelatedSites> {
                           Text(
                             relatedSitesList[index].name,
                             style: const TextStyle(fontSize: 18),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            relatedSitesList[index].description,
                           ),
                           const SizedBox(
                             height: 10,

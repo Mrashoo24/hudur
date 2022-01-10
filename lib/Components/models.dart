@@ -18,60 +18,61 @@ class UserModel {
       studyPermit,
       maternityPermit,
       hrId,
-      hrName,image;
+      hrName,
+      image;
   Map<String, dynamic> location;
   bool allow_checkin;
 
-  UserModel({
-    this.address,
-    this.allotedOffice,
-    this.designation,
-    this.leaves,
-    this.email,
-    this.manager,
-    this.name,
-    this.notificationToken,
-    this.pass,
-    this.phoneNumber,
-    this.empId,
-    this.refId,
-    this.location,
-    this.allow_checkin,
-    this.companyId,
-    this.hoursOfShift,
-    this.reportingTime,
-    this.adminLeaves,
-    this.maternityPermit,
-    this.studyPermit,
-    this.hrId,
-    this.hrName,this.image
-  });
+  UserModel(
+      {this.address,
+      this.allotedOffice,
+      this.designation,
+      this.leaves,
+      this.email,
+      this.manager,
+      this.name,
+      this.notificationToken,
+      this.pass,
+      this.phoneNumber,
+      this.empId,
+      this.refId,
+      this.location,
+      this.allow_checkin,
+      this.companyId,
+      this.hoursOfShift,
+      this.reportingTime,
+      this.adminLeaves,
+      this.maternityPermit,
+      this.studyPermit,
+      this.hrId,
+      this.hrName,
+      this.image});
 
   fromJson(Map<String, dynamic> json) {
     return UserModel(
-      address: json['Address'],
-      allotedOffice: json['allotted_office'],
-      designation: json['designation'],
-      leaves: json['leaves'],
-      manager: json['manager'],
-      email: json['email'],
-      name: json['Name'],
-      notificationToken: json['notificationToken'],
-      pass: json['pass'],
-      phoneNumber: json['PhoneNumber'],
-      empId: json['empid'],
-      refId: json['refid'],
-      allow_checkin: json['allow_checkin'],
-      location: json['location'],
-      companyId: json['companyid'],
-      hoursOfShift: json['hours_of_shift'],
-      reportingTime: json['reporting_time'],
-      adminLeaves: json['admin_leaves'],
-      maternityPermit: json['maternity_permit'],
-      studyPermit: json['study_permit'],
-      hrId: json['hrid'],
-      hrName: json['hrname'],image:json['image']
-    );
+        address: json['Address'],
+        allotedOffice: json['allotted_office'],
+        designation: json['designation'],
+        leaves: json['leaves'],
+        manager: json['manager'],
+        email: json['email'],
+        name: json['Name'],
+        notificationToken: json['notificationToken'],
+        pass: json['pass'],
+        phoneNumber: json['PhoneNumber'],
+        empId: json['empid'],
+        refId: json['refid'],
+        allow_checkin: json['allow_checkin'],
+        location: json['location'],
+        companyId: json['companyid'],
+        hoursOfShift: json['hours_of_shift'],
+        reportingTime: json['reporting_time'],
+        adminLeaves: json['admin_leaves'],
+        maternityPermit: json['maternity_permit'],
+        studyPermit: json['study_permit'],
+        hrId: json['hrid'],
+        hrName: json['hrname'],
+        image: json['image']);
   }
 
   Map<String, dynamic> toJson() {
@@ -154,37 +155,37 @@ class LeaveRequestsModel {
   String countbased;
   String limit;
   String reducedtime;
-  String hourslimit;String financial_month;
+  String hourslimit;
+  String financial_month;
 
-  LeaveRequestsModel({
-    this.title,
-    this.subtitle,
-    this.details,
-    this.companyId,
-    this.attachments,
-    this.countbased,
-    this.hourslimit,
-    this.limit,
-    this.reducedtime,
-    this.tenure,
-    this.timebased,this.financial_month
-  });
+  LeaveRequestsModel(
+      {this.title,
+      this.subtitle,
+      this.details,
+      this.companyId,
+      this.attachments,
+      this.countbased,
+      this.hourslimit,
+      this.limit,
+      this.reducedtime,
+      this.tenure,
+      this.timebased,
+      this.financial_month});
 
   fromJson(Map<String, dynamic> json) {
     return LeaveRequestsModel(
-      title: json['title'],
-      subtitle: json['subtitle'],
-      details: json['details'],
-      attachments: json['attachments'],
-      companyId: json['companyid'],
-      countbased: json['countbased'],
-      hourslimit: json['hourslimit'],
-      limit: json['limit'],
-      reducedtime: json['reducedtime'],
-      tenure: json['tenure'],
-      timebased: json['timebased'],
-      financial_month: json['financial_month']
-    );
+        title: json['title'],
+        subtitle: json['subtitle'],
+        details: json['details'],
+        attachments: json['attachments'],
+        companyId: json['companyid'],
+        countbased: json['countbased'],
+        hourslimit: json['hourslimit'],
+        limit: json['limit'],
+        reducedtime: json['reducedtime'],
+        tenure: json['tenure'],
+        timebased: json['timebased'],
+        financial_month: json['financial_month']);
   }
 
   Map<String, dynamic> toJson() {
@@ -202,17 +203,23 @@ class LeaveRequestsModel {
 
 class RelatedSitesModel {
   String name;
-  String url;
+  String url, companyId, siteId, description;
 
   RelatedSitesModel({
     this.name,
     this.url,
+    this.companyId,
+    this.description,
+    this.siteId,
   });
 
   fromJson(Map<String, dynamic> json) {
     return RelatedSitesModel(
       name: json['name'],
       url: json['url'],
+      companyId: json['companyid'],
+      description: json['description'],
+      siteId: json['siteid'],
     );
   }
 
@@ -222,6 +229,9 @@ class RelatedSitesModel {
 
     data['name'] = name;
     data['url'] = url;
+    data['companyid'] = companyId;
+    data['description'] = description;
+    data['siteid'] = siteId;
 
     return data;
   }
@@ -414,36 +424,37 @@ class AttendanceReportModel {
       checkInTime,
       checkOutTime,
       employeeName,
-      date,workingstatus;
+      date,
+      workingstatus;
 
-  AttendanceReportModel({
-    this.checkInDelayInHours,
-    this.checkInDelayInMinutes,
-    this.checkOutDifference,
-    this.companyId,
-    this.empId,
-    this.status,
-    this.timeStamp,
-    this.checkInTime,
-    this.checkOutTime,
-    this.date,
-    this.employeeName,this.workingstatus
-  });
+  AttendanceReportModel(
+      {this.checkInDelayInHours,
+      this.checkInDelayInMinutes,
+      this.checkOutDifference,
+      this.companyId,
+      this.empId,
+      this.status,
+      this.timeStamp,
+      this.checkInTime,
+      this.checkOutTime,
+      this.date,
+      this.employeeName,
+      this.workingstatus});
 
   fromJson(Map<String, dynamic> json) {
     return AttendanceReportModel(
-      companyId: json['companyid'],
-      checkInDelayInHours: json['check_in_delay_in_hours'],
-      checkInDelayInMinutes: json['check_in_delay_in_minutes'],
-      checkOutDifference: json['check_out_difference'],
-      status: json['status'],
-      empId: json['empid'],
-      timeStamp: json['timestamp'],
-      checkInTime: json['checkin'],
-      checkOutTime: json['checkout'],
-      date: json['date'],
-      employeeName: json['empname'],workingstatus:json['workingstatus']
-    );
+        companyId: json['companyid'],
+        checkInDelayInHours: json['check_in_delay_in_hours'],
+        checkInDelayInMinutes: json['check_in_delay_in_minutes'],
+        checkOutDifference: json['check_out_difference'],
+        status: json['status'],
+        empId: json['empid'],
+        timeStamp: json['timestamp'],
+        checkInTime: json['checkin'],
+        checkOutTime: json['checkout'],
+        date: json['date'],
+        employeeName: json['empname'],
+        workingstatus: json['workingstatus']);
   }
 
   Map<String, dynamic> toJson() {
@@ -724,6 +735,41 @@ class EnquiryModel {
     data['timestamp'] = timeStamp;
     data['hrid'] = hrId;
     data['hrname'] = hrName;
+    return data;
+  }
+}
+
+class ServiceDynamicModel {
+  String serviceDynamicId, companyId, name, description;
+  List fields;
+
+  ServiceDynamicModel({
+    this.companyId,
+    this.description,
+    this.fields,
+    this.name,
+    this.serviceDynamicId,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return ServiceDynamicModel(
+      companyId: json['companyid'],
+      description: json['description'],
+      fields: json['fields'],
+      name: json['name'],
+      serviceDynamicId: json['serdynid'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['description'] = description;
+    data['companyid'] = companyId;
+    data['fields'] = fields;
+    data['name'] = name;
+    data['serdynid'] = serviceDynamicId;
     return data;
   }
 }

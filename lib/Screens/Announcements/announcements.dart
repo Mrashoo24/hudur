@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/Announcements/announcement_detail.dart';
 
 class Announcements extends StatefulWidget {
   final UserModel userModel;
@@ -47,84 +49,94 @@ class _AnnouncementsState extends State<Announcements> {
             return ListView.builder(
               itemCount: announcementList.length,
               itemBuilder: (context, index) {
-                return Card(
-                  elevation: 8,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
+                return InkWell(
+                  onTap: () {
+                    Get.to(
+                      () => AnnouncementDetail(
+                        announceModel: announcementList[index],
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 8,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12.0),
+                      ),
                     ),
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    // height: MediaQuery.of(context).size.height * 0.15,
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Name: ',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      // height: MediaQuery.of(context).size.height * 0.15,
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text(
                               announcementList[index].name,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Text: ',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text(
-                              announcementList[index].text,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Timestamp: ',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-
-                            Text(
-
-                              announcementList[index].timestamp,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-
-                            ),
-                          ],
-
-                        ),
-                      ],
+                            leading: const Icon(Icons.notifications),
+                          )
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     const Text(
+                          //       'Name: ',
+                          //       style: TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //     Text(
+                          //       announcementList[index].name,
+                          //       style: const TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(
+                          //   height: 5,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     const Text(
+                          //       'Text: ',
+                          //       style: TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //     Text(
+                          //       announcementList[index].text,
+                          //       style: const TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(
+                          //   height: 5,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     const Text(
+                          //       'Timestamp: ',
+                          //       style: TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //     Text(
+                          //       announcementList[index].timestamp,
+                          //       style: const TextStyle(
+                          //         fontSize: 20,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
                 );
