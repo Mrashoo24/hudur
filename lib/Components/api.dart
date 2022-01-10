@@ -36,7 +36,8 @@ class AllApi {
     @required String refId,
     @required String date,
     @required String companyId,
-    @required String designation,
+    @required String designation,String status,
+    String reason
   }) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
@@ -46,7 +47,7 @@ class AllApi {
       'checkout': checkOutTime,
       'refid': refId,
       'date': date,
-      'companyid': companyId,
+      'companyid': companyId,'reason':reason??'','status':status
     });
     if (response.statusCode == 200) {
       return;
@@ -415,7 +416,7 @@ class AllApi {
     @required String checkInTime,
     @required String checkOutTime,
     @required String employeeName,
-    @required String designation,
+    @required String designation,String reason,
     @required int hours,
   }) async {
     var url = Uri.parse(
@@ -447,7 +448,7 @@ class AllApi {
         'empname': employeeName,
         'date': DateFormat('yyyy-MM-dd').format(DateTime.now()),
         'designation': designation,
-        'workingstatus':workingstatus
+        'workingstatus':workingstatus,'reason':reason??''
       },
     );
     var body = json.decode(response.body);
@@ -777,5 +778,77 @@ class AllApi {
     }
   }
 
+  Future<List<AttendanceReportModel>> getAttendenceCounts({
+    @required String empname,
+    @required String companyid,
+  }) async {
+
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getAttendenceCounts?companyid=$companyid&empname=$empname");
+
+    var response = await http.get(url);
+
+    print(url);
+
+    var body = json.decode(response.body);
+
+    if (body != '[]' && response.statusCode == 200) {
+
+      List responseList = body;
+
+      print(body
+      );
+
+      Iterable<AttendanceReportModel> adminLeaves = responseList.map((e) {
+        return AttendanceReportModel().fromJson(e);
+      });
+
+      return adminLeaves.toList();
+
+    } else {
+
+      return [];
+
+    }
+  }
+
+  Future<List<EmployeeLeaveRequestsModel>> getHomeLeavesCount({
+    @required String verify,
+    @required String companyid,
+    @required String refid,
+  }) async {
+
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getCountofLeaves?verify=$verify&companyid=$companyid&refid=$refid");
+    var response = await http.get(url);
+    print(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+
+      List responseList = body;
+
+      Iterable<EmployeeLeaveRequestsModel> adminLeaves = responseList.map((e) {
+        return EmployeeLeaveRequestsModel().fromJson(e);
+      });
+
+      return adminLeaves.toList();
+
+    } else {
+      return [];
+    }
+  }
+
+  Future getCompanyDetails({
+    @required String companyid,
+  }) async {
+
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getCompanyDetails?companyid=$companyid");
+    var response = await http.get(url);
+    print(url);
+    var body = json.decode(response.body);
+
+    return body;
+  }
 
 }

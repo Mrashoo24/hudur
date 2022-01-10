@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/AdministrativeLeaves/administrative_leaves.dart';
@@ -19,123 +20,137 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              color: portica,
-              padding: const EdgeInsets.all(18.0),
-              child: Image.asset(
-                'assets/Images/logo.png',
-              ),
-            ),
-            SizedBox(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Icon(
-                      Icons.find_replace_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Bench List'),
-                    onTap: () {
-                      Get.to(
-                        BenchList(
-                          userModel: userModel,
+        child: FutureBuilder(
+          future: AllApi().getCompanyDetails(companyid: userModel.companyId),
+          builder: (context, snapshot) {
+
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(color: Colors.white,),
+              );
+            }
+
+            var companydetails = snapshot.requireData;
+
+
+            return Column(
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  color: portica,
+                  child: Image.network(
+                    '${adminurl}/assets/images/company/logo/${companydetails['image']}',
+                    fit:BoxFit.fill,
+                    loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null ?
+                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                              : null,
                         ),
                       );
                     },
                   ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.web_asset_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Related Sites'),
-                    onTap: () {
-                      Get.to(RelatedSites(
-                        userModel: userModel,
-                      ));
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.history,
-                      color: portica,
-                    ),
-                    title: const Text('Check-In History'),
-                    onTap: () {
-                      Get.to(
-                        CheckInHistory(
-                          userModel: userModel,
+                ),
+                SizedBox(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Icon(
+                          Icons.find_replace_rounded,
+                          color: portica,
                         ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.chat_bubble_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Enquiry'),
-                    onTap: () {
-                      // Get.to(
-                      //   Enquiry(
-                      //     userModel: userModel,
-                      //   ),
-                      // );
-                      Get.to(
-                        () => EnquiryChat(
-                          userModel: userModel,
+                        title: const Text('Bench List'),
+                        onTap: () {
+                          Get.to(
+                            BenchList(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.web_asset_rounded,
+                          color: portica,
                         ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.admin_panel_settings_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Administrative Leaves'),
-                    onTap: () {
-                      Get.to(
-                        AdministrativeLeaves(
-                          userModel: userModel,
+                        title: const Text('Related Sites'),
+                        onTap: () {
+                          Get.to(RelatedSites(
+                            userModel: userModel,
+                          ));
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.history,
+                          color: portica,
                         ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.room_service_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Services'),
-                    onTap: () {
-                      Get.to(
-                        () => Services(
-                          userModel: userModel,
+                        title: const Text('Check-In History'),
+                        onTap: () {
+                          Get.to(
+                            CheckInHistory(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.chat_bubble_rounded,
+                          color: portica,
                         ),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.watch_later_rounded,
-                      color: portica,
-                    ),
-                    title: const Text('Reason for late check-in'),
-                    onTap: () {
-                      Get.to(
-                        () => LateReason(
-                          userModel: userModel,
+                        title: const Text('Enquiry'),
+                        onTap: () {
+                          // Get.to(
+                          //   Enquiry(
+                          //     userModel: userModel,
+                          //   ),
+                          // );
+                          Get.to(
+                            () => EnquiryChat(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.admin_panel_settings_rounded,
+                          color: portica,
                         ),
-                      );
-                    },
+                        title: const Text('Administrative Leaves'),
+                        onTap: () {
+                          Get.to(
+                            AdministrativeLeaves(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.room_service_rounded,
+                          color: portica,
+                        ),
+                        title: const Text('Services'),
+                        onTap: () {
+                          Get.to(
+                            () => Services(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+            );
+          }
         ),
       ),
     );

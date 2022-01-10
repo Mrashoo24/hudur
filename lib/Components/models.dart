@@ -18,7 +18,7 @@ class UserModel {
       studyPermit,
       maternityPermit,
       hrId,
-      hrName;
+      hrName,image;
   Map<String, dynamic> location;
   bool allow_checkin;
 
@@ -44,7 +44,7 @@ class UserModel {
     this.maternityPermit,
     this.studyPermit,
     this.hrId,
-    this.hrName,
+    this.hrName,this.image
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -70,7 +70,7 @@ class UserModel {
       maternityPermit: json['maternity_permit'],
       studyPermit: json['study_permit'],
       hrId: json['hrid'],
-      hrName: json['hrname'],
+      hrName: json['hrname'],image:json['image']
     );
   }
 
@@ -414,7 +414,7 @@ class AttendanceReportModel {
       checkInTime,
       checkOutTime,
       employeeName,
-      date;
+      date,workingstatus;
 
   AttendanceReportModel({
     this.checkInDelayInHours,
@@ -427,7 +427,7 @@ class AttendanceReportModel {
     this.checkInTime,
     this.checkOutTime,
     this.date,
-    this.employeeName,
+    this.employeeName,this.workingstatus
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -442,7 +442,7 @@ class AttendanceReportModel {
       checkInTime: json['checkin'],
       checkOutTime: json['checkout'],
       date: json['date'],
-      employeeName: json['empname'],
+      employeeName: json['empname'],workingstatus:json['workingstatus']
     );
   }
 

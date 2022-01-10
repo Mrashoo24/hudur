@@ -8,6 +8,7 @@ import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Authentication/authentication.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Components/api.dart';
 import 'Screens/Home/home.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -101,6 +102,7 @@ class _MyAppState extends State<MyApp> {
                 child: Image.asset("assets/Images/loading.gif"),
               );
             }
+
             SharedPreferences pref = snapshot.requireData;
 
             var usersString = pref.getString("user");
@@ -115,7 +117,20 @@ class _MyAppState extends State<MyApp> {
             var loggein = pref.getBool("loggedin");
 
             return loggein == true
-                ? Home(userModel: users)
+                ? FutureBuilder(
+                  future: AllApi().getUser(users.email),
+                  builder: (context, snapshot1) {
+
+                    if (!snapshot1.hasData) {
+                      return Center(
+                        child: Image.asset("assets/Images/loading.gif"),
+                      );
+                    }
+                    var user1 = snapshot1.requireData;
+
+                    return Home(userModel: user1);
+                  }
+                )
                 : const Authentication();
           }),
       debugShowCheckedModeBanner: false,
