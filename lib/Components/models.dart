@@ -9,6 +9,7 @@ class UserModel {
       designation,
       leaves,
       manager,
+      managerid,
       notificationToken,
       companyId,
       pass,
@@ -46,7 +47,7 @@ class UserModel {
       this.studyPermit,
       this.hrId,
       this.hrName,
-      this.image});
+      this.image,this.managerid});
 
   fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -72,6 +73,7 @@ class UserModel {
         studyPermit: json['study_permit'],
         hrId: json['hrid'],
         hrName: json['hrname'],
+        managerid: json['managerid'],
         image: json['image']);
   }
 

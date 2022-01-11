@@ -431,6 +431,8 @@ class _CoursesState extends State<Courses> {
                               empName: empName,
                               empId: empId,
                               empPhone: empPhone,
+                              hr_id:widget.userModel.hrId,
+                              manager_id:widget.userModel.managerid
                             );
                             setStateDialog(() {
                               isLoading = false;

@@ -195,6 +195,8 @@ class AllApi {
     @required String toDate,
     @required String empName,
     @required String requestId,
+    String manager_refid,
+    String hr_refid
   }) async {
     var postLeaveRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest");
@@ -212,6 +214,8 @@ class AllApi {
         'to': toDate,
         'empname': empName,
         'requestid': requestId,
+        'manager_refid':manager_refid??'',
+        'hr_refid':hr_refid??''
       },
     );
     if (response.statusCode == 200) {
@@ -242,6 +246,8 @@ class AllApi {
     @required String replacementType,
     String fromDate,
     String toDate,
+    String manager_refid,
+    String hr_refid
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostBenchlist");
@@ -266,6 +272,10 @@ class AllApi {
       'benchid': DateTime.now().microsecond.toString(),
       'companyid': replacementUserModel.companyId,
       'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
+      'manager_refid':manager_refid??'',
+      'hr_refid':hr_refid??''
+
+
     });
     if (response.statusCode != 200) {
       return 'Request failed';
@@ -504,6 +514,8 @@ class AllApi {
     @required String empName,
     @required String empId,
     @required String empPhone,
+    String hr_id,
+    String manager_id
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugRegisterCourse");
@@ -518,7 +530,7 @@ class AllApi {
       'checkin': '',
       'checkout': '',
       'emp_phone': empPhone,
-      'courseid': coursesModel.courseId,
+      'courseid': coursesModel.courseId,'hr_id':hr_id??'','manager_id':manager_id??''
     });
     var body = json.decode(response.body);
     return body;
@@ -550,7 +562,7 @@ class AllApi {
     @required String verify,
     @required String companyId,
     @required String certificateName,
-    @required String empName,
+    @required String empName,String manager_refid,String hr_refid
   }) async {
     var serviceId = 'SERVICE' + DateTime.now().microsecond.toString();
     var url = Uri.parse(
@@ -566,6 +578,8 @@ class AllApi {
         'certificatename': certificateName,
         'empname': empName,
         'serviceid': serviceId,
+        'hr_refid':hr_refid ?? '',
+        'manager_refid':manager_refid ?? '',
       },
     );
     var body = json.decode(response.body);

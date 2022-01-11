@@ -516,6 +516,8 @@ class _ServicesState extends State<Services> {
                             refId: widget.userModel.refId,
                             verify: '0',
                             certificateName: certificateName.toLowerCase(),
+                            hr_refid: widget.userModel.hrId,
+                            manager_refid: widget.userModel.managerid
                           );
                           setStateDialog(() {
                             isLoading = false;

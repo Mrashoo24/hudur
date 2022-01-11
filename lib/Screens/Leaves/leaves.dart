@@ -225,6 +225,8 @@ class _LeavesState extends State<Leaves> {
       title: title,
       fromDate: _selectedFromDate,
       toDate: _selectedToDate,
+      hr_refid:widget.userModel.hrId,
+      manager_refid:widget.userModel.managerid,
     );
 
     Get.back();

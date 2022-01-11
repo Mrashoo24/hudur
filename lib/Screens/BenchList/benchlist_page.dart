@@ -342,6 +342,8 @@ class _BenchListState extends State<BenchList> {
                                       : 'Permanent',
                                   fromDate: _fromDate,
                                   toDate: _toDate,
+                                  hr_refid:widget.userModel.hrId,
+                                  manager_refid:widget.userModel.managerid
                                 );
                                 setState(() {
                                   _isLoading = false;
