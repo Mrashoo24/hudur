@@ -185,19 +185,18 @@ class AllApi {
     }
   }
 
-  Future<String> postLeaveRequest({
-    @required String refId,
-    @required String date,
-    @required String title,
-    @required List details,
-    @required String companyId,
-    @required String fromDate,
-    @required String toDate,
-    @required String empName,
-    @required String requestId,
-    String manager_refid,
-    String hr_refid
-  }) async {
+  Future<String> postLeaveRequest(
+      {@required String refId,
+      @required String date,
+      @required String title,
+      @required List details,
+      @required String companyId,
+      @required String fromDate,
+      @required String toDate,
+      @required String empName,
+      @required String requestId,
+      String manager_refid,
+      String hr_refid}) async {
     var postLeaveRequestUrl = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostLeaveRequest");
 
@@ -214,8 +213,8 @@ class AllApi {
         'to': toDate,
         'empname': empName,
         'requestid': requestId,
-        'manager_refid':manager_refid??'',
-        'hr_refid':hr_refid??''
+        'manager_refid': manager_refid ?? '',
+        'hr_refid': hr_refid ?? ''
       },
     );
     if (response.statusCode == 200) {
@@ -239,16 +238,15 @@ class AllApi {
     }
   }
 
-  Future<dynamic> postBenchList({
-    @required UserModel userModel,
-    @required UserModel replacementUserModel,
-    @required String jobDescription,
-    @required String replacementType,
-    String fromDate,
-    String toDate,
-    String manager_refid,
-    String hr_refid
-  }) async {
+  Future<dynamic> postBenchList(
+      {@required UserModel userModel,
+      @required UserModel replacementUserModel,
+      @required String jobDescription,
+      @required String replacementType,
+      String fromDate,
+      String toDate,
+      String manager_refid,
+      String hr_refid}) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostBenchlist");
     var response = await http.post(url, body: {
@@ -272,10 +270,8 @@ class AllApi {
       'benchid': DateTime.now().microsecond.toString(),
       'companyid': replacementUserModel.companyId,
       'timestamp': DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()),
-      'manager_refid':manager_refid??'',
-      'hr_refid':hr_refid??''
-
-
+      'manager_refid': manager_refid ?? '',
+      'hr_refid': hr_refid ?? ''
     });
     if (response.statusCode != 200) {
       return 'Request failed';
@@ -509,14 +505,13 @@ class AllApi {
     }
   }
 
-  Future<String> registerCourse({
-    @required CoursesModel coursesModel,
-    @required String empName,
-    @required String empId,
-    @required String empPhone,
-    String hr_id,
-    String manager_id
-  }) async {
+  Future<String> registerCourse(
+      {@required CoursesModel coursesModel,
+      @required String empName,
+      @required String empId,
+      @required String empPhone,
+      String hr_id,
+      String manager_id}) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugRegisterCourse");
     var response = await http.post(url, body: {
@@ -530,7 +525,9 @@ class AllApi {
       'checkin': '',
       'checkout': '',
       'emp_phone': empPhone,
-      'courseid': coursesModel.courseId,'hr_id':hr_id??'','manager_id':manager_id??''
+      'courseid': coursesModel.courseId,
+      'hr_id': hr_id ?? '',
+      'manager_id': manager_id ?? ''
     });
     var body = json.decode(response.body);
     return body;
@@ -556,14 +553,15 @@ class AllApi {
     }
   }
 
-  Future<String> postServices({
-    @required String refId,
-    @required String date,
-    @required String verify,
-    @required String companyId,
-    @required String certificateName,
-    @required String empName,String manager_refid,String hr_refid
-  }) async {
+  Future<String> postServices(
+      {@required String refId,
+      @required String date,
+      @required String verify,
+      @required String companyId,
+      @required String certificateName,
+      @required String empName,
+      String manager_refid,
+      String hr_refid}) async {
     var serviceId = 'SERVICE' + DateTime.now().microsecond.toString();
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostServices");
@@ -578,8 +576,8 @@ class AllApi {
         'certificatename': certificateName,
         'empname': empName,
         'serviceid': serviceId,
-        'hr_refid':hr_refid ?? '',
-        'manager_refid':manager_refid ?? '',
+        'hr_refid': hr_refid ?? '',
+        'manager_refid': manager_refid ?? '',
       },
     );
     var body = json.decode(response.body);
@@ -879,13 +877,15 @@ class AllApi {
     }
   }
 
-  Future<void> postDynamicServices({
+  Future<String> postDynamicServices({
     @required String refId,
     @required String date,
     @required String verify,
     @required String companyId,
     @required String empName,
-    @required List fields,
+    @required String hrRefId,
+    @required String managerRefId,
+    @required String serviceDynamicId,
   }) async {
     var serviceId = 'SERVICE' + DateTime.now().microsecond.toString();
     var url = Uri.parse(
@@ -900,11 +900,33 @@ class AllApi {
         'companyid': companyId,
         'empname': empName,
         'serviceid': serviceId,
-        'fields': json.encode(fields),
+        'hr_refid': hrRefId,
+        'manager_refid': managerRefId,
+        'serdynid': serviceDynamicId,
       },
     );
-    if (response.statusCode != 200) {
-      print(response.reasonPhrase);
+    var body = json.decode(response.body);
+    return body;
+  }
+
+  Future<List<DynamicServiceRequestModel>> getDynamicServiceRequest({
+    @required String refId,
+    @required String companyId,
+    @required String verify,
+  }) async {
+    var url = Uri.parse(
+        "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/hudur/incoming_webhook/getDynamicServiceRequestEmployee?refid=$refId&companyid=$companyId&verify=$verify");
+    var response = await http.get(url);
+    var body = json.decode(response.body);
+    if (body != '[]' && response.statusCode == 200) {
+      List responseList = body;
+      Iterable<DynamicServiceRequestModel> dynamicServices =
+          responseList.map((e) {
+        return DynamicServiceRequestModel().fromJson(e);
+      });
+      return dynamicServices.toList();
+    } else {
+      return null;
     }
   }
 }

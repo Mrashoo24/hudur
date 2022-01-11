@@ -24,30 +24,32 @@ class UserModel {
   Map<String, dynamic> location;
   bool allow_checkin;
 
-  UserModel(
-      {this.address,
-      this.allotedOffice,
-      this.designation,
-      this.leaves,
-      this.email,
-      this.manager,
-      this.name,
-      this.notificationToken,
-      this.pass,
-      this.phoneNumber,
-      this.empId,
-      this.refId,
-      this.location,
-      this.allow_checkin,
-      this.companyId,
-      this.hoursOfShift,
-      this.reportingTime,
-      this.adminLeaves,
-      this.maternityPermit,
-      this.studyPermit,
-      this.hrId,
-      this.hrName,
-      this.image,this.managerid});
+  UserModel({
+    this.address,
+    this.allotedOffice,
+    this.designation,
+    this.leaves,
+    this.email,
+    this.manager,
+    this.name,
+    this.notificationToken,
+    this.pass,
+    this.phoneNumber,
+    this.empId,
+    this.refId,
+    this.location,
+    this.allow_checkin,
+    this.companyId,
+    this.hoursOfShift,
+    this.reportingTime,
+    this.adminLeaves,
+    this.maternityPermit,
+    this.studyPermit,
+    this.hrId,
+    this.hrName,
+    this.image,
+    this.managerid,
+  });
 
   fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -772,6 +774,64 @@ class ServiceDynamicModel {
     data['fields'] = fields;
     data['name'] = name;
     data['serdynid'] = serviceDynamicId;
+    return data;
+  }
+}
+
+class DynamicServiceRequestModel {
+  String serviceId,
+      companyId,
+      empname,
+      hrRefId,
+      managerRefId,
+      date,
+      verify,
+      refId,
+      serdynid,
+      fileName;
+
+  DynamicServiceRequestModel({
+    this.companyId,
+    this.serviceId,
+    this.date,
+    this.empname,
+    this.hrRefId,
+    this.managerRefId,
+    this.refId,
+    this.verify,
+    this.serdynid,
+    this.fileName,
+  });
+
+  fromJson(Map<String, dynamic> json) {
+    return DynamicServiceRequestModel(
+      companyId: json['companyid'],
+      serviceId: json['serviceid'],
+      date: json['date'],
+      empname: json['empname'],
+      hrRefId: json['hr_refid'],
+      managerRefId: json['manager_refid'],
+      refId: json['refid'],
+      verify: json['verify'],
+      serdynid: json['serdynid'],
+      fileName: json['filename'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new, prefer_collection_literals
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['companyid'] = companyId;
+    data['serviceid'] = serviceId;
+    data['date'] = date;
+    data['empname'] = empname;
+    data['hr_refid'] = hrRefId;
+    data['manager_refid'] = managerRefId;
+    data['refid'] = refId;
+    data['verify'] = verify;
+    data['serdynid'] = serdynid;
+    data['filename'] = fileName;
     return data;
   }
 }
