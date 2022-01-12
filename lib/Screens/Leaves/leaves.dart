@@ -86,8 +86,8 @@ class _LeavesState extends State<Leaves> {
 
               // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
 
-              var month1 = DateTime(DateTime.now().year,DateTime.now().month);
-              var month2 = DateTime(DateTime.now().year,DateTime.now().month -1);
+              var month1 = DateTime(DateTime.now().year,DateTime.now().month+1);
+              var month2 = DateTime(DateTime.now().year,DateTime.now().month);
 
 
               print('year1 $year1');
@@ -107,7 +107,7 @@ class _LeavesState extends State<Leaves> {
                     }
                 ).toList();
 
-
+                print('leavedata ${leavedata[0].title}');
 
                 var totalLeaveHours = 0;
 
@@ -140,7 +140,7 @@ class _LeavesState extends State<Leaves> {
 
               }else{
 
-
+                print('leavedata ${month1}');
 
                leavedata = leavedata.where(
                         (element){
@@ -159,6 +159,8 @@ class _LeavesState extends State<Leaves> {
                   totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a').parse(element.to).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(element.from)).inHours;
 
                 });
+
+
 
                 print('totalLeave ${totalLeaveHours}');
 
