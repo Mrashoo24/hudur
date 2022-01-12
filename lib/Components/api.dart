@@ -301,13 +301,28 @@ class AllApi {
     @required String empId,
     @required String companyId,
     @required String status,
+    @required String fromDate,
+    @required String toDate,
   }) async {
     var url = Uri.parse(
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetCheckInHistory?empId=$empId&companyId=$companyId&status=$status");
     var response = await http.get(url);
     var body = json.decode(response.body);
     if (response.statusCode == 200 && body != '[]') {
-      List checkInHistoryList = body;
+      List preCheckInHistoryList = body;
+
+      var checkInHistoryList = preCheckInHistoryList.where((element) {
+        return DateFormat("yyyy-MM-dd").parse(element['date']).isAfter(
+                  DateFormat("yyyy-MM-dd").parse(fromDate).subtract(
+                        const Duration(days: 1),
+                      ),
+                ) &&
+            DateFormat("yyyy-MM-dd").parse(element['date']).isBefore(
+                  DateFormat("yyyy-MM-dd").parse(toDate).add(
+                        const Duration(days: 1),
+                      ),
+                );
+      });
 
       Iterable<AttendanceReportModel> checkInHistory =
           checkInHistoryList.map((e) {
