@@ -26,7 +26,7 @@ class HomeDrawer extends StatelessWidget {
 
             if (!snapshot.hasData) {
               return Center(
-                child: CircularProgressIndicator(color: Colors.white,),
+                child: CircularProgressIndicator(color: hippieBlue,),
               );
             }
 
