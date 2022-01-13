@@ -190,7 +190,6 @@ class _HomeState extends State<Home> {
                 refId: widget.userModel.refId,
                 date: DateFormat('dd-MM-yyyy').format(DateTime.now())),
             builder: (context, snapshot) {
-
               if (!snapshot.hasData) {
                 return Center(
                   child: Image.asset("assets/Images/loading.gif"),
@@ -200,7 +199,6 @@ class _HomeState extends State<Home> {
               var report = snapshot.requireData;
               var checkin = report == "No Data" ? "-----" : report["checkin"];
               var checkout = report == "No Data" ? "-----" : report["checkout"];
-
 
               var start = report == "No Data"
                   ? DateFormat('hh:mm a').parse("00:00 AM")
@@ -212,30 +210,32 @@ class _HomeState extends State<Home> {
                       ? DateFormat('hh:mm a').parse("00:00 AM")
                       : DateFormat('hh:mm a').parse(checkout);
 
-            
-
               Duration difference = end.difference(start);
 
-              var differenceFinal = ((difference.inSeconds / 3600))
-                  .toDouble()
-                  .toPrecision(2);
+              var differenceFinal =
+                  ((difference.inSeconds / 3600)).toDouble().toPrecision(2);
 
               gotreason = report == "No Data" ? "-----" : report["reason"];
-              
-              _status = report == "No Data" ? "-----" :
-              (start.isAfter(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15)))) ? 'late' :
-              (start.isBefore(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(hours: int.parse(widget.userModel.hoursOfShift))))) ? 'early' :
-                  'perfect'
-              ;
-              
+
+              _status = report == "No Data"
+                  ? "-----"
+                  : (start.isAfter(DateFormat('hh:mm a')
+                          .parse(widget.userModel.reportingTime)
+                          .add(Duration(minutes: 15))))
+                      ? 'late'
+                      : (start.isBefore(DateFormat('hh:mm a')
+                              .parse(widget.userModel.reportingTime)
+                              .add(Duration(
+                                  hours: int.parse(
+                                      widget.userModel.hoursOfShift)))))
+                          ? 'early'
+                          : 'perfect';
+
               return Container(
-
                 padding: const EdgeInsets.all(8.0),
-
                 child: Column(
                   children: [
                     Container(
-
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius:
@@ -261,7 +261,6 @@ class _HomeState extends State<Home> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Text(
                                     widget.userModel.name,
                                     style: const TextStyle(
@@ -270,35 +269,30 @@ class _HomeState extends State<Home> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   Text(
                                     'Id: ' + widget.userModel.empId,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
-
                                   Text(
                                     widget.userModel.email,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
-
                                   Text(
                                     widget.userModel.phoneNumber,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
-
                                   Text(
                                     widget.userModel.designation,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
-
                                 ],
                               ),
                               SizedBox(
@@ -306,7 +300,10 @@ class _HomeState extends State<Home> {
                                     MediaQuery.of(context).size.height * 0.1,
                                 width: MediaQuery.of(context).size.width * 0.2,
                                 child: widget.userModel.image != null
-                                    ? Image.network('${mainurl}assets/images/employee/profile/${widget.userModel.image}',fit: BoxFit.fill,)
+                                    ? Image.network(
+                                        '${mainurl}assets/images/employee/profile/${widget.userModel.image}',
+                                        fit: BoxFit.fill,
+                                      )
                                     : Image.asset(
                                         'assets/Images/homelogo.png',
                                         fit: BoxFit.fill,
@@ -351,15 +348,15 @@ class _HomeState extends State<Home> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
-                             Text(
-                                DateFormat('dd-MM-yyyy').format(DateTime.now()),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                                Text(
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(DateTime.now()),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                                 const Text(
                                   'Attendance',
                                   style: TextStyle(
@@ -442,512 +439,574 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 20,),
-                          FutureBuilder(
-                            future: Future.wait([
-                              AllApi().getAttendenceCounts(empname: widget.userModel.name, companyid: widget.userModel.companyId),
-                              AllApi().getHomeLeavesCount(verify: '1', companyid: widget.userModel.companyId, refid: widget.userModel.refId
-                              )
-
-                            ]),
-
-                            builder: (context, snapshot) {
-
-                              if(!snapshot.hasData){
-
-                                return CircularProgressIndicator(color: Colors.white,);
-
-                              }
-
-                              List<AttendanceReportModel> attendencecount = snapshot.requireData[0];
-                              List<EmployeeLeaveRequestsModel> leavescount = snapshot.requireData[1];
-
-                              var leavesCount = leavescount.length;
-
-
-                              var present = attendencecount.where((element) => element.status != 'absence');
-
-                              var Absent = attendencecount.where((element) => element.status == 'absence');
-
-                              var lateentry = attendencecount.where((element) => element.status == 'late');
-
-                              var earlyexit = attendencecount.where((element) => element.workingstatus == 'early');
-
-
-                              var workinghours = 0.0;
-
-                              attendencecount.forEach((element) {
-
-                                workinghours += double.parse(element.checkOutDifference);
-
-                              });
-
-                              return attendencecount != null ? Container(
-                              width: Get.width,
-                              decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                              colors: [
-                              portica,
-                              const Color(0xFF6392B0),
-                              ],
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              ),
-                              shape: BoxShape.rectangle,
-                              borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(8.0),
-                              bottomRight: Radius.circular(8.0),
-                              ),
-                              ),
-                              padding: const EdgeInsets.all(5.0),
-                              child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-
-                              Text(
-                              'This Month Records',
-                              style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              ),
-                              ),
-                              const SizedBox(
-                              height: 10,
-                              ),
-                              Wrap(
-                                alignment: WrapAlignment.spaceEvenly,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                              Container(
-                                width: 80,
-                                height: 50,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 3,),
-                                   Text(
-                                  'Present',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                    present.length.toString(),
-                                  style:  TextStyle(
-                                    color: Colors.green.shade200,
-                                  ),
-                                  )
-                                  ],
-                                  ),
-                                ),
-                              ),
-                              // const SizedBox(
-                              // width: 30,
-                              // ),
-                              // Column(
-                              // crossAxisAlignment:
-                              // CrossAxisAlignment.start,
-                              // children: [
-                              // const Text(
-                              // 'Holiday',
-                              // style: TextStyle(
-                              // fontWeight: FontWeight.bold,
-                              // color: Colors.white,
-                              // ),
-                              // ),
-                              // Text(
-                              // checkout,
-                              // style: const TextStyle(
-                              // color: Colors.white,
-                              // ),
-                              // )
-                              // ],
-                              // ),
-                              const SizedBox(
-                              width: 15,
-                              ),
-                              Container(
-                                width: 80,
-                                height: 50,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 3,),
-                                  const Text(
-                                  'Absent',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                  Absent.length.toString(),
-                                  style: const TextStyle(
-                                    color: Colors.redAccent,
-                                  ),
-                                  ),
-                                  ],
-                                  ),
-                                ),
-                              ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                              Container(
-                                width: 80,
-                                height: 50,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 3,),
-                                   Text(
-                                  'Leave',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                    leavesCount.toString(),
-                                  style:  TextStyle(
-                                  color: summerGreen,
-                                  ),
-                                  ),
-                                  ],
-                                  ),
-                                ),
-                              ),
-
-
-                              ],
-                              ),
-                              Divider(color: Colors.white,),
-                              Wrap(
-                                alignment: WrapAlignment.spaceBetween,
-
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                              Container(
-                                width:100,
-                                height: 60,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 5,),
-                                  const Text(
-                                  'Late Entry',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                  lateentry.length.toString(),
-                                  style: const TextStyle(
-                                  color: Colors.redAccent,
-                                  ),
-                                  )
-                                  ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                              width: 10,
-                              ),
-                              Container(
-                                width: 100,
-                                height: 60,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 5,),
-                                  const Text(
-                                  'Early Exit',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                  earlyexit.length.toString(),
-                                  style: const TextStyle(
-                                  color: Colors.redAccent,
-                                  ),
-                                  )
-                                  ],
-                                  ),
-                                ),
-                              ),
-                               SizedBox(
-                              width: 10,
-                              ),
-                              Container(
-                                width: 100,
-                                height: 60,
-                                child: Card(
-                                  child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 5,),
-                                   Text(
-                                  'Working(hrs)',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  ),
-                                  ),
-                                    SizedBox(height: 5,),
-                                  Text(
-                                  workinghours.toString(),
-                                  style: const TextStyle(
-                                  color: Colors.green,
-
-                                  ),
-                                  ),
-                                  ],
-                                  ),
-                                ),
-                              ),
-
-
-                              ],
-                              ),
-
-                              ],
-                              ),
-                              ):Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      portica,
-                                      const Color(0xFF6392B0),
-                                    ],
-                                    begin: Alignment.topRight,
-                                    end: Alignment.bottomLeft,
-                                  ),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: const BorderRadius.only(
-                                    bottomLeft: Radius.circular(8.0),
-                                    bottomRight: Radius.circular(8.0),
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-
-                                    Text(
-                                      'This Month',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Records',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Present',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              checkin,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Holiday',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              checkout,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Absent',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              _status,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Leave',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              _status,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-
-                                      ],
-                                    ),
-                                    Divider(color: Colors.white,),
-                                    Wrap(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Late Entry',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              checkin,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Early Exit',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              checkout,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          width: 30,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Working Hours',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              _status,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-
-                                      ],
-                                    ),
-
-                                  ],
-                                ),
-                              );
-                            }
+                          SizedBox(
+                            height: 20,
                           ),
+                          FutureBuilder(
+                              future: Future.wait([
+                                AllApi().getAttendenceCounts(
+                                    empname: widget.userModel.name,
+                                    companyid: widget.userModel.companyId),
+                                AllApi().getHomeLeavesCount(
+                                    verify: '1',
+                                    companyid: widget.userModel.companyId,
+                                    refid: widget.userModel.refId)
+                              ]),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return CircularProgressIndicator(
+                                    color: Colors.white,
+                                  );
+                                }
+
+                                List<AttendanceReportModel> attendencecount =
+                                    snapshot.requireData[0];
+                                List<EmployeeLeaveRequestsModel> leavescount =
+                                    snapshot.requireData[1];
+
+                                var leavesCount = leavescount.length;
+
+                                var present = attendencecount.where(
+                                    (element) => element.status != 'absence');
+
+                                var Absent = attendencecount.where(
+                                    (element) => element.status == 'absence');
+
+                                var lateentry = attendencecount.where(
+                                    (element) => element.status == 'late');
+
+                                var earlyexit = attendencecount.where(
+                                    (element) =>
+                                        element.workingstatus == 'early');
+
+                                var workinghours = 0.0;
+
+                                attendencecount.forEach((element) {
+                                  workinghours +=
+                                      double.parse(element.checkOutDifference);
+                                });
+
+                                return attendencecount != null
+                                    ? Container(
+                                        width: Get.width,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              portica,
+                                              const Color(0xFF6392B0),
+                                            ],
+                                            begin: Alignment.topRight,
+                                            end: Alignment.bottomLeft,
+                                          ),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(8.0),
+                                            bottomRight: Radius.circular(8.0),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'This Month Records',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Wrap(
+                                              alignment:
+                                                  WrapAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: 80,
+                                                  height: 50,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 3,
+                                                        ),
+                                                        Text(
+                                                          'Present',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          present.length
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .green.shade200,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                // const SizedBox(
+                                                // width: 30,
+                                                // ),
+                                                // Column(
+                                                // crossAxisAlignment:
+                                                // CrossAxisAlignment.start,
+                                                // children: [
+                                                // const Text(
+                                                // 'Holiday',
+                                                // style: TextStyle(
+                                                // fontWeight: FontWeight.bold,
+                                                // color: Colors.white,
+                                                // ),
+                                                // ),
+                                                // Text(
+                                                // checkout,
+                                                // style: const TextStyle(
+                                                // color: Colors.white,
+                                                // ),
+                                                // )
+                                                // ],
+                                                // ),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Container(
+                                                  width: 80,
+                                                  height: 50,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 3,
+                                                        ),
+                                                        const Text(
+                                                          'Absent',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          Absent.length
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors
+                                                                .redAccent,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Container(
+                                                  width: 80,
+                                                  height: 50,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 3,
+                                                        ),
+                                                        Text(
+                                                          'Leave',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          leavesCount
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: summerGreen,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Divider(
+                                              color: Colors.white,
+                                            ),
+                                            Wrap(
+                                              alignment:
+                                                  WrapAlignment.spaceBetween,
+
+                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 100,
+                                                  height: 60,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        const Text(
+                                                          'Late Entry',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          lateentry.length
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors
+                                                                .redAccent,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  width: 100,
+                                                  height: 60,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        const Text(
+                                                          'Early Exit',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          earlyexit.length
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors
+                                                                .redAccent,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Container(
+                                                  width: 100,
+                                                  height: 60,
+                                                  child: Card(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          'Working(hrs)',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          workinghours
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            color: Colors.green,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(
+                                        width: Get.width,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              portica,
+                                              const Color(0xFF6392B0),
+                                            ],
+                                            begin: Alignment.topRight,
+                                            end: Alignment.bottomLeft,
+                                          ),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(8.0),
+                                            bottomRight: Radius.circular(8.0),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'This Month',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const Text(
+                                              'Records',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Wrap(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Present',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      checkin,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Holiday',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      checkout,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Absent',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      _status,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Leave',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      _status,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Divider(
+                                              color: Colors.white,
+                                            ),
+                                            Wrap(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Late Entry',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      checkin,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Early Exit',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      checkout,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Working Hours',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      _status,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                              }),
                         ],
                       ),
                     ),
@@ -1323,7 +1382,6 @@ class _HomeState extends State<Home> {
                         'Check-In',
                       ),
                       onPressed: () async {
-
                         setStateDialog(() {
                           _vicinityLoading = true;
                         });
@@ -1345,8 +1403,6 @@ class _HomeState extends State<Home> {
                         print('$result + ${allowCheckIn}');
 
                         if (result == true || allowCheckIn.allow_checkin) {
-
-
                           _inTime =
                               DateFormat('hh:mm a').format(DateTime.now());
                           _inDate =
@@ -1357,119 +1413,138 @@ class _HomeState extends State<Home> {
                             () {
                               loading = true;
 
-                              print('reporting time = ${DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15))}');
-                              print('today time = ${DateFormat('hh:mm a').parse(_inTime)}');('today time = ${DateFormat('hh:mm a').parse(_inTime)}');
+                              print(
+                                  'reporting time = ${DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15))}');
+                              print(
+                                  'today time = ${DateFormat('hh:mm a').parse(_inTime)}');
+                              ('today time = ${DateFormat('hh:mm a').parse(_inTime)}');
 
-                              print(DateFormat('hh:mm a').parse(_inTime).isAfter(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15))));
+                              print(DateFormat('hh:mm a')
+                                  .parse(_inTime)
+                                  .isAfter(DateFormat('hh:mm a')
+                                      .parse(widget.userModel.reportingTime)
+                                      .add(Duration(minutes: 15))));
 
-                              _status = (DateFormat('hh:mm a').parse(_inTime).isAfter(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15)))) ? 'late' :
-                              (DateFormat('hh:mm a').parse(_inTime).isBefore(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(hours: int.parse(widget.userModel.hoursOfShift))))) ? 'early' :
-                              'perfect'
-                              ;
+                              _status = (DateFormat('hh:mm a')
+                                      .parse(_inTime)
+                                      .isAfter(DateFormat('hh:mm a')
+                                          .parse(widget.userModel.reportingTime)
+                                          .add(Duration(minutes: 15))))
+                                  ? 'late'
+                                  : (DateFormat('hh:mm a')
+                                          .parse(_inTime)
+                                          .isBefore(DateFormat('hh:mm a')
+                                              .parse(widget
+                                                  .userModel.reportingTime)
+                                              .add(Duration(
+                                                  hours: int.parse(widget
+                                                      .userModel
+                                                      .hoursOfShift)))))
+                                      ? 'early'
+                                      : 'perfect';
                             },
                           );
 
-
-
-
-                          if(_status == 'late'){
-
+                          if (_status == 'late') {
                             showDialog(
                               barrierDismissible: false,
                               context: context,
                               builder: (context) {
                                 var isLoading = false;
                                 return StatefulBuilder(
-                                  builder: (context, setStateDialog2) => AlertDialog(
+                                  builder: (context, setStateDialog2) =>
+                                      AlertDialog(
                                     title: isLoading
                                         ? null
                                         : const Text(
-                                      'Give Reason for Late Check-In',
-                                    ),
+                                            'Give Reason for Late Check-In',
+                                          ),
                                     content: isLoading
                                         ? Container(
-                                      height: MediaQuery.of(context).size.height * 0.05,
-                                      alignment: Alignment.center,
-                                      child: Row(
-                                        children: const [
-                                          CircularProgressIndicator(),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          Text('Please wait'),
-                                        ],
-                                      ),
-                                    )
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            alignment: Alignment.center,
+                                            child: Row(
+                                              children: const [
+                                                CircularProgressIndicator(),
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Text('Please wait'),
+                                              ],
+                                            ),
+                                          )
                                         : TextFormField(
-                                      enabled: true,
-                                      decoration: InputDecoration(
-                                        hintText: 'Reason for Late Check-In',
-                                        hintStyle: const TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      controller: reasonController,
-                                      onChanged: (value){
-                                        setState(() {
-                                          latereason = value;
-                                        });
-
-                                      },
-                                    ),
+                                            enabled: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  'Reason for Late Check-In',
+                                              hintStyle: const TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            controller: reasonController,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                latereason = value;
+                                              });
+                                            },
+                                          ),
                                     actions: isLoading
                                         ? null
                                         : [
-                                      TextButton(
-                                        child: const Text(
-                                          'Submit',
-                                        ),
-                                        onPressed: () async {
+                                            TextButton(
+                                              child: const Text(
+                                                'Submit',
+                                              ),
+                                              onPressed: () async {
+                                                setStateDialog2(() {
+                                                  isLoading = true;
+                                                });
 
-                                          setStateDialog2((){
-                                            isLoading = true;
-                                          });
+                                                await AllApi().postCheckIn(
+                                                    designation: widget
+                                                        .userModel.designation,
+                                                    checkInTime: _inTime,
+                                                    checkOutTime: '-----',
+                                                    date: _inDate,
+                                                    refId:
+                                                        widget.userModel.refId,
+                                                    companyId: widget
+                                                        .userModel.companyId,
+                                                    reason: latereason,
+                                                    status: _status);
 
-                                            await AllApi().postCheckIn(
-                                              designation: widget.userModel.designation,
-                                              checkInTime: _inTime,
-                                              checkOutTime: '-----',
-                                              date: _inDate,
-                                              refId: widget.userModel.refId,
-                                              companyId: widget.userModel.companyId,
-                                              reason:latereason,
-                                                status:_status
-                                            );
-
-                                          setStateDialog2((){
-                                            isLoading = false;
-                                          });
-                                          Get.back();
-                                            setState(
+                                                setStateDialog2(() {
+                                                  isLoading = false;
+                                                });
+                                                Get.back();
+                                                setState(
                                                   () {
-                                                loading = false;
+                                                    loading = false;
+                                                  },
+                                                );
                                               },
-                                            );
-
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text(
-                                          'Cancel',
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                        },
-                                      ),
-                                    ],
+                                            ),
+                                            TextButton(
+                                              child: const Text(
+                                                'Cancel',
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                setState(() {
+                                                  loading = false;
+                                                });
+                                              },
+                                            ),
+                                          ],
                                   ),
                                 );
                               },
                             );
-
-                          }else{
+                          } else {
                             await AllApi().postCheckIn(
                               designation: widget.userModel.designation,
                               checkInTime: _inTime,
@@ -1477,17 +1552,15 @@ class _HomeState extends State<Home> {
                               date: _inDate,
                               refId: widget.userModel.refId,
                               companyId: widget.userModel.companyId,
-                              status: _status
+                              status: _status,
                             );
 
                             setState(
-                                  () {
+                              () {
                                 loading = false;
                               },
                             );
                           }
-
-
                         } else {
                           Get.back();
                           _sendRequestDialogBox();
@@ -1549,7 +1622,6 @@ class _HomeState extends State<Home> {
                           'Check-Out',
                         ),
                         onPressed: () async {
-
                           _outTime =
                               DateFormat('hh:mm a').format(DateTime.now());
                           _outDate =
@@ -1564,14 +1636,13 @@ class _HomeState extends State<Home> {
                           });
 
                           await AllApi().postCheckIn(
-
                             designation: widget.userModel.designation,
                             companyId: widget.userModel.companyId,
                             checkInTime: checkin,
                             checkOutTime: _outTime,
                             date: _outDate,
-                            refId: widget.userModel.refId,status: _status
-
+                            refId: widget.userModel.refId,
+                            status: _status,
                           );
 
                           var time1 = DateFormat('hh:mm a').parse(checkin);
@@ -1607,9 +1678,11 @@ class _HomeState extends State<Home> {
                             companyId: widget.userModel.companyId,
                             empId: widget.userModel.empId,
                             status: _status,
-                            reason:gotreason,
+                            reason: gotreason,
                             designation: widget.userModel.designation,
-                            hours: int.parse(widget.userModel.hoursOfShift)
+                            hours: int.parse(
+                              widget.userModel.hoursOfShift,
+                            ),
                           );
 
                           setStateDialog(() {
@@ -1675,18 +1748,15 @@ class _HomeState extends State<Home> {
                   : [
                       TextButton(
                         onPressed: () async {
-
                           setStateDialog(() {
                             isLoading = true;
                           });
-
 
                           var allowCheckIn = await AllApi().getUser(
                             widget.userModel.email,
                           );
 
                           if (allowCheckIn.allow_checkin) {
-
                             _inTime = DateFormat(
                               'hh:mm a',
                             ).format(
@@ -1707,129 +1777,153 @@ class _HomeState extends State<Home> {
                             setState(
                               () {
                                 loading = true;
-                                _status = (DateFormat('hh:mm a').parse(_inTime).isAfter(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(minutes: 15)))) ? 'late' :
-                                (DateFormat('hh:mm a').parse(_inTime).isBefore(DateFormat('hh:mm a').parse(widget.userModel.reportingTime).add(Duration(hours: int.parse(widget.userModel.hoursOfShift))))) ? 'early' :
-                                'perfect'
-                                ;
+                                _status = (DateFormat('hh:mm a')
+                                        .parse(_inTime)
+                                        .isAfter(DateFormat('hh:mm a')
+                                            .parse(
+                                                widget.userModel.reportingTime)
+                                            .add(Duration(minutes: 15))))
+                                    ? 'late'
+                                    : (DateFormat('hh:mm a')
+                                            .parse(_inTime)
+                                            .isBefore(DateFormat('hh:mm a')
+                                                .parse(widget
+                                                    .userModel.reportingTime)
+                                                .add(Duration(
+                                                    hours:
+                                                        int.parse(widget.userModel.hoursOfShift)))))
+                                        ? 'early'
+                                        : 'perfect';
                               },
                             );
 
-
-                            if(_status == 'late'){
-
+                            if (_status == 'late') {
                               showDialog(
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (context) {
                                   var isLoading = false;
                                   return StatefulBuilder(
-                                    builder: (context, setStateDialog2) => AlertDialog(
+                                    builder: (context, setStateDialog2) =>
+                                        AlertDialog(
                                       title: isLoading
                                           ? null
                                           : const Text(
-                                        'Give Reason for Late Check-In',
-                                      ),
+                                              'Give Reason for Late Check-In',
+                                            ),
                                       content: isLoading
                                           ? Container(
-                                        height: MediaQuery.of(context).size.height * 0.05,
-                                        alignment: Alignment.center,
-                                        child: Row(
-                                          children: const [
-                                            CircularProgressIndicator(),
-                                            SizedBox(
-                                              width: 30,
-                                            ),
-                                            Text('Please wait'),
-                                          ],
-                                        ),
-                                      )
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.05,
+                                              alignment: Alignment.center,
+                                              child: Row(
+                                                children: const [
+                                                  CircularProgressIndicator(),
+                                                  SizedBox(
+                                                    width: 30,
+                                                  ),
+                                                  Text('Please wait'),
+                                                ],
+                                              ),
+                                            )
                                           : TextFormField(
-                                        enabled: true,
-                                        decoration: InputDecoration(
-                                          hintText: 'Reason for Late Check-In',
-                                          hintStyle: const TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        controller: reasonController,
-                                        onChanged: (value){
-                                          setState(() {
-                                            latereason = value;
-                                          });
-                                        },
-                                      ),
+                                              enabled: true,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    'Reason for Late Check-In',
+                                                hintStyle: const TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              controller: reasonController,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  latereason = value;
+                                                });
+                                              },
+                                            ),
                                       actions: isLoading
                                           ? null
                                           : [
-                                        TextButton(
-                                          child: const Text(
-                                            'Submit',
-                                          ),
-                                          onPressed: () async {
+                                              TextButton(
+                                                child: const Text(
+                                                  'Submit',
+                                                ),
+                                                onPressed: () async {
+                                                  setStateDialog2(() {
+                                                    isLoading = true;
+                                                  });
 
-                                            setStateDialog2((){
-                                              isLoading = true;
-                                            });
+                                                  await AllApi().postCheckIn(
+                                                      designation: widget
+                                                          .userModel
+                                                          .designation,
+                                                      checkInTime: _inTime,
+                                                      checkOutTime: '-----',
+                                                      date: _inDate,
+                                                      refId: widget
+                                                          .userModel.refId,
+                                                      companyId: widget
+                                                          .userModel.companyId,
+                                                      reason: latereason,
+                                                      status: _status);
 
-                                            await AllApi().postCheckIn(
-                                                designation: widget.userModel.designation,
-                                                checkInTime: _inTime,
-                                                checkOutTime: '-----',
-                                                date: _inDate,
-                                                refId: widget.userModel.refId,
-                                                companyId: widget.userModel.companyId,
-                                                reason:latereason,status: _status
-                                            );
+                                                  await AllApi()
+                                                      .postOuterGeoList(
+                                                    designation: widget
+                                                        .userModel.designation,
+                                                    empName:
+                                                        widget.userModel.name,
+                                                    companyId: widget
+                                                        .userModel.companyId,
+                                                    refId:
+                                                        widget.userModel.refId,
+                                                    date: _inDate,
+                                                    lat: _locationData.latitude
+                                                        .toString(),
+                                                    lon: _locationData.longitude
+                                                        .toString(),
+                                                  );
 
-                                            await AllApi().postOuterGeoList(
-                                              designation: widget.userModel.designation,
-                                              empName: widget.userModel.name,
-                                              companyId: widget.userModel.companyId,
-                                              refId: widget.userModel.refId,
-                                              date: _inDate,
-                                              lat: _locationData.latitude.toString(),
-                                              lon: _locationData.longitude.toString(),
-                                            );
+                                                  Fluttertoast.showToast(
+                                                    msg: "Logged in",
+                                                  );
 
-                                            Fluttertoast.showToast(
-                                              msg: "Logged in",
-                                            );
-
-                                            setStateDialog2((){
-                                              isLoading = false;
-                                            });
-                                            Get.back();
-                                            setState(
-                                                  () {
-                                                loading = false;
-                                              },
-                                            );
-
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text(
-                                            'Cancel',
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
+                                                  setStateDialog2(() {
+                                                    isLoading = false;
+                                                  });
+                                                  Get.back();
+                                                  setState(
+                                                    () {
+                                                      loading = false;
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text(
+                                                  'Cancel',
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
                                     ),
                                   );
                                 },
                               );
-
-                            }else{
+                            } else {
                               await AllApi().postCheckIn(
-                                designation: widget.userModel.designation,
-                                checkInTime: _inTime,
-                                checkOutTime: '-----',
-                                date: _inDate,
-                                refId: widget.userModel.refId,
-                                companyId: widget.userModel.companyId,status: _status
-                              );
+                                  designation: widget.userModel.designation,
+                                  checkInTime: _inTime,
+                                  checkOutTime: '-----',
+                                  date: _inDate,
+                                  refId: widget.userModel.refId,
+                                  companyId: widget.userModel.companyId,
+                                  status: _status);
 
                               await AllApi().postOuterGeoList(
                                 designation: widget.userModel.designation,
@@ -1846,18 +1940,12 @@ class _HomeState extends State<Home> {
                               );
 
                               setState(
-                                    () {
+                                () {
                                   loading = false;
                                 },
                               );
                             }
-
-
-
-
-
                           } else {
-
                             await AllApi().postCheckInRequest(
                                 designation: widget.userModel.designation,
                                 companyId: widget.userModel.companyId,
@@ -1874,7 +1962,7 @@ class _HomeState extends State<Home> {
                             });
 
                             setState(
-                                  () {
+                              () {
                                 loading = false;
                               },
                             );

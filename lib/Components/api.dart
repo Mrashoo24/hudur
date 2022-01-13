@@ -29,15 +29,16 @@ class AllApi {
     }
   }
 
-  Future<void> postCheckIn(
-      {@required String checkInTime,
-      @required String checkOutTime,
-      @required String refId,
-      @required String date,
-      @required String companyId,
-      @required String designation,
-      String status,
-      String reason}) async {
+  Future<void> postCheckIn({
+    @required String checkInTime,
+    @required String checkOutTime,
+    @required String refId,
+    @required String date,
+    @required String companyId,
+    @required String designation,
+    String status,
+    String reason,
+  }) async {
     var postCheckInUrl = Uri.parse(
         'https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugPostCheckIn');
 
@@ -48,7 +49,8 @@ class AllApi {
       'date': date,
       'companyid': companyId,
       'reason': reason ?? '',
-      'status': status
+      'status': status,
+      'designation': designation,
     });
     if (response.statusCode == 200) {
       return;
