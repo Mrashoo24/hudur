@@ -15,6 +15,7 @@ class Announcements extends StatefulWidget {
 
 class _AnnouncementsState extends State<Announcements> {
   final _allApi = AllApi();
+  List<AnnounceModel> _announcementList;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,101 +47,112 @@ class _AnnouncementsState extends State<Announcements> {
               );
             }
             var announcementList = snapshot.data;
-            return ListView.builder(
-              itemCount: announcementList.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Get.to(
-                      () => AnnouncementDetail(
-                        announceModel: announcementList[index],
-                      ),
-                    );
-                  },
-                  child: Card(
-                    elevation: 8,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12.0),
-                      ),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      // height: MediaQuery.of(context).size.height * 0.15,
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            title: Text(
-                              announcementList[index].name,
-                            ),
-                            leading: const Icon(Icons.notifications),
-                          )
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     const Text(
-                          //       'Name: ',
-                          //       style: TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //     Text(
-                          //       announcementList[index].name,
-                          //       style: const TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // const SizedBox(
-                          //   height: 5,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     const Text(
-                          //       'Text: ',
-                          //       style: TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //     Text(
-                          //       announcementList[index].text,
-                          //       style: const TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // const SizedBox(
-                          //   height: 5,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     const Text(
-                          //       'Timestamp: ',
-                          //       style: TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //     Text(
-                          //       announcementList[index].timestamp,
-                          //       style: const TextStyle(
-                          //         fontSize: 20,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
+            _announcementList = announcementList;
+            return RefreshIndicator(
+              onRefresh: () async {
+                var refreshList = await _allApi.getAnnounce(
+                  companyId: widget.userModel.companyId,
                 );
+                setState(() {
+                  _announcementList = refreshList;
+                });
               },
+              child: ListView.builder(
+                itemCount: _announcementList.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      Get.to(
+                        () => AnnouncementDetail(
+                          announceModel: _announcementList[index],
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 8,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        // height: MediaQuery.of(context).size.height * 0.15,
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              title: Text(
+                                _announcementList[index].name,
+                              ),
+                              leading: const Icon(Icons.notifications),
+                            )
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text(
+                            //       'Name: ',
+                            //       style: TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       announcementList[index].name,
+                            //       style: const TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                            // const SizedBox(
+                            //   height: 5,
+                            // ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text(
+                            //       'Text: ',
+                            //       style: TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       announcementList[index].text,
+                            //       style: const TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                            // const SizedBox(
+                            //   height: 5,
+                            // ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     const Text(
+                            //       'Timestamp: ',
+                            //       style: TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       announcementList[index].timestamp,
+                            //       style: const TextStyle(
+                            //         fontSize: 20,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             );
           },
         ),

@@ -31,6 +31,7 @@ class _LeavesState extends State<Leaves> {
     'Rejected',
   ];
   String _selectedFilter;
+  List<EmployeeLeaveRequestsModel> _historyList;
 
   File _attachment;
   PlatformFile _attachmentPlatformFile;
@@ -46,189 +47,185 @@ class _LeavesState extends State<Leaves> {
     return _isValid;
   }
 
-  Widget _radioListTile({
-    @required String title,
-    @required String subtitle,
-    @required int value,
-    @required List details,
-    List attachments,LeaveRequestsModel leaves
-  }) {
+  Widget _radioListTile(
+      {@required String title,
+      @required String subtitle,
+      @required int value,
+      @required List details,
+      List attachments,
+      LeaveRequestsModel leaves}) {
     return FutureBuilder(
-      future: AllApi().getLeavesCount(title: title, verify: '1', companyid: widget.userModel.companyId, refid: widget.userModel.refId,financial_month:leaves.financial_month),
-      builder: (context, snapshot) {
-
-        if(!snapshot.hasData){
-          return Center(child: Text('Please Wait Fetching Details'));
-        }else{
-
-        return RadioListTile(
-          activeColor: hippieBlue,
-          secondary: ElevatedButton(
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12.0),
+        future: AllApi().getLeavesCount(
+            title: title,
+            verify: '1',
+            companyid: widget.userModel.companyId,
+            refid: widget.userModel.refId,
+            financial_month: leaves.financial_month),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: Text('Please Wait Fetching Details'));
+          } else {
+            return RadioListTile(
+              activeColor: hippieBlue,
+              secondary: ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12.0),
+                      ),
+                    ),
                   ),
+                  backgroundColor: MaterialStateProperty.all<Color>(hippieBlue),
                 ),
+                child: const Text('Details'),
+                onPressed: value == _selectedValue
+                    ? () async {
+                        List<EmployeeLeaveRequestsModel> leavedata =
+                            snapshot.requireData;
+
+                        var year1 = DateTime(DateTime.now().year,
+                            int.parse(leaves.financial_month));
+                        var year2 = DateTime(DateTime.now().year - 1,
+                            int.parse(leaves.financial_month) - 1);
+
+                        // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
+
+                        var month1 = DateTime(
+                            DateTime.now().year, DateTime.now().month + 1);
+                        var month2 =
+                            DateTime(DateTime.now().year, DateTime.now().month);
+
+                        print('year1 $year1');
+                        print('year2 $year2');
+                        print('month1 $month1');
+                        print('month2 $month2');
+
+                        if (leaves.tenure == 'yearly') {
+                          leavedata = leavedata.where((element) {
+                            return DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from)
+                                    .isAfter(year2) &&
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from)
+                                    .isBefore(year1);
+                          }).toList();
+
+                          print('leavedata ${leavedata[0].title}');
+
+                          var totalLeaveHours = 0;
+
+                          await Future.forEach(leavedata, (element) {
+                            totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
+                                .parse(element.to)
+                                .difference(DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from))
+                                .inHours;
+                          });
+
+                          print('totalLeave ${totalLeaveHours}');
+
+                          var remainingHours =
+                              (double.parse(leaves.hourslimit) -
+                                      totalLeaveHours)
+                                  .round();
+
+                          _onPressedDetails(
+                              details: details,
+                              title: title,
+                              attachments: attachments,
+                              timebased: leaves.tenure,
+                              countbased: leaves.countbased,
+                              limit: leaves.limit,
+                              hourslimit: leaves.hourslimit,
+                              reducedtime: leaves.reducedtime,
+                              tenure: leaves.tenure,
+                              totalCountConsumed: leavedata.length.toString(),
+                              totalLeaveHours: totalLeaveHours.toString(),
+                              remainingHours: remainingHours.toString());
+                        } else {
+                          print('leavedata ${month1}');
+
+                          leavedata = leavedata.where((element) {
+                            return DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from)
+                                    .isAfter(month2) &&
+                                DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from)
+                                    .isBefore(month1);
+                          }).toList();
+
+                          var totalLeaveHours = 0;
+
+                          await Future.forEach(leavedata, (element) {
+                            totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
+                                .parse(element.to)
+                                .difference(DateFormat('dd/MM/yyyy hh:mm a')
+                                    .parse(element.from))
+                                .inHours;
+                          });
+
+                          print('totalLeave ${totalLeaveHours}');
+
+                          var remainingHours =
+                              (double.parse(leaves.hourslimit) -
+                                      totalLeaveHours)
+                                  .round();
+
+                          _onPressedDetails(
+                              details: details,
+                              title: title,
+                              attachments: attachments,
+                              timebased: leaves.tenure,
+                              countbased: leaves.countbased,
+                              limit: leaves.limit,
+                              hourslimit: leaves.hourslimit,
+                              reducedtime: leaves.reducedtime,
+                              tenure: leaves.tenure,
+                              totalCountConsumed: leavedata.length.toString(),
+                              totalLeaveHours: totalLeaveHours.toString(),
+                              remainingHours: remainingHours.toString());
+                        }
+                      }
+                    : null,
               ),
-              backgroundColor: MaterialStateProperty.all<Color>(hippieBlue),
-            ),
-            child: const Text('Details'),
-            onPressed: value == _selectedValue
-                ? () async {
-
-
-              List<EmployeeLeaveRequestsModel> leavedata = snapshot.requireData;
-
-              var year1 = DateTime(DateTime.now().year,int.parse(leaves.financial_month));
-              var year2 = DateTime(DateTime.now().year-1,int.parse(leaves.financial_month)-1);
-
-              // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
-
-              var month1 = DateTime(DateTime.now().year,DateTime.now().month+1);
-              var month2 = DateTime(DateTime.now().year,DateTime.now().month);
-
-
-              print('year1 $year1');
-              print('year2 $year2');
-              print('month1 $month1');
-              print('month2 $month2');
-
-              if(leaves.tenure == 'yearly'){
-
-
-
-                leavedata =  leavedata.where(
-                        (element){
-                      return  DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isAfter(year2)
-                          && DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isBefore(year1);
-
-                    }
-                ).toList();
-
-                print('leavedata ${leavedata[0].title}');
-
-                var totalLeaveHours = 0;
-
-                await  Future.forEach(leavedata,(element) {
-
-                  totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a').parse(element.to).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(element.from)).inHours;
-
-                });
-
-                print('totalLeave ${totalLeaveHours}');
-
-                var remainingHours = (double.parse(leaves.hourslimit) - totalLeaveHours).round();
-
-
-
-                _onPressedDetails(
-                    details: details,
-                    title: title,
-                    attachments: attachments,
-                    timebased: leaves.tenure,
-                    countbased: leaves.countbased,
-                    limit: leaves.limit,
-                    hourslimit: leaves.hourslimit,
-                    reducedtime: leaves.reducedtime,
-                    tenure: leaves.tenure,
-                    totalCountConsumed: leavedata.length.toString(),
-                    totalLeaveHours:totalLeaveHours.toString(),
-                    remainingHours:remainingHours.toString()
-                );
-
-              }else{
-
-                print('leavedata ${month1}');
-
-               leavedata = leavedata.where(
-                        (element){
-                      return  DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isAfter(month2)
-                          && DateFormat('dd/MM/yyyy hh:mm a').parse(element.from).isBefore(month1);
-
-                    }
-                ).toList();
-
-
-
-                var totalLeaveHours = 0;
-
-                await  Future.forEach(leavedata,(element) {
-
-                  totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a').parse(element.to).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(element.from)).inHours;
-
-                });
-
-
-
-                print('totalLeave ${totalLeaveHours}');
-
-                var remainingHours = (double.parse(leaves.hourslimit) - totalLeaveHours).round();
-
-
-
-                _onPressedDetails(
-                    details: details,
-                    title: title,
-                    attachments: attachments,
-                    timebased: leaves.tenure,
-                    countbased: leaves.countbased,
-                    limit: leaves.limit,
-                    hourslimit: leaves.hourslimit,
-                    reducedtime: leaves.reducedtime,
-                    tenure: leaves.tenure,
-                    totalCountConsumed: leavedata.length.toString(),
-                    totalLeaveHours:totalLeaveHours.toString(),
-                    remainingHours:remainingHours.toString()
-                );
-
-              }
-
-                  }
-                : null,
-          ),
-          value: value,
-          title: Text(
-            title,
-          ),
-          subtitle: Column(
-            children: [
-
-              Text(
-                subtitle,
+              value: value,
+              title: Text(
+                title,
               ),
-            ],
-          ),
-
-          groupValue: _selectedValue,
-          onChanged: (value) => setState(
-            () {
-              _selectedValue = value;
-            },
-          ),
-        );}
-      }
-    );
+              subtitle: Column(
+                children: [
+                  Text(
+                    subtitle,
+                  ),
+                ],
+              ),
+              groupValue: _selectedValue,
+              onChanged: (value) => setState(
+                () {
+                  _selectedValue = value;
+                },
+              ),
+            );
+          }
+        });
   }
 
-  sendLeaveRequest(String requestId,String title) async {
-
+  sendLeaveRequest(String requestId, String title) async {
     print('no limit on count and hours are pending');
 
     var result = await AllApi().postLeaveRequest(
       requestId: requestId,
       empName: widget.userModel.name,
       companyId: widget.userModel.companyId,
-      date: DateFormat('yyyy-MM-dd')
-          .format(DateTime.now()),
+      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       details: textFieldValues,
       refId: widget.userModel.refId,
       title: title,
       fromDate: _selectedFromDate,
       toDate: _selectedToDate,
-      hr_refid:widget.userModel.hrId,
-      manager_refid:widget.userModel.managerid,
+      hr_refid: widget.userModel.hrId,
+      manager_refid: widget.userModel.managerid,
     );
 
     Get.back();
@@ -242,6 +239,7 @@ class _LeavesState extends State<Leaves> {
       setState(() {
         _selectedFromDate = '';
         _selectedToDate = '';
+        textFieldValues.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -252,20 +250,19 @@ class _LeavesState extends State<Leaves> {
       setState(() {
         _selectedFromDate = '';
         _selectedToDate = '';
+        textFieldValues.clear();
       });
     }
     print('no limits');
   }
 
-  sendfileleaverequest(String requestId,String title,setStateDialog,isLoading) async {
-
-
+  sendfileleaverequest(
+      String requestId, String title, setStateDialog, isLoading) async {
     await AllApi().postLeaveRequest(
       requestId: requestId,
       empName: widget.userModel.name,
       companyId: widget.userModel.companyId,
-      date: DateFormat('yyyy-MM-dd')
-          .format(DateTime.now()),
+      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       details: textFieldValues,
       refId: widget.userModel.refId,
       title: title,
@@ -282,7 +279,6 @@ class _LeavesState extends State<Leaves> {
       isLoading = false;
     });
 
-
     if (result == '1') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -293,6 +289,7 @@ class _LeavesState extends State<Leaves> {
         _selectedFromDate = '';
         _selectedToDate = '';
         _attachment = null;
+        textFieldValues.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -304,15 +301,11 @@ class _LeavesState extends State<Leaves> {
         _selectedFromDate = '';
         _selectedToDate = '';
         _attachment = null;
+        textFieldValues.clear();
       });
     }
     Get.back();
   }
-
-
-
-
-
 
   Widget _requestTab() {
     return FutureBuilder<List<LeaveRequestsModel>>(
@@ -352,8 +345,7 @@ class _LeavesState extends State<Leaves> {
                         value: index + 1,
                         details: leaveRequests[index].details,
                         attachments: leaveRequests[index].attachments,
-                        leaves:leaveRequests[index]
-
+                        leaves: leaveRequests[index],
                       );
                     },
                   ),
@@ -427,15 +419,31 @@ class _LeavesState extends State<Leaves> {
                 );
               } else {
                 var list = snapshot.data;
+                _historyList = list;
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return _historyCard(
-                        list: list,
-                        index: index,
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      var refreshList = await AllApi().getEmployeeLeaveRequests(
+                        refId: widget.userModel.refId,
+                        verify: _selectedFilter == 'Accepted'
+                            ? '1'
+                            : _selectedFilter == 'Rejected'
+                                ? '-1'
+                                : '0',
                       );
+                      setState(() {
+                        _historyList = refreshList;
+                      });
                     },
+                    child: ListView.builder(
+                      itemCount: _historyList.length,
+                      itemBuilder: (context, index) {
+                        return _historyCard(
+                          list: _historyList,
+                          index: index,
+                        );
+                      },
+                    ),
                   ),
                 );
               }
@@ -567,12 +575,19 @@ class _LeavesState extends State<Leaves> {
     );
   }
 
-  void _onPressedDetails({
-    @required List details,
-    @required String title,
-    List attachments,String tenure,String limit,String timebased,String reducedtime,String countbased,
-    String hourslimit,String totalLeaveHours,String remainingHours,String totalCountConsumed
-  }) {
+  void _onPressedDetails(
+      {@required List details,
+      @required String title,
+      List attachments,
+      String tenure,
+      String limit,
+      String timebased,
+      String reducedtime,
+      String countbased,
+      String hourslimit,
+      String totalLeaveHours,
+      String remainingHours,
+      String totalCountConsumed}) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -602,10 +617,18 @@ class _LeavesState extends State<Leaves> {
                         child: Column(
                           children: [
                             Text('Number of Count: $totalCountConsumed'),
-                         limit == '0' ?SizedBox()  :  Text('Leaves Pending: ${(double.parse(limit) - double.parse(totalCountConsumed)).round()}'),
-                            hourslimit == '0' ? SizedBox() :   Text('Total Hours Consumed: $totalLeaveHours'),
-                         hourslimit == '0' ? SizedBox() :  Text('Total Hours Remaining: $remainingHours'),
-
+                            limit == '0'
+                                ? SizedBox()
+                                : Text(
+                                    'Leaves Pending: ${(double.parse(limit) - double.parse(totalCountConsumed)).round()}'),
+                            hourslimit == '0'
+                                ? SizedBox()
+                                : Text(
+                                    'Total Hours Consumed: $totalLeaveHours'),
+                            hourslimit == '0'
+                                ? SizedBox()
+                                : Text(
+                                    'Total Hours Remaining: $remainingHours'),
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height * 0.15,
@@ -631,7 +654,6 @@ class _LeavesState extends State<Leaves> {
                                         showTitleActions: true,
                                         minTime: DateTime.now(),
                                         maxTime: DateTime(2050, 6, 7),
-
                                         onChanged: (date) {
                                           setStateDialog(() {
                                             _selectedFromDate =
@@ -771,12 +793,10 @@ class _LeavesState extends State<Leaves> {
                   : [
                       TextButton(
                         onPressed: () async {
-
                           var requestId =
                               'REQ' + DateTime.now().microsecond.toString();
                           var _canSubmit = _trySubmit();
                           if (attachments == null) {
-
                             if (_canSubmit &&
                                 (_selectedFromDate != '' &&
                                     _selectedToDate != '')) {
@@ -784,108 +804,85 @@ class _LeavesState extends State<Leaves> {
                                 isLoading = true;
                               });
 
-
-                              if(countbased == '1'){
-
-                                if(double.parse(totalCountConsumed) < double.parse(limit)){
-
-                                  if(hourslimit == '0'){
-
+                              if (countbased == '1') {
+                                if (double.parse(totalCountConsumed) <
+                                    double.parse(limit)) {
+                                  if (hourslimit == '0') {
                                     print('no limits');
 
                                     sendLeaveRequest(requestId, title);
+                                  } else {
+                                    if (double.parse(totalLeaveHours) <
+                                        double.parse(hourslimit)) {
+                                      print(
+                                          'difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
 
-                                  }else{
-
-                                    if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
-
-                                      print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
-
-                                      if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
-
+                                      if (DateFormat('dd/MM/yyyy hh:mm a')
+                                              .parse(_selectedToDate)
+                                              .difference(DateFormat(
+                                                      'dd/MM/yyyy hh:mm a')
+                                                  .parse(_selectedFromDate))
+                                              .inHours <
+                                          double.parse(hourslimit)) {
                                         sendLeaveRequest(requestId, title);
-
-                                      }else{
+                                      } else {
                                         setStateDialog(() {
                                           isLoading = false;
                                         });
 
-                                        Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
-
+                                        Fluttertoast.showToast(
+                                            msg: 'Exceeding Hours Limit');
                                       }
-
-
-
-                                    }else{
+                                    } else {
                                       setStateDialog(() {
                                         isLoading = false;
                                       });
 
-                                      Fluttertoast.showToast(msg: 'Hours Limit Exhausted');
-
+                                      Fluttertoast.showToast(
+                                          msg: 'Hours Limit Exhausted');
                                     }
-
-
-
-
                                   }
-
-                                }else{
+                                } else {
                                   setStateDialog(() {
                                     isLoading = false;
                                   });
-                                  Fluttertoast.showToast(msg:'Count Limit Exhausted');
-
+                                  Fluttertoast.showToast(
+                                      msg: 'Count Limit Exhausted');
                                 }
-
-
-
-                              }else{
-
-                                if(hourslimit == '0'){
-
+                              } else {
+                                if (hourslimit == '0') {
                                   sendLeaveRequest(requestId, title);
+                                } else {
+                                  if (double.parse(totalLeaveHours) <
+                                      double.parse(hourslimit)) {
+                                    print(
+                                        'difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
 
-                                }else{
-
-                                  if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
-
-                                    print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                        .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
-
-                                    if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                        .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
-
+                                    if (DateFormat('dd/MM/yyyy hh:mm a')
+                                            .parse(_selectedToDate)
+                                            .difference(
+                                                DateFormat('dd/MM/yyyy hh:mm a')
+                                                    .parse(_selectedFromDate))
+                                            .inHours <
+                                        double.parse(hourslimit)) {
                                       sendLeaveRequest(requestId, title);
-
-                                    }else{
+                                    } else {
                                       setStateDialog(() {
                                         isLoading = false;
                                       });
 
-                                      Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
-
+                                      Fluttertoast.showToast(
+                                          msg: 'Exceeding Hours Limit');
                                     }
-
-                                  }else{
-
+                                  } else {
                                     setStateDialog(() {
                                       isLoading = false;
                                     });
-                                    Fluttertoast.showToast(msg:'Hours Limit Exhausted');
-
+                                    Fluttertoast.showToast(
+                                        msg: 'Hours Limit Exhausted');
                                   }
-
-
-
-
                                 }
-
-
                               }
-
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -894,9 +891,7 @@ class _LeavesState extends State<Leaves> {
                               );
                             }
                           } else {
-
                             if (_attachment != null) {
-
                               if (_canSubmit &&
                                   (_selectedFromDate != '' &&
                                       _selectedToDate != '')) {
@@ -904,114 +899,96 @@ class _LeavesState extends State<Leaves> {
                                   isLoading = true;
                                 });
 
-
-                                if(countbased == '1'){
-
-                                  if(double.parse(totalCountConsumed) < double.parse(limit)){
-
-                                    if(hourslimit == '0'){
-
+                                if (countbased == '1') {
+                                  if (double.parse(totalCountConsumed) <
+                                      double.parse(limit)) {
+                                    if (hourslimit == '0') {
                                       print('no limits');
 
-                                      sendfileleaverequest(requestId, title,setStateDialog,isLoading);
+                                      sendfileleaverequest(requestId, title,
+                                          setStateDialog, isLoading);
+                                    } else {
+                                      if (double.parse(totalLeaveHours) <
+                                          double.parse(hourslimit)) {
+                                        print(
+                                            'difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
 
-                                    }else{
-
-                                      if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
-
-                                        print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                            .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
-
-                                        if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                            .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
-
-                                          sendfileleaverequest(requestId, title,setStateDialog,isLoading);
-
-                                        }else{
+                                        if (DateFormat('dd/MM/yyyy hh:mm a')
+                                                .parse(_selectedToDate)
+                                                .difference(DateFormat(
+                                                        'dd/MM/yyyy hh:mm a')
+                                                    .parse(_selectedFromDate))
+                                                .inHours <
+                                            double.parse(hourslimit)) {
+                                          sendfileleaverequest(requestId, title,
+                                              setStateDialog, isLoading);
+                                        } else {
                                           setStateDialog(() {
                                             isLoading = false;
                                           });
 
-                                          Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
-
+                                          Fluttertoast.showToast(
+                                              msg: 'Exceeding Hours Limit');
                                         }
-
-
-                                      }else{
+                                      } else {
                                         setStateDialog(() {
                                           isLoading = false;
                                         });
-                                        Fluttertoast.showToast(msg:'Hours Limit Exhausted');
-
+                                        Fluttertoast.showToast(
+                                            msg: 'Hours Limit Exhausted');
                                       }
-
-
-
-
                                     }
-
-                                  }else{
+                                  } else {
                                     setStateDialog(() {
                                       isLoading = false;
                                     });
-                                    Fluttertoast.showToast(msg:'Counts Limit Exhausted');
-
+                                    Fluttertoast.showToast(
+                                        msg: 'Counts Limit Exhausted');
                                   }
+                                } else {
+                                  if (hourslimit == '0') {
+                                    sendfileleaverequest(requestId, title,
+                                        setStateDialog, isLoading);
+                                  } else {
+                                    if (double.parse(totalLeaveHours) <
+                                        double.parse(hourslimit)) {
+                                      print(
+                                          'difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate).difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
 
-
-
-                                }else{
-
-                                  if(hourslimit == '0'){
-
-                                    sendfileleaverequest(requestId, title,setStateDialog,isLoading);
-
-                                  }else{
-
-                                    if(double.parse(totalLeaveHours) < double.parse(hourslimit)){
-
-                                      print('difeerence ${DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours}');
-
-                                      if( DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedToDate)
-                                          .difference(DateFormat('dd/MM/yyyy hh:mm a').parse(_selectedFromDate)).inHours < double.parse(hourslimit) ){
-
-                                        sendfileleaverequest(requestId, title,setStateDialog,isLoading);
-
-                                      }else{
+                                      if (DateFormat('dd/MM/yyyy hh:mm a')
+                                              .parse(_selectedToDate)
+                                              .difference(DateFormat(
+                                                      'dd/MM/yyyy hh:mm a')
+                                                  .parse(_selectedFromDate))
+                                              .inHours <
+                                          double.parse(hourslimit)) {
+                                        sendfileleaverequest(requestId, title,
+                                            setStateDialog, isLoading);
+                                      } else {
                                         setStateDialog(() {
                                           isLoading = false;
                                         });
 
-                                        Fluttertoast.showToast(msg: 'Exceeding Hours Limit');
-
+                                        Fluttertoast.showToast(
+                                            msg: 'Exceeding Hours Limit');
                                       }
-
-                                    }else{
+                                    } else {
                                       setStateDialog(() {
                                         isLoading = false;
                                       });
-                                      Fluttertoast.showToast(msg:'Hours Limit Exhausted');
-
+                                      Fluttertoast.showToast(
+                                          msg: 'Hours Limit Exhausted');
                                     }
-
-
-
-
                                   }
-
-
                                 }
-
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Please fill all the details.'),
+                                    content:
+                                        Text('Please fill all the details.'),
                                   ),
                                 );
                               }
-
-
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -1019,8 +996,6 @@ class _LeavesState extends State<Leaves> {
                                 ),
                               );
                             }
-
-
                           }
                         },
                         child: const Text('Submit'),

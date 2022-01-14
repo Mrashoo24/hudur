@@ -19,6 +19,8 @@ class _BenchListState extends State<BenchList> {
   final _formKey = GlobalKey<FormState>();
   final _allApi = AllApi();
 
+  List<BenchListModel> _historyList;
+
   UserModel _employeeDetails;
   var _isLoading = false;
   var _employeeName = 'Select Employee';
@@ -334,17 +336,16 @@ class _BenchListState extends State<BenchList> {
                                   _isLoading = true;
                                 });
                                 var result = await _allApi.postBenchList(
-                                  userModel: widget.userModel,
-                                  replacementUserModel: _employeeDetails,
-                                  jobDescription: _jobDescription,
-                                  replacementType: _selectedValue == 1
-                                      ? 'Temporary'
-                                      : 'Permanent',
-                                  fromDate: _fromDate,
-                                  toDate: _toDate,
-                                  hr_refid:widget.userModel.hrId,
-                                  manager_refid:widget.userModel.managerid
-                                );
+                                    userModel: widget.userModel,
+                                    replacementUserModel: _employeeDetails,
+                                    jobDescription: _jobDescription,
+                                    replacementType: _selectedValue == 1
+                                        ? 'Temporary'
+                                        : 'Permanent',
+                                    fromDate: _fromDate,
+                                    toDate: _toDate,
+                                    hr_refid: widget.userModel.hrId,
+                                    manager_refid: widget.userModel.managerid);
                                 setState(() {
                                   _isLoading = false;
                                 });
@@ -497,80 +498,97 @@ class _BenchListState extends State<BenchList> {
                 );
               } else {
                 var list = snapshot.data;
+                _historyList = list;
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 8,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(12.0),
-                          ),
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Employee Name: ',
-                                  ),
-                                  Text(
-                                    list[index].replacementName,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Employee Id: ',
-                                  ),
-                                  Text(
-                                    list[index].replacementEmpId,
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Date: ',
-                                  ),
-                                  Text(
-                                    list[index].timeStamp,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    'Status: ',
-                                  ),
-                                  Text(
-                                    list[index].verify == '1'
-                                        ? 'Accepted'
-                                        : list[index].verify == '0'
-                                            ? 'Pending'
-                                            : 'Rejected',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      var refreshList = await _allApi.getBenchListRequests(
+                        verify: _selectedFilter == 'Accepted'
+                            ? '1'
+                            : _selectedFilter == 'Rejected'
+                                ? '-1'
+                                : '0',
+                        companyId: widget.userModel.companyId,
+                        empId: widget.userModel.empId,
                       );
+                      setState(() {
+                        _historyList = refreshList;
+                      });
                     },
+                    child: ListView.builder(
+                      itemCount: _historyList.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 8,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12.0),
+                            ),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Employee Name: ',
+                                    ),
+                                    Text(
+                                      _historyList[index].replacementName,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Employee Id: ',
+                                    ),
+                                    Text(
+                                      _historyList[index].replacementEmpId,
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Date: ',
+                                    ),
+                                    Text(
+                                      _historyList[index].timeStamp,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Status: ',
+                                    ),
+                                    Text(
+                                      _historyList[index].verify == '1'
+                                          ? 'Accepted'
+                                          : _historyList[index].verify == '0'
+                                              ? 'Pending'
+                                              : 'Rejected',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               }

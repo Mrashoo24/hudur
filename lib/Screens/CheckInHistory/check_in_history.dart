@@ -219,6 +219,18 @@ class _CheckInHistoryState extends State<CheckInHistory> {
                               'Working Status',
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Check-in Status',
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Reason',
+                            ),
+                          ),
                         ],
                       ),
                     ];
@@ -246,6 +258,18 @@ class _CheckInHistoryState extends State<CheckInHistory> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 checkInHistoryList[i].workingstatus,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                checkInHistoryList[i].status,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                checkInHistoryList[i].reason ?? '',
                               ),
                             ),
                           ],

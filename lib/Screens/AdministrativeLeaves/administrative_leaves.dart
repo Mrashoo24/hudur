@@ -27,17 +27,14 @@ class _AdministrativeLeavesState extends State<AdministrativeLeaves> {
             child: Image.asset("assets/Images/loading.gif"),
           );
         } else if (snapshot.data.isEmpty) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
-                'Nothing to show here.',
-                style: TextStyle(
-                  fontSize: 22,
-                ),
+          return Container(
+            alignment: Alignment.center,
+            child: const Text(
+              'Nothing to show here.',
+              style: TextStyle(
+                fontSize: 22,
               ),
-            ],
+            ),
           );
         } else {
           var adminLeavesList = snapshot.data;

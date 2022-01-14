@@ -429,36 +429,41 @@ class AttendanceReportModel {
       checkOutTime,
       employeeName,
       date,
-      workingstatus;
+      workingstatus,
+      reason;
 
-  AttendanceReportModel(
-      {this.checkInDelayInHours,
-      this.checkInDelayInMinutes,
-      this.checkOutDifference,
-      this.companyId,
-      this.empId,
-      this.status,
-      this.timeStamp,
-      this.checkInTime,
-      this.checkOutTime,
-      this.date,
-      this.employeeName,
-      this.workingstatus});
+  AttendanceReportModel({
+    this.checkInDelayInHours,
+    this.checkInDelayInMinutes,
+    this.checkOutDifference,
+    this.companyId,
+    this.empId,
+    this.status,
+    this.timeStamp,
+    this.checkInTime,
+    this.checkOutTime,
+    this.date,
+    this.employeeName,
+    this.workingstatus,
+    this.reason,
+  });
 
   fromJson(Map<String, dynamic> json) {
     return AttendanceReportModel(
-        companyId: json['companyid'],
-        checkInDelayInHours: json['check_in_delay_in_hours'],
-        checkInDelayInMinutes: json['check_in_delay_in_minutes'],
-        checkOutDifference: json['check_out_difference'],
-        status: json['status'],
-        empId: json['empid'],
-        timeStamp: json['timestamp'],
-        checkInTime: json['checkin'],
-        checkOutTime: json['checkout'],
-        date: json['date'],
-        employeeName: json['empname'],
-        workingstatus: json['workingstatus']);
+      companyId: json['companyid'],
+      checkInDelayInHours: json['check_in_delay_in_hours'],
+      checkInDelayInMinutes: json['check_in_delay_in_minutes'],
+      checkOutDifference: json['check_out_difference'],
+      status: json['status'],
+      empId: json['empid'],
+      timeStamp: json['timestamp'],
+      checkInTime: json['checkin'],
+      checkOutTime: json['checkout'],
+      date: json['date'],
+      employeeName: json['empname'],
+      workingstatus: json['workingstatus'],
+      reason: json['reason'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -476,6 +481,7 @@ class AttendanceReportModel {
     data['checkout'] = checkOutTime;
     data['date'] = date;
     data['empname'] = employeeName;
+    data['reason'] = reason;
 
     return data;
   }

@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
   TextEditingController reasonController;
 
   File image;
+  int _announcementCount;
 
   CountdownTimerController _controller;
   bool loading = false;
@@ -526,7 +527,7 @@ class _HomeState extends State<Home> {
                                               crossAxisAlignment:
                                                   WrapCrossAlignment.center,
                                               children: [
-                                                Container(
+                                                SizedBox(
                                                   width: 80,
                                                   height: 50,
                                                   child: Card(
@@ -587,7 +588,7 @@ class _HomeState extends State<Home> {
                                                 const SizedBox(
                                                   width: 15,
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 80,
                                                   height: 50,
                                                   child: Card(
@@ -627,7 +628,7 @@ class _HomeState extends State<Home> {
                                                 const SizedBox(
                                                   width: 15,
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 80,
                                                   height: 50,
                                                   child: Card(
@@ -673,7 +674,7 @@ class _HomeState extends State<Home> {
 
                                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Container(
+                                                SizedBox(
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
@@ -713,7 +714,7 @@ class _HomeState extends State<Home> {
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
@@ -722,7 +723,7 @@ class _HomeState extends State<Home> {
                                                           CrossAxisAlignment
                                                               .center,
                                                       children: [
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 5,
                                                         ),
                                                         const Text(
@@ -734,7 +735,7 @@ class _HomeState extends State<Home> {
                                                             color: Colors.black,
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
@@ -750,10 +751,10 @@ class _HomeState extends State<Home> {
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 10,
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
@@ -762,10 +763,10 @@ class _HomeState extends State<Home> {
                                                           CrossAxisAlignment
                                                               .center,
                                                       children: [
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 5,
                                                         ),
-                                                        Text(
+                                                        const Text(
                                                           'Working(hrs)',
                                                           textAlign:
                                                               TextAlign.center,
@@ -776,11 +777,12 @@ class _HomeState extends State<Home> {
                                                             color: Colors.black,
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
                                                           workinghours
+                                                              .toPrecision(2)
                                                               .toString(),
                                                           style:
                                                               const TextStyle(
@@ -1313,6 +1315,7 @@ class _HomeState extends State<Home> {
                   );
                 }
                 var announcements = snapshot.data;
+                _announcementCount = announcements.length;
                 return IconButton(
                   onPressed: () {
                     Get.to(
@@ -1325,7 +1328,7 @@ class _HomeState extends State<Home> {
                     badgeColor: portica,
                     badgeContent: FittedBox(
                       child: Text(
-                        '${announcements.length}',
+                        '$_announcementCount',
                       ),
                     ),
                     child: const Icon(
@@ -1338,9 +1341,20 @@ class _HomeState extends State<Home> {
           ],
         ),
         backgroundColor: Colors.transparent,
-        body: SingleChildScrollView(
-          child: Container(
-            child: _home(),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            var announcements = await AllApi().getAnnounce(
+              companyId: widget.userModel.companyId,
+            );
+            setState(() {
+              _announcementCount = announcements.length;
+            });
+            return announcements.length;
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              child: _home(),
+            ),
           ),
         ),
       ),

@@ -31,6 +31,8 @@ class _ServicesState extends State<Services> {
   String _selectedFilter;
   List<String> _textFieldValues = [];
   var _isOpening = false;
+  List<ServicesModel> _requestsList;
+  List<DynamicServiceRequestModel> _dynamicRequests;
 
   Widget _servicesList() {
     return Column(
@@ -231,21 +233,38 @@ class _ServicesState extends State<Services> {
                 );
               } else {
                 var list = snapshot.data;
+                _requestsList = list;
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return _requestCard(
-                        list: list,
-                        index: index,
-                        onPressedView: () {
-                          _onPressedView(
-                            list: list,
-                            index: index,
-                          );
-                        },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      var refreshList = await _allApi.getServices(
+                        verify: _selectedFilter == 'Accepted'
+                            ? '1'
+                            : _selectedFilter == 'Rejected'
+                                ? '-1'
+                                : '0',
+                        companyId: widget.userModel.companyId,
+                        refId: widget.userModel.refId,
                       );
+                      setState(() {
+                        _requestsList = refreshList;
+                      });
                     },
+                    child: ListView.builder(
+                      itemCount: _requestsList.length,
+                      itemBuilder: (context, index) {
+                        return _requestCard(
+                          list: _requestsList,
+                          index: index,
+                          onPressedView: () {
+                            _onPressedView(
+                              list: _requestsList,
+                              index: index,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 );
               }
@@ -615,29 +634,46 @@ class _ServicesState extends State<Services> {
                 );
               } else {
                 var list = snapshot.data;
+                _dynamicRequests = list;
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      return _dynamicRequestCard(
-                        list: list,
-                        index: index,
-                        onPressedView: () async {
-                          setState(() {
-                            _isOpening = true;
-                          });
-                          var file = await _allApi.loadFile(
-                            url:
-                                'http://faizeetech.com/pdf/${list[index].fileName}',
-                            fileName: list[index].fileName,
-                          );
-                          await OpenFile.open(file.path);
-                          setState(() {
-                            _isOpening = false;
-                          });
-                        },
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      var refreshList = await _allApi.getDynamicServiceRequest(
+                        verify: _selectedFilter == 'Accepted'
+                            ? '1'
+                            : _selectedFilter == 'Rejected'
+                                ? '-1'
+                                : '0',
+                        companyId: widget.userModel.companyId,
+                        refId: widget.userModel.refId,
                       );
+                      setState(() {
+                        _dynamicRequests = refreshList;
+                      });
                     },
+                    child: ListView.builder(
+                      itemCount: _dynamicRequests.length,
+                      itemBuilder: (context, index) {
+                        return _dynamicRequestCard(
+                          list: _dynamicRequests,
+                          index: index,
+                          onPressedView: () async {
+                            setState(() {
+                              _isOpening = true;
+                            });
+                            var file = await _allApi.loadFile(
+                              url:
+                                  'http://faizeetech.com/pdf/${_dynamicRequests[index].fileName}',
+                              fileName: _dynamicRequests[index].fileName,
+                            );
+                            await OpenFile.open(file.path);
+                            setState(() {
+                              _isOpening = false;
+                            });
+                          },
+                        );
+                      },
+                    ),
                   ),
                 );
               }

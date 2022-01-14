@@ -288,14 +288,14 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetRelatedSites?companyId=$companyId");
     var response = await http.get(url);
     var body = json.decode(response.body);
-    if (body != '[]') {
+    if (body != []) {
       List relatedSitesList = body;
       Iterable<RelatedSitesModel> relatedSites = relatedSitesList.map((e) {
         return RelatedSitesModel().fromJson(e);
       });
       return relatedSites.toList();
     } else {
-      return null;
+      return [];
     }
   }
 
@@ -509,16 +509,16 @@ class AllApi {
         "https://us-east-1.aws.webhooks.mongodb-realm.com/api/client/v2.0/app/application-0-ffegf/service/getuser/incoming_webhook/debugGetAnnouncements?companyid=$companyId");
 
     var response = await http.get(getAnnounceUrl);
+    var body = json.decode(response.body);
 
-    if (response.statusCode == 200) {
-      List announceList = json.decode(response.body);
-
+    if (response.statusCode == 200 && body != []) {
+      List announceList = body;
       Iterable<AnnounceModel> announce = announceList.map((e) {
         return AnnounceModel().fromJson(e);
       });
       return announce.toList();
     } else {
-      return null;
+      return [];
     }
   }
 

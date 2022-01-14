@@ -15,6 +15,7 @@ class RelatedSites extends StatefulWidget {
 
 class _RelatedSitesState extends State<RelatedSites> {
   final _allApi = AllApi();
+  List<RelatedSitesModel> _relatedSites;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,59 +41,72 @@ class _RelatedSitesState extends State<RelatedSites> {
               return Center(
                 child: Image.asset("assets/Images/loading.gif"),
               );
+            } else if (snapshot.data.isEmpty) {
+              return const Text('Nothing to show here.');
             } else {
               var relatedSitesList = snapshot.data;
-              return ListView.builder(
-                itemCount: relatedSitesList.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12.0),
-                      ),
-                    ),
-                    elevation: 5,
-                    child: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            relatedSitesList[index].name,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            relatedSitesList[index].description,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Linkify(
-                            text: relatedSitesList[index].url,
-                            onOpen: (link) async {
-                              if (await canLaunch(link.url)) {
-                                await launch(link.url);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text('Unable to launch ${link.url}'),
-                                  ),
-                                );
-                              }
-                            },
-                            linkStyle: const TextStyle(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              _relatedSites = relatedSitesList;
+              return RefreshIndicator(
+                onRefresh: () async {
+                  var refreshList = await _allApi.getRelatedSites(
+                    companyId: widget.userModel.companyId,
                   );
+                  setState(() {
+                    _relatedSites = refreshList;
+                  });
                 },
+                child: ListView.builder(
+                  itemCount: _relatedSites.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
+                      ),
+                      elevation: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _relatedSites[index].name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              _relatedSites[index].description,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Linkify(
+                              text: _relatedSites[index].url,
+                              onOpen: (link) async {
+                                if (await canLaunch(link.url)) {
+                                  await launch(link.url);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text('Unable to launch ${link.url}'),
+                                    ),
+                                  );
+                                }
+                              },
+                              linkStyle: const TextStyle(
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
             }
           },
