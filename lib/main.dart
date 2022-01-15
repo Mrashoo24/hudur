@@ -28,6 +28,7 @@ Future<void> firebaseMessgaingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(firebaseMessgaingBackgroundHandler);
@@ -43,6 +44,7 @@ void main() async {
     sound: true,
   );
   runApp(const MyApp());
+
 }
 
 // ignore: must_be_immutable

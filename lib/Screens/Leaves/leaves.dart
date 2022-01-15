@@ -65,6 +65,10 @@ class _LeavesState extends State<Leaves> {
           if (!snapshot.hasData) {
             return Center(child: Text('Please Wait Fetching Details'));
           } else {
+
+            List<EmployeeLeaveRequestsModel> leavedata =
+                snapshot.requireData;
+
             return RadioListTile(
               activeColor: hippieBlue,
               secondary: ElevatedButton(
@@ -81,8 +85,7 @@ class _LeavesState extends State<Leaves> {
                 child: const Text('Details'),
                 onPressed: value == _selectedValue
                     ? () async {
-                        List<EmployeeLeaveRequestsModel> leavedata =
-                            snapshot.requireData;
+
 
                         var year1 = DateTime(DateTime.now().year,
                             int.parse(leaves.financial_month));
@@ -142,7 +145,9 @@ class _LeavesState extends State<Leaves> {
                               tenure: leaves.tenure,
                               totalCountConsumed: leavedata.length.toString(),
                               totalLeaveHours: totalLeaveHours.toString(),
-                              remainingHours: remainingHours.toString());
+                              remainingHours: remainingHours.toString(),leavedata:leavedata
+                          );
+
                         } else {
                           print('leavedata ${month1}');
 
@@ -184,7 +189,7 @@ class _LeavesState extends State<Leaves> {
                               tenure: leaves.tenure,
                               totalCountConsumed: leavedata.length.toString(),
                               totalLeaveHours: totalLeaveHours.toString(),
-                              remainingHours: remainingHours.toString());
+                              remainingHours: remainingHours.toString(),leavedata:leavedata);
                         }
                       }
                     : null,
@@ -197,6 +202,10 @@ class _LeavesState extends State<Leaves> {
                 children: [
                   Text(
                     subtitle,
+                  ),
+                  Text(
+                    'Total Consumed: ${leavedata.length.toString()}',
+                    style: TextStyle(color: Colors.green),
                   ),
                 ],
               ),
@@ -587,7 +596,7 @@ class _LeavesState extends State<Leaves> {
       String hourslimit,
       String totalLeaveHours,
       String remainingHours,
-      String totalCountConsumed}) {
+      String totalCountConsumed,List<EmployeeLeaveRequestsModel> leavedata}) {
     showDialog(
       barrierDismissible: false,
       context: context,

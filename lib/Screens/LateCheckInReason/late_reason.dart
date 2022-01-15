@@ -41,7 +41,7 @@ class _LateReasonState extends State<LateReason> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text('Reason for late check-in'),
+          title: const Text('Reason for Change'),
           centerTitle: true,
           backgroundColor: hippieBlue,
         ),
@@ -155,6 +155,13 @@ Write in your reason with your details in the description box with subject.''',
                               setState(() {
                                 _isLoading = true;
                               });
+
+                              List<UserModel> alluser = await _allApi.getAllUsers(companyId: widget.userModel.companyId);
+
+                              List<UserModel> hrList =   alluser.where((element) => element.empId == widget.userModel.hrId).toList();
+
+
+
                               await _allApi.postLateCheckInReason(
                                 subject: _subject,
                                 description: _description,
@@ -165,6 +172,7 @@ Write in your reason with your details in the description box with subject.''',
                               var result = await _allApi.sendEmail(
                                 subject: _subject,
                                 content: _description,
+                                toEmail: hrList[0].email
                               );
                               setState(() {
                                 _isLoading = false;

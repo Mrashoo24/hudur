@@ -11,6 +11,8 @@ import 'package:hudur/Screens/Enquiry/enquiry_page.dart';
 import 'package:hudur/Screens/LateCheckInReason/late_reason.dart';
 import 'package:hudur/Screens/RelatedSites/related_sites.dart';
 import 'package:hudur/Screens/Services/services.dart';
+import 'package:hudur/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeDrawer extends StatelessWidget {
   final UserModel userModel;
@@ -140,6 +142,38 @@ class HomeDrawer extends StatelessWidget {
                           Get.to(
                             () => Services(
                               userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.room_service_rounded,
+                          color: portica,
+                        ),
+                        title: const Text('Faulty Attendence Request'),
+                        onTap: () {
+                          Get.to(
+                                () => LateReason(
+                              userModel: userModel,
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.room_service_rounded,
+                          color: portica,
+                        ),
+                        title: const Text('Logoutt'),
+                        onTap: () async {
+                          var  pref = await SharedPreferences.getInstance();
+
+                          pref.clear();
+
+                          Get.offAll(
+                                () => MyApp(
+
                             ),
                           );
                         },
