@@ -43,7 +43,7 @@ class _LateReasonState extends State<LateReason> {
         appBar: AppBar(
           title: const Text('Reason for Change'),
           centerTitle: true,
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
         ),
         body: SingleChildScrollView(
           child: Form(
@@ -139,7 +139,7 @@ Write in your reason with your details in the description box with subject.''',
                       : ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(hippieBlue),
+                                MaterialStateProperty.all(primary),
                             shape: MaterialStateProperty.all(
                               const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(

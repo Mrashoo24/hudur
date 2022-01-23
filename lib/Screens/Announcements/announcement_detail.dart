@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
@@ -25,7 +26,7 @@ class _AnnouncementDetailState extends State<AnnouncementDetail> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
           title: Text(widget.announceModel.name),
           centerTitle: true,
         ),
@@ -43,25 +44,31 @@ class _AnnouncementDetailState extends State<AnnouncementDetail> {
               var file = snapshot.data;
               return ListView(
                 children: [
-                  Image.file(file),
+                  ClipRRect(
+
+                      child: Image.file(
+                        file,width: Get.width,height: 200,
+                        fit: BoxFit.fill,
+                      )
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.announceModel.name,
-                        ),
-                        Text(
-                          widget.announceModel.timestamp,
-                        ),
-                        Text(
-                          widget.announceModel.text,
-                        ),
-                      ],
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.announceModel.text,
+                            style: TextStyle(color: primary,fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            widget.announceModel.timestamp,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

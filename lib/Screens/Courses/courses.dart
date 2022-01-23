@@ -59,7 +59,7 @@ class _CoursesState extends State<Courses> {
                           Text(
                             courseList[index].title,
                             style: TextStyle(
-                              color: hippieBlue,
+                              color: primary,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -100,7 +100,7 @@ class _CoursesState extends State<Courses> {
                             ),
                           ),
                           backgroundColor: MaterialStateProperty.all<Color>(
-                            hippieBlue,
+                            primary,
                           ),
                         ),
                       ),
@@ -134,7 +134,7 @@ class _CoursesState extends State<Courses> {
                 Text(
                   courseList[index].title,
                   style: TextStyle(
-                    color: hippieBlue,
+                    color: primary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -176,7 +176,7 @@ class _CoursesState extends State<Courses> {
                 ),
               ],
             ),
-            ElevatedButton(
+            courseList[index].checkIn == '' ?    ElevatedButton(
               onPressed: () async {
                 showDialog(
                   barrierDismissible: false,
@@ -250,7 +250,7 @@ class _CoursesState extends State<Courses> {
               child: const Text('Exit'),
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red)),
-            )
+            ) : SizedBox()
           ],
         ),
       ),
@@ -370,9 +370,10 @@ class _CoursesState extends State<Courses> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Courses'),
-            backgroundColor: hippieBlue,
+            backgroundColor: primary,
             bottom: TabBar(
-              indicatorColor: portica,
+              indicatorColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
               tabs: const [
                 Tab(
                   child: Text('HR Courses'),

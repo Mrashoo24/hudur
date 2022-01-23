@@ -30,7 +30,7 @@ class _RelatedSitesState extends State<RelatedSites> {
         appBar: AppBar(
           title: const Text('Related Sites'),
           centerTitle: true,
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
         ),
         body: FutureBuilder<List<RelatedSitesModel>>(
           future: _allApi.getRelatedSites(
@@ -97,8 +97,8 @@ class _RelatedSitesState extends State<RelatedSites> {
                                   );
                                 }
                               },
-                              linkStyle: const TextStyle(
-                                color: Colors.blue,
+                              linkStyle:  TextStyle(
+                                color: Colors.red.shade900,
                               ),
                             ),
                           ],

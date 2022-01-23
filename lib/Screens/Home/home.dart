@@ -6,19 +6,30 @@ import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hudur/Components/api.dart';
 import 'package:hudur/Components/colors.dart';
 import 'package:hudur/Components/models.dart';
+import 'package:hudur/Screens/AdministrativeLeaves/administrative_leaves.dart';
 import 'package:hudur/Screens/Announcements/announcements.dart';
+import 'package:hudur/Screens/BenchList/benchlist_page.dart';
+import 'package:hudur/Screens/CheckInHistory/check_in_history.dart';
 import 'package:hudur/Screens/Courses/courses.dart';
+import 'package:hudur/Screens/Enquiry/enquiry_chat.dart';
 import 'package:hudur/Screens/HomeDrawer/home_drawer.dart';
+import 'package:hudur/Screens/LateCheckInReason/late_reason.dart';
 import 'package:hudur/Screens/Leaves/leaves.dart';
+import 'package:hudur/Screens/RelatedSites/related_sites.dart';
+import 'package:hudur/Screens/Services/services.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../main.dart';
 
 class Home extends StatefulWidget {
   final UserModel userModel;
-  const Home({Key key, this.userModel}) : super(key: key);
+   Home({Key key, this.userModel}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -52,7 +63,7 @@ class _HomeState extends State<Home> {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
             content: Text(
                 'Location service is disabled. Please enable it to check-in.')));
         return null;
@@ -64,7 +75,7 @@ class _HomeState extends State<Home> {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+           SnackBar(
             content: Text(
                 'Location permission denied. Please allow it to check-in.'),
           ),
@@ -154,18 +165,18 @@ class _HomeState extends State<Home> {
 
           return Center(
             child: Container(
-              padding: const EdgeInsets.all(8.0),
+              padding:  EdgeInsets.all(8.0),
               child: CountdownTimer(
-                endWidget: const Text(''),
+                endWidget:  Text(''),
                 endTime: endTime,
-                textStyle: const TextStyle(
+                textStyle:  TextStyle(
                   color: Colors.white,
                 ),
                 controller: _controller,
                 onEnd: () {
                   if (checkOutTime == '-----') {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                       SnackBar(
                         content: Text(
                           'Shift over. You can check out now.',
                         ),
@@ -233,25 +244,28 @@ class _HomeState extends State<Home> {
                           : 'perfect';
 
               return Container(
-                padding: const EdgeInsets.all(8.0),
+                // padding:  EdgeInsets.all(8.0),
                 child: Column(
                   children: [
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(12.0)),
+                             BorderRadius.only(bottomLeft:  Radius.circular(80)),
                         gradient: LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
                           colors: [
-                            portica,
-                            const Color(0xFF6392B0),
+                            // portica,
+                            //   primary,
+                            //  primary,
+                            primary,
+                            Colors.black
                           ],
                         ),
                       ),
                       width: double.infinity,
-                      padding: const EdgeInsets.all(22.0),
+                      padding:  EdgeInsets.all(22.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -264,7 +278,7 @@ class _HomeState extends State<Home> {
                                 children: [
                                   Text(
                                     widget.userModel.name,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.white,
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
@@ -272,25 +286,25 @@ class _HomeState extends State<Home> {
                                   ),
                                   Text(
                                     'Id: ' + widget.userModel.empId,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
                                   Text(
                                     widget.userModel.email,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
                                   Text(
                                     widget.userModel.phoneNumber,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
                                   Text(
                                     widget.userModel.designation,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       color: Colors.white,
                                     ),
                                   ),
@@ -312,7 +326,7 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ),
-                          const SizedBox(
+                           SizedBox(
                             height: 10,
                           ),
                           checkout == "-----"
@@ -320,32 +334,33 @@ class _HomeState extends State<Home> {
                               : Center(
                                   child: Text(
                                     'Today You Have Checked Out in ($differenceFinal) Hours',
-                                    style: const TextStyle(
+                                    style:  TextStyle(
                                       fontSize: 14,
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
-                          const SizedBox(
+                           SizedBox(
                             height: 20,
                           ),
                           Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  portica,
-                                  const Color(0xFF6392B0),
+                                    primary,
+                                  Colors.black,
+
                                 ],
                                 begin: Alignment.topRight,
                                 end: Alignment.bottomLeft,
                               ),
                               shape: BoxShape.rectangle,
-                              borderRadius: const BorderRadius.only(
+                              borderRadius:  BorderRadius.only(
                                 bottomLeft: Radius.circular(8.0),
                                 bottomRight: Radius.circular(8.0),
                               ),
                             ),
-                            padding: const EdgeInsets.all(20.0),
+                            padding:  EdgeInsets.all(20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -358,7 +373,7 @@ class _HomeState extends State<Home> {
                                     color: Colors.white,
                                   ),
                                 ),
-                                const Text(
+                                 Text(
                                   'Attendance',
                                   style: TextStyle(
                                     fontSize: 18,
@@ -366,7 +381,7 @@ class _HomeState extends State<Home> {
                                     color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(
+                                 SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -376,7 +391,7 @@ class _HomeState extends State<Home> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
+                                         Text(
                                           'In Time',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -385,20 +400,20 @@ class _HomeState extends State<Home> {
                                         ),
                                         Text(
                                           checkin,
-                                          style: const TextStyle(
+                                          style:  TextStyle(
                                             color: Colors.white,
                                           ),
                                         )
                                       ],
                                     ),
-                                    const SizedBox(
+                                     SizedBox(
                                       width: 30,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
+                                         Text(
                                           'Out Time',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -407,20 +422,20 @@ class _HomeState extends State<Home> {
                                         ),
                                         Text(
                                           checkout,
-                                          style: const TextStyle(
+                                          style:  TextStyle(
                                             color: Colors.white,
                                           ),
                                         )
                                       ],
                                     ),
-                                    const SizedBox(
+                                     SizedBox(
                                       width: 30,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
+                                         Text(
                                           'Status',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -428,10 +443,12 @@ class _HomeState extends State<Home> {
                                           ),
                                         ),
                                         Text(
+
                                           _status,
-                                          style: const TextStyle(
+                                          style:  TextStyle(
                                             color: Colors.white,
                                           ),
+
                                         ),
                                       ],
                                     ),
@@ -444,7 +461,8 @@ class _HomeState extends State<Home> {
                             height: 20,
                           ),
                           FutureBuilder(
-                              future: Future.wait([
+                              future: Future.wait(
+                                  [
                                 AllApi().getAttendenceCounts(
                                     empname: widget.userModel.name,
                                     companyid: widget.userModel.companyId),
@@ -452,7 +470,8 @@ class _HomeState extends State<Home> {
                                     verify: '1',
                                     companyid: widget.userModel.companyId,
                                     refid: widget.userModel.refId)
-                              ]),
+                              ]
+                              ),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return CircularProgressIndicator(
@@ -493,19 +512,21 @@ class _HomeState extends State<Home> {
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
                                             colors: [
-                                              portica,
-                                              const Color(0xFF6392B0),
+                                                primary,
+                                              Colors.black,
+                                              // Colors.brown,
+
                                             ],
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                           ),
                                           shape: BoxShape.rectangle,
-                                          borderRadius: const BorderRadius.only(
+                                          borderRadius:  BorderRadius.only(
                                             bottomLeft: Radius.circular(8.0),
                                             bottomRight: Radius.circular(8.0),
                                           ),
                                         ),
-                                        padding: const EdgeInsets.all(5.0),
+                                        padding:  EdgeInsets.all(5.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -518,7 +539,7 @@ class _HomeState extends State<Home> {
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            const SizedBox(
+                                             SizedBox(
                                               height: 10,
                                             ),
                                             Wrap(
@@ -529,8 +550,10 @@ class _HomeState extends State<Home> {
                                               children: [
                                                 SizedBox(
                                                   width: 80,
-                                                  height: 50,
+                                                  height: 60,
                                                   child: Card(
+                                                    color: Colors
+                                                        .green.shade900,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -555,22 +578,24 @@ class _HomeState extends State<Home> {
                                                           present.length
                                                               .toString(),
                                                           style: TextStyle(
-                                                            color: Colors
-                                                                .green.shade200,
+                                                            fontSize: 16,
+                                                            color: Colors.white,
+                                                              shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
+
                                                           ),
                                                         )
                                                       ],
                                                     ),
                                                   ),
                                                 ),
-                                                // const SizedBox(
+                                                //  SizedBox(
                                                 // width: 30,
                                                 // ),
                                                 // Column(
                                                 // crossAxisAlignment:
                                                 // CrossAxisAlignment.start,
                                                 // children: [
-                                                // const Text(
+                                                //  Text(
                                                 // 'Holiday',
                                                 // style: TextStyle(
                                                 // fontWeight: FontWeight.bold,
@@ -579,19 +604,20 @@ class _HomeState extends State<Home> {
                                                 // ),
                                                 // Text(
                                                 // checkout,
-                                                // style: const TextStyle(
+                                                // style:  TextStyle(
                                                 // color: Colors.white,
                                                 // ),
                                                 // )
                                                 // ],
                                                 // ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 15,
                                                 ),
                                                 SizedBox(
                                                   width: 80,
-                                                  height: 50,
+                                                  height: 60,
                                                   child: Card(
+                                                    color: Colors.redAccent,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -600,7 +626,7 @@ class _HomeState extends State<Home> {
                                                         SizedBox(
                                                           height: 3,
                                                         ),
-                                                        const Text(
+                                                         Text(
                                                           'Absent',
                                                           style: TextStyle(
                                                             fontSize: 12,
@@ -616,22 +642,24 @@ class _HomeState extends State<Home> {
                                                           Absent.length
                                                               .toString(),
                                                           style:
-                                                              const TextStyle(
-                                                            color: Colors
-                                                                .redAccent,
-                                                          ),
+                                                               TextStyle(
+                                                            color: Colors.white,
+                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
+
+                                                               ),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 15,
                                                 ),
                                                 SizedBox(
                                                   width: 80,
-                                                  height: 50,
+                                                  height: 60,
                                                   child: Card(
+                                                    color: Colors.amberAccent.shade700,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -656,7 +684,9 @@ class _HomeState extends State<Home> {
                                                           leavesCount
                                                               .toString(),
                                                           style: TextStyle(
-                                                            color: summerGreen,
+                                                            color: Colors.white,
+                                                              shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
+
                                                           ),
                                                         ),
                                                       ],
@@ -678,6 +708,7 @@ class _HomeState extends State<Home> {
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
+                                                    color: Colors.redAccent,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -686,7 +717,7 @@ class _HomeState extends State<Home> {
                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                        const Text(
+                                                         Text(
                                                           'Late Entry',
                                                           style: TextStyle(
                                                             fontSize: 12,
@@ -702,31 +733,35 @@ class _HomeState extends State<Home> {
                                                           lateentry.length
                                                               .toString(),
                                                           style:
-                                                              const TextStyle(
+                                                               TextStyle(
+                                                                 fontSize: 16,
                                                             color: Colors
-                                                                .redAccent,
-                                                          ),
+                                                                .white,
+                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
+
+                                                               ),
                                                         )
                                                       ],
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 10,
                                                 ),
                                                 SizedBox(
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
+                                                    color: Colors.amberAccent.shade700,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .center,
                                                       children: [
-                                                        const SizedBox(
+                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                        const Text(
+                                                         Text(
                                                           'Early Exit',
                                                           style: TextStyle(
                                                             fontSize: 12,
@@ -735,38 +770,42 @@ class _HomeState extends State<Home> {
                                                             color: Colors.black,
                                                           ),
                                                         ),
-                                                        const SizedBox(
+                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
                                                           earlyexit.length
                                                               .toString(),
                                                           style:
-                                                              const TextStyle(
+                                                               TextStyle(
+                                                                 fontSize: 16,
                                                             color: Colors
-                                                                .redAccent,
-                                                          ),
+                                                                .white,
+                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
+
+                                                               ),
                                                         )
                                                       ],
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 10,
                                                 ),
                                                 SizedBox(
                                                   width: 100,
                                                   height: 60,
                                                   child: Card(
+                                                    color: Colors.green.shade900,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .center,
                                                       children: [
-                                                        const SizedBox(
+                                                         SizedBox(
                                                           height: 5,
                                                         ),
-                                                        const Text(
+                                                         Text(
                                                           'Working(hrs)',
                                                           textAlign:
                                                               TextAlign.center,
@@ -777,7 +816,7 @@ class _HomeState extends State<Home> {
                                                             color: Colors.black,
                                                           ),
                                                         ),
-                                                        const SizedBox(
+                                                         SizedBox(
                                                           height: 5,
                                                         ),
                                                         Text(
@@ -785,8 +824,10 @@ class _HomeState extends State<Home> {
                                                               .toPrecision(2)
                                                               .toString(),
                                                           style:
-                                                              const TextStyle(
-                                                            color: Colors.green,
+                                                               TextStyle(
+                                                                 fontSize: 16,
+                                                            color: Colors.white,
+                                                                 shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
                                                           ),
                                                         ),
                                                       ],
@@ -804,18 +845,18 @@ class _HomeState extends State<Home> {
                                           gradient: LinearGradient(
                                             colors: [
                                               portica,
-                                              const Color(0xFF6392B0),
+                                                primary,
                                             ],
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                           ),
                                           shape: BoxShape.rectangle,
-                                          borderRadius: const BorderRadius.only(
+                                          borderRadius:  BorderRadius.only(
                                             bottomLeft: Radius.circular(8.0),
                                             bottomRight: Radius.circular(8.0),
                                           ),
                                         ),
-                                        padding: const EdgeInsets.all(20.0),
+                                        padding:  EdgeInsets.all(20.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -828,7 +869,7 @@ class _HomeState extends State<Home> {
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            const Text(
+                                             Text(
                                               'Records',
                                               style: TextStyle(
                                                 fontSize: 18,
@@ -836,7 +877,7 @@ class _HomeState extends State<Home> {
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            const SizedBox(
+                                             SizedBox(
                                               height: 10,
                                             ),
                                             Wrap(
@@ -845,7 +886,7 @@ class _HomeState extends State<Home> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Present',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -855,20 +896,20 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       checkin,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     )
                                                   ],
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 30,
                                                 ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Holiday',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -878,20 +919,20 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       checkout,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     )
                                                   ],
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 30,
                                                 ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Absent',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -901,20 +942,20 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       _status,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 30,
                                                 ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Leave',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -924,7 +965,7 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       _status,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     ),
@@ -941,7 +982,7 @@ class _HomeState extends State<Home> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Late Entry',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -951,20 +992,20 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       checkin,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     )
                                                   ],
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 30,
                                                 ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Early Exit',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -974,20 +1015,20 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       checkout,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     )
                                                   ],
                                                 ),
-                                                const SizedBox(
+                                                 SizedBox(
                                                   width: 30,
                                                 ),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text(
+                                                     Text(
                                                       'Working Hours',
                                                       style: TextStyle(
                                                         fontWeight:
@@ -997,7 +1038,7 @@ class _HomeState extends State<Home> {
                                                     ),
                                                     Text(
                                                       _status,
-                                                      style: const TextStyle(
+                                                      style:  TextStyle(
                                                         color: Colors.white,
                                                       ),
                                                     ),
@@ -1012,257 +1053,166 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            child: Card(
-                              color: hippieBlue,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.login,
-                                      // size: 70,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'CHECK IN',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              if (checkin != "-----" && checkout == "-----") {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (ctx) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        'You have already checked-in.',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            'Dismiss',
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                _confirmCheckInDialogBox();
-                              }
-                            },
-                          ),
-                          InkWell(
-                            child: Card(
-                              color: prelude,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.logout,
-                                      // size: 70,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'CHECK OUT',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              if (checkin == "-----") {
-                                showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (ctx) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        'You need to check-in first.',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text(
-                                            'Dismiss',
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                if (checkout != "-----") {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                          'You have Checked out Already',
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text(
-                                              'Dismiss',
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  _confirmCheckOutDialogBox(
-                                    checkin: checkin,
-                                    differenceFinal: differenceFinal,
-                                  );
-                                }
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+
+                    GridView(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 1.2
+
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            child: Card(
-                              color: summerGreen,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.airplane_ticket,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'REQUESTS',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 12,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        dashcards(context, checkin, checkout,'CHECK IN',() {
+                          if (checkin != "-----" && checkout == "-----") {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  title:  Text(
+                                    'You have already checked-in.',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child:  Text(
+                                        'Dismiss',
                                       ),
-                                    )
+                                    ),
                                   ],
-                                ),
-                              ),
-                            ),
-                            onTap: () {
-                              Get.to(
+                                );
+                              },
+                            );
+                          } else {
+                            _confirmCheckInDialogBox();
+                          }
+                        },'assets/Images/checkin.png'),
+                        dashcards(context, checkin, checkout, 'CHECK OUT',() {
+                          if (checkin == "-----") {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (ctx) {
+                                return AlertDialog(
+                                  title:  Text(
+                                    'You need to check-in first.',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child:  Text(
+                                        'Dismiss',
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            if (checkout != "-----") {
+                              showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (ctx) {
+                                  return AlertDialog(
+                                    title:  Text(
+                                      'You have Checked out Already',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child:  Text(
+                                          'Dismiss',
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              _confirmCheckOutDialogBox(
+                                checkin: checkin,
+                                differenceFinal: differenceFinal,
+                              );
+                            }
+                          }
+                        },'assets/Images/checkout.png'),
+                        dashcards(context, checkin, checkout,'LEAVE REQUESTS',() {
+                          Get.to(
                                 () => Leaves(
-                                  userModel: widget.userModel,
-                                ),
-                              );
-                            },
-                          ),
-                          InkWell(
-                            child: Card(
-                              color: mandysPink,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                              ),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.2,
-                                padding: const EdgeInsets.all(22.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(
-                                      Icons.book,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      'COURSES',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                              userModel: widget.userModel,
                             ),
-                            onTap: () {
-                              Get.to(
+                          );
+                        },'assets/Images/leave.png'),
+                        dashcards(context, checkin, checkout,  'COURSES',() {
+                          Get.to(
                                 () => Courses(
-                                  userModel: widget.userModel,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/courses.png'),
+                        dashcards(context, checkin, checkout,  'SERVICES',() {
+                          Get.to(
+                                () => Services(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/services.png'),
+                        dashcards(context, checkin, checkout,  'ENQUIRY',() {
+                          Get.to(
+                                () => EnquiryChat(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/enquiry.png'),
+                        dashcards(context, checkin, checkout,  'BENCH LIST',() {
+                          Get.to(
+                                () => BenchList(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/benchlist.png'),
+                        dashcards(context, checkin, checkout,  'ATTENDENCE',() {
+                          Get.to(
+                                () => CheckInHistory(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/history.png'),
+
+                        dashcards(context, checkin, checkout,  'FAULTY ATTENDANCE',() {
+                          Get.to(
+                                () => LateReason(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/faultycheckin.png'),
+
+                        dashcards(context, checkin, checkout,  'ADMINISTRATIVE LEAVE',() {
+                          Get.to(
+                                () => AdministrativeLeaves(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/adminleave.png'),
+                        dashcards(context, checkin, checkout,  'RELATED SITES',() {
+                          Get.to(RelatedSites(
+                            userModel: widget.userModel,
+                          ));
+                        },'assets/Images/relatedsite.png'),
+
+
+                      ],
+                    )
+
                   ],
                 ),
               );
@@ -1270,21 +1220,119 @@ class _HomeState extends State<Home> {
           );
   }
 
+  InkWell dashcards(BuildContext context, checkin, checkout,title,onTap,image) {
+    return InkWell(
+                          child: Card(
+                            elevation: 10,
+                            color: Colors.white,
+                            shadowColor: Colors.redAccent,
+
+                            shape:  RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.redAccent),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.2,
+                              padding:  EdgeInsets.all(22.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children:  [
+                                  Image.asset(
+                                  image,
+                                     width: 70,
+                                    height: 70,
+                                    // color: Colors.green.shade900,
+                                  ),
+                                  SizedBox(height: 5,),
+                                  Text(
+                                    title,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: primary,
+                                      fontSize: 12,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          onTap: onTap,
+                        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/Images/background_image.jpg'),
           fit: BoxFit.fill,
         ),
       ),
       child: Scaffold(
-        drawer: HomeDrawer(
-          userModel: widget.userModel,
-        ),
         appBar: AppBar(
-          backgroundColor: const Color(0xFF6392B0),
+          backgroundColor:   primary,
+          title: FutureBuilder(
+              future: AllApi().getCompanyDetails(companyid: widget.userModel.companyId),
+              builder: (context, snapshot) {
+
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(color: hippieBlue,),
+                  );
+                }
+
+                var companydetails = snapshot.requireData;
+
+
+                return Container(
+                  color: primary,
+                  height: Get.height,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          '${adminurl}/assets/images/company/logo/${companydetails['image']}',
+                          fit:BoxFit.fill,
+                          width: 50,
+                          height: 50,
+                          loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null ?
+                                loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      Center(
+                        child: Container(
+                          width: Get.width*0.4,
+                          child: Text(
+                            companydetails['cname'],
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                  ,
+                );
+              }
+          ),
           actions: [
             _countDownTimer(),
             FutureBuilder<List<AnnounceModel>>(
@@ -1303,12 +1351,12 @@ class _HomeState extends State<Home> {
                     },
                     icon: Badge(
                       badgeColor: portica,
-                      badgeContent: const FittedBox(
+                      badgeContent:  FittedBox(
                         child: Text(
                           '!',
                         ),
                       ),
-                      child: const Icon(
+                      child:  Icon(
                         Icons.notifications,
                       ),
                     ),
@@ -1331,13 +1379,44 @@ class _HomeState extends State<Home> {
                         '$_announcementCount',
                       ),
                     ),
-                    child: const Icon(
+                    child:  Icon(
                       Icons.notifications,
                     ),
                   ),
                 );
               },
             ),
+
+            SizedBox(width: 10,),
+            Center(child: InkWell(
+                onTap: () async {
+                  showDialog(context: context, builder: (context){
+                    return AlertDialog(
+                      title: Text('Are you sure you want to logout ?'),
+                      actions: [
+                        ElevatedButton(onPressed: () async {
+
+                          var  pref = await SharedPreferences.getInstance();
+
+                          pref.clear();
+
+                          Get.offAll(
+                                () => MyApp(
+
+                            ),
+                          );
+                        }, child: Text('Yes')),
+                        ElevatedButton(onPressed: (){
+                          Get.back();
+                        }, child: Text('No'))
+                      ],
+                    );
+                  });
+
+                },
+                child: Text('LOGOUT')
+            )),
+            SizedBox(width: 10,),
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -1370,7 +1449,7 @@ class _HomeState extends State<Home> {
           builder: (context, setStateDialog) => AlertDialog(
             title: _vicinityLoading
                 ? null
-                : const Text(
+                :  Text(
                     'Confirm Check In',
                   ),
             content: _vicinityLoading
@@ -1378,7 +1457,7 @@ class _HomeState extends State<Home> {
                     height: MediaQuery.of(context).size.height * 0.05,
                     alignment: Alignment.center,
                     child: Row(
-                      children: const [
+                      children:  [
                         CircularProgressIndicator(),
                         SizedBox(
                           width: 30,
@@ -1392,7 +1471,7 @@ class _HomeState extends State<Home> {
                 ? null
                 : [
                     TextButton(
-                      child: const Text(
+                      child:  Text(
                         'Check-In',
                       ),
                       onPressed: () async {
@@ -1470,7 +1549,7 @@ class _HomeState extends State<Home> {
                                       AlertDialog(
                                     title: isLoading
                                         ? null
-                                        : const Text(
+                                        :  Text(
                                             'Give Reason for Late Check-In',
                                           ),
                                     content: isLoading
@@ -1481,7 +1560,7 @@ class _HomeState extends State<Home> {
                                                 0.05,
                                             alignment: Alignment.center,
                                             child: Row(
-                                              children: const [
+                                              children:  [
                                                 CircularProgressIndicator(),
                                                 SizedBox(
                                                   width: 30,
@@ -1495,7 +1574,7 @@ class _HomeState extends State<Home> {
                                             decoration: InputDecoration(
                                               hintText:
                                                   'Reason for Late Check-In',
-                                              hintStyle: const TextStyle(
+                                              hintStyle:  TextStyle(
                                                 color: Colors.black,
                                               ),
                                             ),
@@ -1510,7 +1589,7 @@ class _HomeState extends State<Home> {
                                         ? null
                                         : [
                                             TextButton(
-                                              child: const Text(
+                                              child:  Text(
                                                 'Submit',
                                               ),
                                               onPressed: () async {
@@ -1543,7 +1622,7 @@ class _HomeState extends State<Home> {
                                               },
                                             ),
                                             TextButton(
-                                              child: const Text(
+                                              child:  Text(
                                                 'Cancel',
                                               ),
                                               onPressed: () {
@@ -1582,7 +1661,7 @@ class _HomeState extends State<Home> {
                       },
                     ),
                     TextButton(
-                      child: const Text(
+                      child:  Text(
                         'Cancel',
                       ),
                       onPressed: () {
@@ -1610,7 +1689,7 @@ class _HomeState extends State<Home> {
             return AlertDialog(
               title: isLoading
                   ? null
-                  : const Text(
+                  :  Text(
                       'Confirm Check Out',
                     ),
               content: isLoading
@@ -1618,7 +1697,7 @@ class _HomeState extends State<Home> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       alignment: Alignment.center,
                       child: Row(
-                        children: const [
+                        children:  [
                           CircularProgressIndicator(),
                           SizedBox(
                             width: 30,
@@ -1632,7 +1711,7 @@ class _HomeState extends State<Home> {
                   ? null
                   : [
                       TextButton(
-                        child: const Text(
+                        child:  Text(
                           'Check-Out',
                         ),
                         onPressed: () async {
@@ -1711,7 +1790,7 @@ class _HomeState extends State<Home> {
                         },
                       ),
                       TextButton(
-                        child: const Text(
+                        child:  Text(
                           'Cancel',
                         ),
                         onPressed: () {
@@ -1737,7 +1816,7 @@ class _HomeState extends State<Home> {
             return AlertDialog(
               title: isLoading
                   ? null
-                  : const Text(
+                  :  Text(
                       'Check-in not allowed.',
                     ),
               content: isLoading
@@ -1745,7 +1824,7 @@ class _HomeState extends State<Home> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       alignment: Alignment.center,
                       child: Row(
-                        children: const [
+                        children:  [
                           CircularProgressIndicator(),
                           SizedBox(
                             width: 30,
@@ -1754,7 +1833,7 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     )
-                  : const Text(
+                  :  Text(
                       'You aren\'t in the vicinity of 250 metres from your office.',
                     ),
               actions: isLoading
@@ -1822,7 +1901,7 @@ class _HomeState extends State<Home> {
                                         AlertDialog(
                                       title: isLoading
                                           ? null
-                                          : const Text(
+                                          :  Text(
                                               'Give Reason for Late Check-In',
                                             ),
                                       content: isLoading
@@ -1833,7 +1912,7 @@ class _HomeState extends State<Home> {
                                                   0.05,
                                               alignment: Alignment.center,
                                               child: Row(
-                                                children: const [
+                                                children:  [
                                                   CircularProgressIndicator(),
                                                   SizedBox(
                                                     width: 30,
@@ -1847,7 +1926,7 @@ class _HomeState extends State<Home> {
                                               decoration: InputDecoration(
                                                 hintText:
                                                     'Reason for Late Check-In',
-                                                hintStyle: const TextStyle(
+                                                hintStyle:  TextStyle(
                                                   color: Colors.black,
                                                 ),
                                               ),
@@ -1862,7 +1941,7 @@ class _HomeState extends State<Home> {
                                           ? null
                                           : [
                                               TextButton(
-                                                child: const Text(
+                                                child:  Text(
                                                   'Submit',
                                                 ),
                                                 onPressed: () async {
@@ -1917,7 +1996,7 @@ class _HomeState extends State<Home> {
                                                 },
                                               ),
                                               TextButton(
-                                                child: const Text(
+                                                child:  Text(
                                                   'Cancel',
                                                 ),
                                                 onPressed: () {
@@ -1984,7 +2063,7 @@ class _HomeState extends State<Home> {
                             Get.back();
 
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                               SnackBar(
                                 content: Text(
                                   'You are not allowed to check-in.',
                                 ),
@@ -1992,7 +2071,7 @@ class _HomeState extends State<Home> {
                             );
                           }
                         },
-                        child: const Text(
+                        child:  Text(
                           'Send Request',
                         ),
                       ),
@@ -2000,7 +2079,7 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                           Get.back();
                         },
-                        child: const Text(
+                        child:  Text(
                           'Cancel',
                         ),
                       ),

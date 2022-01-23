@@ -28,42 +28,38 @@ class _ServicesState extends State<Services> {
     'Accepted',
     'Rejected',
   ];
-  String _selectedFilter;
+  String _selectedFilter = 'Pending';
   List<String> _textFieldValues = [];
   var _isOpening = false;
   List<ServicesModel> _requestsList;
   List<DynamicServiceRequestModel> _dynamicRequests;
 
   Widget _servicesList() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.height,
-          height: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.builder(
-            itemCount: _services.length,
-            itemBuilder: (context, index) {
-              return _servicesCard(
-                servicesList: _services,
-                index: index,
-                onPressedRequest: () {
-                  _onPressedRequest(
-                    certificateName: _services[index],
-                  );
-                },
-              );
-            },
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: _services.length,
+              itemBuilder: (context, index) {
+                return _servicesCard(
+                  servicesList: _services,
+                  index: index,
+                  onPressedRequest: () {
+                    _onPressedRequest(
+                      certificateName: _services[index],
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('More Services'),
-        ),
-        Expanded(
-          child: FutureBuilder<List<ServiceDynamicModel>>(
+
+          FutureBuilder<List<ServiceDynamicModel>>(
             future: _allApi.getDynamicServices(
               companyId: widget.userModel.companyId,
             ),
@@ -76,44 +72,59 @@ class _ServicesState extends State<Services> {
                 );
               }
               var list = snapshot.data;
-              return ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(
-                        list[index].name,
+              return Container(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: list.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 8,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
                       ),
-                      trailing: ElevatedButton(
-                        child: const Text('Request'),
-                        style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                8.0,
+                      child: ListTile(
+                        title: Text(
+                          list[index].name,style: TextStyle(
+                          color: primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        ),
+                        trailing: ElevatedButton(
+                          child: const Text('Request'),
+                          style: ButtonStyle(
+                            shape:
+                                MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  8.0,
+                                ),
                               ),
                             ),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              primary,
+                            ),
                           ),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            hippieBlue,
-                          ),
+                          onPressed: () {
+                            _onPressedDynamicRequest(
+                              certificateName: list[index].name,
+                              serviceDynamicId: list[index].serviceDynamicId,
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          _onPressedDynamicRequest(
-                            certificateName: list[index].name,
-                            serviceDynamicId: list[index].serviceDynamicId,
-                          );
-                        },
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               );
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -141,7 +152,7 @@ class _ServicesState extends State<Services> {
                   child: Text(
                     servicesList[index],
                     style: TextStyle(
-                      color: hippieBlue,
+                      color: primary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -161,7 +172,7 @@ class _ServicesState extends State<Services> {
                   ),
                 ),
                 backgroundColor: MaterialStateProperty.all<Color>(
-                  hippieBlue,
+                  primary,
                 ),
               ),
             ),
@@ -182,11 +193,18 @@ class _ServicesState extends State<Services> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
+              color: _selectedFilter == 'Accepted'
+                  ? Colors.green
+                  : _selectedFilter == 'Rejected'
+                  ? Colors.red
+                  : Colors.amber,
             ),
             padding: const EdgeInsets.all(12.0),
             height: MediaQuery.of(context).size.height * 0.07,
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
+                iconDisabledColor: Colors.black,
+                iconEnabledColor: Colors.black,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(12.0),
                 ),
@@ -199,10 +217,10 @@ class _ServicesState extends State<Services> {
                 },
                 hint: const Text('Select Filter'),
                 items: _filters.map(
-                  (e) {
+                      (e) {
                     return DropdownMenuItem(
                       value: e,
-                      child: Text(e),
+                      child: Text(e,),
                     );
                   },
                 ).toList(),
@@ -332,6 +350,18 @@ class _ServicesState extends State<Services> {
                 ),
               ],
             ),
+            list[index].verify == '-1'
+               ?   Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Reason: ',
+                ),
+                Text(
+                  list[index].reason
+                ),
+              ],
+            ) : SizedBox(),
             if (list[index].verify == '1')
               Container(
                 alignment: Alignment.centerRight,
@@ -404,6 +434,18 @@ class _ServicesState extends State<Services> {
                 ),
               ],
             ),
+            list[index].verify == '-1'
+                ?   Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Reason: ',
+                ),
+                Text(
+                    list[index].reason
+                ),
+              ],
+            ) : SizedBox(),
             if (list[index].verify == '1')
               _isOpening
                   ? const CircularProgressIndicator()
@@ -455,9 +497,11 @@ class _ServicesState extends State<Services> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: const Text('Services'),
-            backgroundColor: hippieBlue,
+            backgroundColor: primary,
             bottom: TabBar(
-              indicatorColor: portica,
+              indicatorWeight: 3,
+              indicatorColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
               tabs: const [
                 Tab(
                   child: Text('Services'),
@@ -583,11 +627,18 @@ class _ServicesState extends State<Services> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
+              color: _selectedFilter == 'Accepted'
+                  ? Colors.green
+                  : _selectedFilter == 'Rejected'
+                  ? Colors.red
+                  : Colors.amber,
             ),
             padding: const EdgeInsets.all(12.0),
             height: MediaQuery.of(context).size.height * 0.07,
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
+                iconDisabledColor: Colors.black,
+                iconEnabledColor: Colors.black,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(12.0),
                 ),
@@ -600,10 +651,10 @@ class _ServicesState extends State<Services> {
                 },
                 hint: const Text('Select Filter'),
                 items: _filters.map(
-                  (e) {
+                      (e) {
                     return DropdownMenuItem(
                       value: e,
-                      child: Text(e),
+                      child: Text(e,),
                     );
                   },
                 ).toList(),

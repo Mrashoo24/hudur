@@ -113,9 +113,28 @@ class _EnquiryChatState extends State<EnquiryChat> {
             maxLines: null,
             minLines: null,
             expands: true,
-            decoration: const InputDecoration(
+            decoration:  InputDecoration(
               hintText: 'Type your message...',
+              enabledBorder:OutlineInputBorder(
+    borderSide: BorderSide(
+    color: primary
+    ),
+    borderRadius: BorderRadius.all(
+    Radius.circular(12.0),
+    ),
+    ),
+              disabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+    color: primary
+    ),
+    borderRadius: BorderRadius.all(
+    Radius.circular(12.0),
+    ),
+    ),
               border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: primary
+                ),
                 borderRadius: BorderRadius.all(
                   Radius.circular(12.0),
                 ),
@@ -129,17 +148,12 @@ class _EnquiryChatState extends State<EnquiryChat> {
           ),
         ),
         Expanded(
-          child: ElevatedButton(
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                const Size.fromRadius(25),
+          child: IconButton(
+
+            icon: Center(
+              child: const Icon(
+                Icons.send_rounded,
               ),
-              shape: MaterialStateProperty.all(
-                const CircleBorder(),
-              ),
-            ),
-            child: const Icon(
-              Icons.send_rounded,
             ),
             onPressed: _message.trim().isEmpty ? null : _sendMessage,
           ),
@@ -161,7 +175,7 @@ class _EnquiryChatState extends State<EnquiryChat> {
         appBar: AppBar(
           title: const Text('Enquiry'),
           centerTitle: true,
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
         ),
         backgroundColor: Colors.transparent,
         body: Column(

@@ -160,7 +160,7 @@ class LeaveRequestsModel {
   String limit;
   String reducedtime;
   String hourslimit;
-  String financial_month;
+  String financial_month;String reason;
 
   LeaveRequestsModel(
       {this.title,
@@ -174,7 +174,7 @@ class LeaveRequestsModel {
       this.reducedtime,
       this.tenure,
       this.timebased,
-      this.financial_month});
+      this.financial_month,this.reason});
 
   fromJson(Map<String, dynamic> json) {
     return LeaveRequestsModel(
@@ -189,7 +189,8 @@ class LeaveRequestsModel {
         reducedtime: json['reducedtime'],
         tenure: json['tenure'],
         timebased: json['timebased'],
-        financial_month: json['financial_month']);
+        financial_month: json['financial_month'],
+        reason : json['reason']);
   }
 
   Map<String, dynamic> toJson() {
@@ -598,7 +599,7 @@ class ServicesModel {
   String verify;
   String companyId;
   String certificateName;
-  String fileName;
+  String fileName;String reason;
 
   ServicesModel({
     this.refid,
@@ -607,7 +608,7 @@ class ServicesModel {
     this.verify,
     this.companyId,
     this.certificateName,
-    this.fileName,
+    this.fileName,this.reason
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -619,6 +620,7 @@ class ServicesModel {
       companyId: json['companyid'],
       certificateName: json['certificatename'],
       fileName: json['filename'],
+      reason: json['reason']
     );
   }
 
@@ -794,7 +796,7 @@ class DynamicServiceRequestModel {
       verify,
       refId,
       serdynid,
-      fileName;
+      fileName,reason;
 
   DynamicServiceRequestModel({
     this.companyId,
@@ -806,7 +808,7 @@ class DynamicServiceRequestModel {
     this.refId,
     this.verify,
     this.serdynid,
-    this.fileName,
+    this.fileName,this.reason
   });
 
   fromJson(Map<String, dynamic> json) {
@@ -821,6 +823,7 @@ class DynamicServiceRequestModel {
       verify: json['verify'],
       serdynid: json['serdynid'],
       fileName: json['filename'],
+      reason: json['reason']
     );
   }
 

@@ -35,154 +35,166 @@ class HomeDrawer extends StatelessWidget {
             var companydetails = snapshot.requireData;
 
 
-            return Column(
-              children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  color: portica,
-                  child: Image.network(
-                    '${adminurl}/assets/images/company/logo/${companydetails['image']}',
-                    fit:BoxFit.fill,
-                    loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null ?
-                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
+            return Container(
+              color: primary,
+              height: Get.height,
+              child: Column(
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    color: portica,
+                    child: Image.network(
+                      '${adminurl}/assets/images/company/logo/${companydetails['image']}',
+                      fit:BoxFit.fill,
+                      loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null ?
+                            loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                                : null,
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(
-                          Icons.find_replace_rounded,
-                          color: portica,
+                  Divider(height: 1,color: Colors.white,),
+                  Container(
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: Icon(
+                            Icons.find_replace_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Bench List'),
+                          onTap: () {
+                            Get.to(
+                              BenchList(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Bench List'),
-                        onTap: () {
-                          Get.to(
-                            BenchList(
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.web_asset_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Related Sites'),
+                          onTap: () {
+                            Get.to(RelatedSites(
                               userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.web_asset_rounded,
-                          color: portica,
+                            ));
+                          },
                         ),
-                        title: const Text('Related Sites'),
-                        onTap: () {
-                          Get.to(RelatedSites(
-                            userModel: userModel,
-                          ));
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.history,
-                          color: portica,
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.history,
+                            color: portica,
+                          ),
+                          title: const Text('Check-In History'),
+                          onTap: () {
+                            Get.to(
+                              CheckInHistory(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Check-In History'),
-                        onTap: () {
-                          Get.to(
-                            CheckInHistory(
-                              userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.chat_bubble_rounded,
-                          color: portica,
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.chat_bubble_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Enquiry'),
+                          onTap: () {
+                            // Get.to(
+                            //   Enquiry(
+                            //     userModel: userModel,
+                            //   ),
+                            // );
+                            Get.to(
+                              () => EnquiryChat(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Enquiry'),
-                        onTap: () {
-                          // Get.to(
-                          //   Enquiry(
-                          //     userModel: userModel,
-                          //   ),
-                          // );
-                          Get.to(
-                            () => EnquiryChat(
-                              userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.admin_panel_settings_rounded,
-                          color: portica,
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.admin_panel_settings_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Administrative Leaves'),
+                          onTap: () {
+                            Get.to(
+                              AdministrativeLeaves(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Administrative Leaves'),
-                        onTap: () {
-                          Get.to(
-                            AdministrativeLeaves(
-                              userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.room_service_rounded,
-                          color: portica,
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.room_service_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Services'),
+                          onTap: () {
+                            Get.to(
+                              () => Services(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Services'),
-                        onTap: () {
-                          Get.to(
-                            () => Services(
-                              userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.room_service_rounded,
-                          color: portica,
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.room_service_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Faulty Attendence Request'),
+                          onTap: () {
+                            Get.to(
+                                  () => LateReason(
+                                userModel: userModel,
+                              ),
+                            );
+                          },
                         ),
-                        title: const Text('Faulty Attendence Request'),
-                        onTap: () {
-                          Get.to(
-                                () => LateReason(
-                              userModel: userModel,
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.room_service_rounded,
-                          color: portica,
-                        ),
-                        title: const Text('Logoutt'),
-                        onTap: () async {
-                          var  pref = await SharedPreferences.getInstance();
+                        Divider(height: 1,color: Colors.white,),
+                        ListTile(
+                          leading: Icon(
+                            Icons.room_service_rounded,
+                            color: portica,
+                          ),
+                          title: const Text('Logoutt'),
+                          onTap: () async {
+                            var  pref = await SharedPreferences.getInstance();
 
-                          pref.clear();
+                            pref.clear();
 
-                          Get.offAll(
-                                () => MyApp(
+                            Get.offAll(
+                                  () => MyApp(
 
-                            ),
-                          );
-                        },
-                      ),
+                              ),
+                            );
+                          },
+                        ),
 
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }
         ),

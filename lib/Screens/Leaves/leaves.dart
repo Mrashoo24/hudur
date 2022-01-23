@@ -30,7 +30,7 @@ class _LeavesState extends State<Leaves> {
     'Accepted',
     'Rejected',
   ];
-  String _selectedFilter;
+  String _selectedFilter = 'Pending';
   List<EmployeeLeaveRequestsModel> _historyList;
 
   File _attachment;
@@ -69,151 +69,157 @@ class _LeavesState extends State<Leaves> {
             List<EmployeeLeaveRequestsModel> leavedata =
                 snapshot.requireData;
 
-            return RadioListTile(
-              activeColor: hippieBlue,
-              secondary: ElevatedButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12.0),
+            return Card(
+              elevation: 5,
+              shape: BeveledRectangleBorder(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15),topLeft: Radius.circular(15))
+              ),
+              child: RadioListTile(
+                activeColor: primary,
+                secondary: ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
                       ),
                     ),
+                    backgroundColor: MaterialStateProperty.all<Color>(primary),
                   ),
-                  backgroundColor: MaterialStateProperty.all<Color>(hippieBlue),
-                ),
-                child: const Text('Details'),
-                onPressed: value == _selectedValue
-                    ? () async {
+                  child: const Text('Details',style: TextStyle(color: Colors.white),),
+                  onPressed: value == _selectedValue
+                      ? () async {
 
 
-                        var year1 = DateTime(DateTime.now().year,
-                            int.parse(leaves.financial_month));
-                        var year2 = DateTime(DateTime.now().year - 1,
-                            int.parse(leaves.financial_month) - 1);
+                          var year1 = DateTime(DateTime.now().year,
+                              int.parse(leaves.financial_month));
+                          var year2 = DateTime(DateTime.now().year - 1,
+                              int.parse(leaves.financial_month) - 1);
 
-                        // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
+                          // var quarteerly  = DateTime(DateTime.now().year,int.parse(financial_month));
 
-                        var month1 = DateTime(
-                            DateTime.now().year, DateTime.now().month + 1);
-                        var month2 =
-                            DateTime(DateTime.now().year, DateTime.now().month);
+                          var month1 = DateTime(
+                              DateTime.now().year, DateTime.now().month + 1);
+                          var month2 =
+                              DateTime(DateTime.now().year, DateTime.now().month);
 
-                        print('year1 $year1');
-                        print('year2 $year2');
-                        print('month1 $month1');
-                        print('month2 $month2');
+                          print('year1 $year1');
+                          print('year2 $year2');
+                          print('month1 $month1');
+                          print('month2 $month2');
 
-                        if (leaves.tenure == 'yearly') {
-                          leavedata = leavedata.where((element) {
-                            return DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from)
-                                    .isAfter(year2) &&
-                                DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from)
-                                    .isBefore(year1);
-                          }).toList();
+                          if (leaves.tenure == 'yearly') {
+                            leavedata = leavedata.where((element) {
+                              return DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from)
+                                      .isAfter(year2) &&
+                                  DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from)
+                                      .isBefore(year1);
+                            }).toList();
 
-                          print('leavedata ${leavedata[0].title}');
+                            // print('leavedata ${leavedata[0].title}');
 
-                          var totalLeaveHours = 0;
+                            var totalLeaveHours = 0;
 
-                          await Future.forEach(leavedata, (element) {
-                            totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
-                                .parse(element.to)
-                                .difference(DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from))
-                                .inHours;
-                          });
+                            await Future.forEach(leavedata, (element) {
+                              totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
+                                  .parse(element.to)
+                                  .difference(DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from))
+                                  .inHours;
+                            });
 
-                          print('totalLeave ${totalLeaveHours}');
+                            print('totalLeave ${totalLeaveHours}');
 
-                          var remainingHours =
-                              (double.parse(leaves.hourslimit) -
-                                      totalLeaveHours)
-                                  .round();
+                            var remainingHours =
+                                (double.parse(leaves.hourslimit) -
+                                        totalLeaveHours)
+                                    .round();
 
-                          _onPressedDetails(
-                              details: details,
-                              title: title,
-                              attachments: attachments,
-                              timebased: leaves.tenure,
-                              countbased: leaves.countbased,
-                              limit: leaves.limit,
-                              hourslimit: leaves.hourslimit,
-                              reducedtime: leaves.reducedtime,
-                              tenure: leaves.tenure,
-                              totalCountConsumed: leavedata.length.toString(),
-                              totalLeaveHours: totalLeaveHours.toString(),
-                              remainingHours: remainingHours.toString(),leavedata:leavedata
-                          );
+                            _onPressedDetails(
+                                details: details,
+                                title: title,
+                                attachments: attachments,
+                                timebased: leaves.tenure,
+                                countbased: leaves.countbased,
+                                limit: leaves.limit,
+                                hourslimit: leaves.hourslimit,
+                                reducedtime: leaves.reducedtime,
+                                tenure: leaves.tenure,
+                                totalCountConsumed: leavedata.length.toString(),
+                                totalLeaveHours: totalLeaveHours.toString(),
+                                remainingHours: remainingHours.toString(),leavedata:leavedata
+                            );
 
-                        } else {
-                          print('leavedata ${month1}');
+                          } else {
+                            print('leavedata ${month1}');
 
-                          leavedata = leavedata.where((element) {
-                            return DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from)
-                                    .isAfter(month2) &&
-                                DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from)
-                                    .isBefore(month1);
-                          }).toList();
+                            leavedata = leavedata.where((element) {
+                              return DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from)
+                                      .isAfter(month2) &&
+                                  DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from)
+                                      .isBefore(month1);
+                            }).toList();
 
-                          var totalLeaveHours = 0;
+                            var totalLeaveHours = 0;
 
-                          await Future.forEach(leavedata, (element) {
-                            totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
-                                .parse(element.to)
-                                .difference(DateFormat('dd/MM/yyyy hh:mm a')
-                                    .parse(element.from))
-                                .inHours;
-                          });
+                            await Future.forEach(leavedata, (element) {
+                              totalLeaveHours += DateFormat('dd/MM/yyyy hh:mm a')
+                                  .parse(element.to)
+                                  .difference(DateFormat('dd/MM/yyyy hh:mm a')
+                                      .parse(element.from))
+                                  .inHours;
+                            });
 
-                          print('totalLeave ${totalLeaveHours}');
+                            print('totalLeave ${totalLeaveHours}');
 
-                          var remainingHours =
-                              (double.parse(leaves.hourslimit) -
-                                      totalLeaveHours)
-                                  .round();
+                            var remainingHours =
+                                (double.parse(leaves.hourslimit) -
+                                        totalLeaveHours)
+                                    .round();
 
-                          _onPressedDetails(
-                              details: details,
-                              title: title,
-                              attachments: attachments,
-                              timebased: leaves.tenure,
-                              countbased: leaves.countbased,
-                              limit: leaves.limit,
-                              hourslimit: leaves.hourslimit,
-                              reducedtime: leaves.reducedtime,
-                              tenure: leaves.tenure,
-                              totalCountConsumed: leavedata.length.toString(),
-                              totalLeaveHours: totalLeaveHours.toString(),
-                              remainingHours: remainingHours.toString(),leavedata:leavedata);
+                            _onPressedDetails(
+                                details: details,
+                                title: title,
+                                attachments: attachments,
+                                timebased: leaves.tenure,
+                                countbased: leaves.countbased,
+                                limit: leaves.limit,
+                                hourslimit: leaves.hourslimit,
+                                reducedtime: leaves.reducedtime,
+                                tenure: leaves.tenure,
+                                totalCountConsumed: leavedata.length.toString(),
+                                totalLeaveHours: totalLeaveHours.toString(),
+                                remainingHours: remainingHours.toString(),leavedata:leavedata);
+                          }
                         }
-                      }
-                    : null,
-              ),
-              value: value,
-              title: Text(
-                title,
-              ),
-              subtitle: Column(
-                children: [
-                  Text(
-                    subtitle,
-                  ),
-                  Text(
-                    'Total Consumed: ${leavedata.length.toString()}',
-                    style: TextStyle(color: Colors.green),
-                  ),
-                ],
-              ),
-              groupValue: _selectedValue,
-              onChanged: (value) => setState(
-                () {
-                  _selectedValue = value;
-                },
+                      : null,
+                ),
+                value: value,
+                title: Text(
+                  title,style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Column(
+                  children: [
+                    Text(
+                      subtitle,
+                    ),
+                    Text(
+                      'Total Consumed: ${leavedata.length.toString()}',
+                      style: TextStyle(color: Colors.green.shade900),
+                    ),
+                  ],
+                ),
+                groupValue: _selectedValue,
+                onChanged: (value) => setState(
+                  () {
+                    _selectedValue = value;
+                  },
+                ),
               ),
             );
           }
@@ -378,31 +384,38 @@ class _LeavesState extends State<Leaves> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
+              color: _selectedFilter == 'Accepted'
+                  ? Colors.green
+                  : _selectedFilter == 'Rejected'
+                  ? Colors.red
+                  : Colors.amber,
             ),
             padding: const EdgeInsets.all(12.0),
             height: MediaQuery.of(context).size.height * 0.07,
             child: DropdownButtonHideUnderline(
-              child: DropdownButton(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(12.0),
-                ),
-                isExpanded: true,
-                value: _selectedFilter,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedFilter = value;
-                  });
-                },
-                hint: const Text('Select Filter'),
-                items: _filters.map(
-                  (e) {
-                    return DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    );
+                child: DropdownButton(
+                  iconDisabledColor: Colors.black,
+                  iconEnabledColor: Colors.black,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12.0),
+                  ),
+                  isExpanded: true,
+                  value: _selectedFilter,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedFilter = value;
+                    });
                   },
-                ).toList(),
-              ),
+                  hint: const Text('Select Filter'),
+                  items: _filters.map(
+                    (e) {
+                      return DropdownMenuItem(
+                        value: e,
+                        child: Text(e,),
+                      );
+                    },
+                  ).toList(),
+                ),
             ),
           ),
           const SizedBox(
@@ -560,9 +573,11 @@ class _LeavesState extends State<Leaves> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: const Text('Requests'),
-            backgroundColor: hippieBlue,
+            backgroundColor: primary,
             bottom: TabBar(
-              indicatorColor: portica,
+              indicatorWeight: 3,
+              indicatorColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
               tabs: const [
                 Tab(
                   child: Text('Requests'),
@@ -800,7 +815,10 @@ class _LeavesState extends State<Leaves> {
               actions: isLoading
                   ? null
                   : [
-                      TextButton(
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.green.shade900)
+                        ),
                         onPressed: () async {
                           var requestId =
                               'REQ' + DateTime.now().microsecond.toString();

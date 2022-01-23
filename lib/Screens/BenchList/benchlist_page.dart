@@ -28,7 +28,7 @@ class _BenchListState extends State<BenchList> {
   var _selectedValue = 0;
   var _fromDate = '';
   var _toDate = '';
-  String _selectedFilter;
+  String _selectedFilter = 'Pending';
 
   final List _filters = [
     'Pending',
@@ -58,6 +58,7 @@ class _BenchListState extends State<BenchList> {
             );
           } else {
             var employeeList = snapshot.data;
+            employeeList=    employeeList.where((element) => element.designation != 'hr' && element.designation != 'manager').toList();
             return Form(
               key: _formKey,
               child: Container(
@@ -80,9 +81,9 @@ class _BenchListState extends State<BenchList> {
                         });
                       },
                       selectedItem: _employeeName,
-                      dropdownSearchDecoration: const InputDecoration(
+                      dropdownSearchDecoration:  InputDecoration(
                         label: Text('Select Employee'),
-                        icon: Icon(Icons.person),
+                        icon: Image.asset('assets/Images/employee.png',width: 40,height: 40,),
                       ),
                     ),
                     SizedBox(
@@ -92,6 +93,7 @@ class _BenchListState extends State<BenchList> {
                         maxLines: null,
                         minLines: null,
                         expands: true,
+
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please write the job description';
@@ -101,10 +103,10 @@ class _BenchListState extends State<BenchList> {
                         onSaved: (value) {
                           _jobDescription = value;
                         },
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
                           label: Text('Job Description'),
                           hintText: 'Write details of the job to be assigned',
-                          icon: Icon(Icons.work),
+                          icon: Image.asset('assets/Images/description.png',width: 40,height: 40,),
                         ),
                       ),
                     ),
@@ -124,7 +126,7 @@ class _BenchListState extends State<BenchList> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4,
                           child: RadioListTile(
-                            activeColor: hippieBlue,
+                            activeColor: primary,
                             value: 1,
                             title: const FittedBox(
                               child: Text(
@@ -145,7 +147,7 @@ class _BenchListState extends State<BenchList> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.4,
                           child: RadioListTile(
-                            activeColor: hippieBlue,
+                            activeColor: primary,
                             value: 2,
                             title: const FittedBox(
                               child: Text(
@@ -319,7 +321,7 @@ class _BenchListState extends State<BenchList> {
                           ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all(hippieBlue),
+                                  MaterialStateProperty.all(primary),
                               shape: MaterialStateProperty.all(
                                 const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
@@ -383,7 +385,7 @@ class _BenchListState extends State<BenchList> {
                         child: const Text('Search'),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
-                            hippieBlue,
+                            primary,
                           ),
                           shape: MaterialStateProperty.all(
                             const RoundedRectangleBorder(
@@ -447,11 +449,18 @@ class _BenchListState extends State<BenchList> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(12.0),
               ),
+              color: _selectedFilter == 'Accepted'
+                  ? Colors.green
+                  : _selectedFilter == 'Rejected'
+                  ? Colors.red
+                  : Colors.amber,
             ),
             padding: const EdgeInsets.all(12.0),
             height: MediaQuery.of(context).size.height * 0.07,
             child: DropdownButtonHideUnderline(
               child: DropdownButton(
+                iconDisabledColor: Colors.black,
+                iconEnabledColor: Colors.black,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(12.0),
                 ),
@@ -464,10 +473,10 @@ class _BenchListState extends State<BenchList> {
                 },
                 hint: const Text('Select Filter'),
                 items: _filters.map(
-                  (e) {
+                      (e) {
                     return DropdownMenuItem(
                       value: e,
-                      child: Text(e),
+                      child: Text(e,),
                     );
                   },
                 ).toList(),
@@ -527,7 +536,6 @@ class _BenchListState extends State<BenchList> {
                           ),
                           child: Container(
                             padding: const EdgeInsets.all(8.0),
-                            height: MediaQuery.of(context).size.height * 0.1,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -613,10 +621,12 @@ class _BenchListState extends State<BenchList> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: hippieBlue,
+            backgroundColor: primary,
             title: const Text('Bench List'),
             bottom: TabBar(
-              indicatorColor: portica,
+              indicatorWeight: 3,
+              indicatorColor: Colors.white,
+              unselectedLabelColor: Colors.white38,
               tabs: const [
                 Tab(
                   text: 'Request Form',

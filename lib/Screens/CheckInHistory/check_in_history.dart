@@ -38,7 +38,7 @@ class _CheckInHistoryState extends State<CheckInHistory> {
         appBar: AppBar(
           title: const Text('Check-In History'),
           centerTitle: true,
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

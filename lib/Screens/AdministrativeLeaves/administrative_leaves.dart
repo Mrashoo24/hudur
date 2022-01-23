@@ -168,7 +168,7 @@ class _AdministrativeLeavesState extends State<AdministrativeLeaves> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text('Administrative Leave'),
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
         ),
         body: _accepted(),
       ),

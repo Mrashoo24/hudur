@@ -27,7 +27,7 @@ class _AnnouncementsState extends State<Announcements> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: hippieBlue,
+          backgroundColor: primary,
           title: const Text('Announcements'),
           centerTitle: true,
         ),

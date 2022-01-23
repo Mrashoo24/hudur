@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hudur/Components/models.dart';
 import 'package:hudur/Screens/Authentication/authentication.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,8 +94,12 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: 'Hudur',
       theme: ThemeData(
-        fontFamily: 'Ubuntu',
+        // fontFamily: 'Ubuntu',
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+            bodyText1: GoogleFonts.montserrat(),
+          bodyText2: GoogleFonts.oswald()
+        )
       ),
       home: FutureBuilder(
           future: SharedPreferences.getInstance(),
