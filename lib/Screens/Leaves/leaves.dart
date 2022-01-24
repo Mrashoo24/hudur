@@ -570,7 +570,7 @@ class _LeavesState extends State<Leaves> {
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white,
           appBar: AppBar(
             title: const Text('Requests'),
             backgroundColor: primary,

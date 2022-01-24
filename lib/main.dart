@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
             bodyText1: GoogleFonts.montserrat(),
-          bodyText2: GoogleFonts.oswald()
+          bodyText2: GoogleFonts.roboto()
         )
       ),
       home: FutureBuilder(

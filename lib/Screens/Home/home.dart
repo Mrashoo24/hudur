@@ -41,6 +41,8 @@ class _HomeState extends State<Home> {
   var _inDate = '';
   var _outDate = '';
   var _status = '';
+
+  bool expand = true;
   var _vicinityLoading = false;
   String latereason;
   String gotreason;
@@ -252,17 +254,18 @@ class _HomeState extends State<Home> {
                         shape: BoxShape.rectangle,
                         borderRadius:
                              BorderRadius.only(bottomLeft:  Radius.circular(80)),
-                        gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          colors: [
-                            // portica,
-                            //   primary,
-                            //  primary,
-                            primary,
-                            Colors.black
-                          ],
-                        ),
+                        color: Colors.white
+                        // gradient: LinearGradient(
+                        //   begin: Alignment.topRight,
+                        //   end: Alignment.bottomLeft,
+                        //   colors: [
+                        //     // portica,
+                        //     //   primary,
+                        //     //  primary,
+                        //     primary,
+                        //     Colors.black
+                        //   ],
+                        // ),
                       ),
                       width: double.infinity,
                       padding:  EdgeInsets.all(22.0),
@@ -279,37 +282,34 @@ class _HomeState extends State<Home> {
                                   Text(
                                     widget.userModel.name,
                                     style:  TextStyle(
-                                      color: Colors.white,
+                                      color: primary,
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
+                                      shadows: [Shadow(color: Colors.blueAccent,offset: Offset(-1,0),blurRadius: 1)]
                                     ),
                                   ),
-                                  Text(
-                                    'Id: ' + widget.userModel.empId,
-                                    style:  TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                                  subtext('Id: ',widget.userModel.empId),
                                   Text(
                                     widget.userModel.email,
                                     style:  TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   Text(
                                     widget.userModel.phoneNumber,
                                     style:  TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   Text(
                                     widget.userModel.designation,
                                     style:  TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],
                               ),
+
                               SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.1,
@@ -336,24 +336,26 @@ class _HomeState extends State<Home> {
                                     'Today You Have Checked Out in ($differenceFinal) Hours',
                                     style:  TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ),
                            SizedBox(
                             height: 20,
                           ),
+                          Divider(color: primary,thickness: 3,),
                           Container(
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                    primary,
-                                  Colors.black,
-
-                                ],
-                                begin: Alignment.topRight,
-                                end: Alignment.bottomLeft,
-                              ),
+                              color: Colors.white,
+                              // gradient: LinearGradient(
+                              //   colors: [
+                              //       primary,
+                              //     Colors.black,
+                              //
+                              //   ],
+                              //   begin: Alignment.topRight,
+                              //   end: Alignment.bottomLeft,
+                              // ),
                               shape: BoxShape.rectangle,
                               borderRadius:  BorderRadius.only(
                                 bottomLeft: Radius.circular(8.0),
@@ -364,23 +366,33 @@ class _HomeState extends State<Home> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(DateTime.now()),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                                Row(
+                                  children: [
+                                    Image.asset('assets/Images/attendence.png',width: 40,height: 40,),
+                                    SizedBox(width: 10,),
+                                    Column(
+                                    children: [
+                                      Text(
+                                        DateFormat('dd-MM-yyyy')
+                                            .format(DateTime.now()),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Attendance',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  )],
                                 ),
-                                 Text(
-                                  'Attendance',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                 
                                  SizedBox(
                                   height: 10,
                                 ),
@@ -395,20 +407,21 @@ class _HomeState extends State<Home> {
                                           'In Time',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
                                         ),
                                         Text(
                                           checkin,
                                           style:  TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
                                         )
                                       ],
                                     ),
-                                     SizedBox(
+                                    SizedBox(
                                       width: 30,
                                     ),
+
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -417,13 +430,13 @@ class _HomeState extends State<Home> {
                                           'Out Time',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
                                         ),
                                         Text(
                                           checkout,
                                           style:  TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
                                         )
                                       ],
@@ -439,14 +452,14 @@ class _HomeState extends State<Home> {
                                           'Status',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
                                         ),
                                         Text(
 
                                           _status,
                                           style:  TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                           ),
 
                                         ),
@@ -457,599 +470,585 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           ),
+                          Divider(color: primary,thickness: 3,),
                           SizedBox(
                             height: 20,
                           ),
-                          FutureBuilder(
-                              future: Future.wait(
-                                  [
-                                AllApi().getAttendenceCounts(
-                                    empname: widget.userModel.name,
-                                    companyid: widget.userModel.companyId),
-                                AllApi().getHomeLeavesCount(
-                                    verify: '1',
-                                    companyid: widget.userModel.companyId,
-                                    refid: widget.userModel.refId)
-                              ]
-                              ),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return CircularProgressIndicator(
-                                    color: Colors.white,
-                                  );
-                                }
+                          ExpansionPanelList(
+                            dividerColor: primary,
+                            expansionCallback: (index,bool){
+                              expand = !bool;
+                              setState(() {
 
-                                List<AttendanceReportModel> attendencecount =
-                                    snapshot.requireData[0];
-                                List<EmployeeLeaveRequestsModel> leavescount =
-                                    snapshot.requireData[1];
+                              });
 
-                                var leavesCount = leavescount.length;
-
-                                var present = attendencecount.where(
-                                    (element) => element.status != 'absence');
-
-                                var Absent = attendencecount.where(
-                                    (element) => element.status == 'absence');
-
-                                var lateentry = attendencecount.where(
-                                    (element) => element.status == 'late');
-
-                                var earlyexit = attendencecount.where(
-                                    (element) =>
-                                        element.workingstatus == 'early');
-
-                                var workinghours = 0.0;
-
-                                attendencecount.forEach((element) {
-                                  workinghours +=
-                                      double.parse(element.checkOutDifference);
-                                });
-
-                                return attendencecount != null
-                                    ? Container(
-                                        width: Get.width,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                                primary,
-                                              Colors.black,
-                                              // Colors.brown,
-
-                                            ],
-                                            begin: Alignment.topRight,
-                                            end: Alignment.bottomLeft,
-                                          ),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:  BorderRadius.only(
-                                            bottomLeft: Radius.circular(8.0),
-                                            bottomRight: Radius.circular(8.0),
-                                          ),
+                            },
+                            children: [ExpansionPanel(
+                              headerBuilder: (context,bool){
+                                return  Center(
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 10,),
+                                      Image.asset('assets/Images/records.png',width: 30,height: 30,),
+                                      SizedBox(width: 10,),
+                                      Text(
+                                        'This Month Records',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent,
                                         ),
-                                        padding:  EdgeInsets.all(5.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'This Month Records',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+
+                            canTapOnHeader: true,
+                              isExpanded: expand,
+                              body: FutureBuilder(
+                                  future: Future.wait(
+                                      [
+                                    AllApi().getAttendenceCounts(
+                                        empname: widget.userModel.name,
+                                        companyid: widget.userModel.companyId),
+                                    AllApi().getHomeLeavesCount(
+                                        verify: '1',
+                                        companyid: widget.userModel.companyId,
+                                        refid: widget.userModel.refId)
+                                  ]
+                                  ),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return CircularProgressIndicator(
+                                        color: Colors.white,
+                                      );
+                                    }
+
+                                    List<AttendanceReportModel> attendencecount =
+                                        snapshot.requireData[0];
+                                    List<EmployeeLeaveRequestsModel> leavescount =
+                                        snapshot.requireData[1];
+
+                                    var leavesCount = leavescount.length;
+
+                                    var present = attendencecount.where(
+                                        (element) => element.status != 'absence');
+
+                                    var Absent = attendencecount.where(
+                                        (element) => element.status == 'absence');
+
+                                    var lateentry = attendencecount.where(
+                                        (element) => element.status == 'late');
+
+                                    var earlyexit = attendencecount.where(
+                                        (element) =>
+                                            element.workingstatus == 'early');
+
+                                    var workinghours = 0.0;
+
+                                    attendencecount.forEach((element) {
+                                      workinghours +=
+                                          double.parse(element.checkOutDifference);
+                                    });
+
+                                    return attendencecount != null
+                                        ? Container(
+                                            width: Get.width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              // gradient: LinearGradient(
+                                              //   colors: [
+                                              //       primary,
+                                              //     Colors.black,
+                                              //     // Colors.brown,
+                                              //
+                                              //   ],
+                                              //   begin: Alignment.topRight,
+                                              //   end: Alignment.bottomLeft,
+                                              // ),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:  BorderRadius.only(
+                                                bottomLeft: Radius.circular(8.0),
+                                                bottomRight: Radius.circular(8.0),
                                               ),
                                             ),
-                                             SizedBox(
-                                              height: 10,
-                                            ),
-                                            Wrap(
-                                              alignment:
-                                                  WrapAlignment.spaceEvenly,
+                                            padding:  EdgeInsets.all(5.0),
+                                            child: Column(
                                               crossAxisAlignment:
-                                                  WrapCrossAlignment.center,
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  width: 80,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors
-                                                        .green.shade900,
-                                                    child: Column(
-                                                      crossAxisAlignment:
+                                                 SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Wrap(
+                                                  alignment:
+                                                      WrapAlignment.spaceEvenly,
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: Get.width*0.25,
+                                                      // height: Get.height*0.08,
+                                                      child: buildattendencecard('Present',present),
+                                                    ),
+                                                    //  SizedBox(
+                                                    // width: 30,
+                                                    // ),
+                                                    // Column(
+                                                    // crossAxisAlignment:
+                                                    // CrossAxisAlignment.start,
+                                                    // children: [
+                                                    //  Text(
+                                                    // 'Holiday',
+                                                    // style: TextStyle(
+                                                    // fontWeight: FontWeight.bold,
+                                                    // color: Colors.white,
+                                                    // ),
+                                                    // ),
+                                                    // Text(
+                                                    // checkout,
+                                                    // style:  TextStyle(
+                                                    // color: Colors.white,
+                                                    // ),
+                                                    // )
+                                                    // ],
+                                                    // ),
+                                                     SizedBox(
+                                                      width: 15,
+                                                    ),
+                                                    SizedBox(
+                                                        width: Get.width*0.25,
+                                                        // height: Get.height*0.08,
+                                                      child: buildattendencecard('Absent',Absent),
+                                                    ),
+                                                     SizedBox(
+                                                      width: 15,
+                                                    ),
+                                                    // SizedBox(
+                                                    //   width: 80,
+                                                    //   height: 60,
+                                                    //   child: buildattendencecard('Leave',leavescount),
+                                                    // ),
+                                                    SizedBox(
+                                                      width: Get.width*0.25,
+                                                      // height: Get.height*0.08,
+                                                      child: Card(
+                                                        elevation: 0,
+                                                        // color: Colors
+                                                        //     .green.shade900,
+                                                        borderOnForeground: true,
+                                                        shape: BeveledRectangleBorder(
+                                                            side: BorderSide(color: primary),
+                                                            borderRadius: BorderRadius.circular(10)
+
+                                                        ),
+                                                        color: Colors.blueAccent.withOpacity(0.2),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 3,
+                                                            ),
+                                                            Text(
+                                                              'Leave',
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.bold,
+                                                                  fontSize: Get.width * 0.035,
+                                                                  color: Colors.black,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(bottom: 5.0),
+                                                              child: Text(
+                                                                leavesCount
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: Get.width*0.05,
+                                                                    color: primary,
+                                                                    shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
+
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: Get.width*0.25,
+                                                      // height: Get.height*0.08,
+                                                      child: buildattendencecard('Late Entry',lateentry),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    SizedBox(
+                                                      width: Get.width*0.25,
+                                                      // height: Get.height*0.08,
+                                                      child: buildattendencecard('Early Exit',earlyexit),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    SizedBox(
+                                                      width: Get.width*0.25,
+                                                      // height: Get.height*0.08,
+                                                      child: Card(
+                                                        elevation: 0,
+                                                        // color: Colors
+                                                        //     .green.shade900,
+                                                        borderOnForeground: false,
+                                                        shape: BeveledRectangleBorder(
+                                                            side: BorderSide(color: primary),
+                                                            borderRadius: BorderRadius.circular(10)
+
+                                                        ),
+                                                        color: Colors.blueAccent.withOpacity(0.2),
+                                                        child: Column(
+                                                          crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .center,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 3,
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              'Working(hrs)',
+                                                              textAlign:
+                                                              TextAlign.center,
+                                                              style: TextStyle(
+                                                                fontSize: Get.width*0.035,
+                                                                fontWeight:
+                                                                FontWeight.bold,
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.only(bottom: 5.0),
+                                                              child: Text(
+                                                                workinghours
+                                                                    .toPrecision(2)
+                                                                    .toString(),
+                                                                style:
+                                                                TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: Get.width*0.05,
+                                                                    color: primary,
+                                                                    shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        Text(
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Divider(
+                                                  color: Colors.white,
+                                                ),
+                                                // Wrap(
+                                                //   alignment:
+                                                //       WrapAlignment.spaceBetween,
+                                                //
+                                                //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                //   children: [
+                                                //     SizedBox(
+                                                // width: Get.width*0.25,
+                                                //     height: Get.height*0.08,
+                                                //       child: buildattendencecard('Late Entry',lateentry),
+                                                //     ),
+                                                //      SizedBox(
+                                                //       width: 10,
+                                                //     ),
+                                                //     SizedBox(
+                                                //         width: Get.width*0.25,
+                                                //         height: Get.height*0.08,
+                                                //       child: buildattendencecard('Early Exit',earlyexit),
+                                                //     ),
+                                                //      SizedBox(
+                                                //       width: 10,
+                                                //     ),
+                                                //     SizedBox(
+                                                //       width: Get.width*0.25,
+                                                //       height: Get.height*0.08,
+                                                //       child: Card(
+                                                //         elevation: 1,
+                                                //         // color: Colors
+                                                //         //     .green.shade900,
+                                                //         borderOnForeground: false,
+                                                //         shape: BeveledRectangleBorder(
+                                                //             side: BorderSide(color: primary),
+                                                //             borderRadius: BorderRadius.circular(10)
+                                                //
+                                                //         ),
+                                                //                 color: Colors.blueAccent.withOpacity(0.2),
+                                                //         child: Column(
+                                                //           crossAxisAlignment:
+                                                //               CrossAxisAlignment
+                                                //                   .center,
+                                                //           children: [
+                                                //              SizedBox(
+                                                //               height: 5,
+                                                //             ),
+                                                //              Text(
+                                                //               'Working(hrs)',
+                                                //               textAlign:
+                                                //                   TextAlign.center,
+                                                //               style: TextStyle(
+                                                //                 fontSize: Get.width*0.035,
+                                                //                 fontWeight:
+                                                //                 FontWeight.bold,
+                                                //                 color: Colors.black,
+                                                //               ),
+                                                //             ),
+                                                //              SizedBox(
+                                                //               height: 5,
+                                                //             ),
+                                                //             Text(
+                                                //               workinghours
+                                                //                   .toPrecision(2)
+                                                //                   .toString(),
+                                                //               style:
+                                                //                    TextStyle(
+                                                //                        fontWeight: FontWeight.bold,
+                                                //                        fontSize: Get.width*0.05,
+                                                //                        color: primary,
+                                                //                        shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
+                                                //                    ),
+                                                //             ),
+                                                //           ],
+                                                //         ),
+                                                //       ),
+                                                //     ),
+                                                //   ],
+                                                // ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(
+                                            width: Get.width,
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  portica,
+                                                    primary,
+                                                ],
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
+                                              ),
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:  BorderRadius.only(
+                                                bottomLeft: Radius.circular(8.0),
+                                                bottomRight: Radius.circular(8.0),
+                                              ),
+                                            ),
+                                            padding:  EdgeInsets.all(20.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'This Month',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                 Text(
+                                                  'Records',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                 SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Wrap(
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                      children: [
+                                                         Text(
                                                           'Present',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          present.length
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                            fontSize: 16,
+                                                          checkin,
+                                                          style:  TextStyle(
                                                             color: Colors.white,
-                                                              shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
-
                                                           ),
                                                         )
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                                //  SizedBox(
-                                                // width: 30,
-                                                // ),
-                                                // Column(
-                                                // crossAxisAlignment:
-                                                // CrossAxisAlignment.start,
-                                                // children: [
-                                                //  Text(
-                                                // 'Holiday',
-                                                // style: TextStyle(
-                                                // fontWeight: FontWeight.bold,
-                                                // color: Colors.white,
-                                                // ),
-                                                // ),
-                                                // Text(
-                                                // checkout,
-                                                // style:  TextStyle(
-                                                // color: Colors.white,
-                                                // ),
-                                                // )
-                                                // ],
-                                                // ),
-                                                 SizedBox(
-                                                  width: 15,
-                                                ),
-                                                SizedBox(
-                                                  width: 80,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors.redAccent,
-                                                    child: Column(
+                                                     SizedBox(
+                                                      width: 30,
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                        SizedBox(
-                                                          height: 3,
+                                                         Text(
+                                                          'Holiday',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
+                                                        Text(
+                                                          checkout,
+                                                          style:  TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                     SizedBox(
+                                                      width: 30,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                      children: [
                                                          Text(
                                                           'Absent',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          Absent.length
-                                                              .toString(),
-                                                          style:
-                                                               TextStyle(
+                                                          _status,
+                                                          style:  TextStyle(
                                                             color: Colors.white,
-                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
-
-                                                               ),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                                 SizedBox(
-                                                  width: 15,
-                                                ),
-                                                SizedBox(
-                                                  width: 80,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors.amberAccent.shade700,
-                                                    child: Column(
+                                                     SizedBox(
+                                                      width: 30,
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                        SizedBox(
-                                                          height: 3,
-                                                        ),
-                                                        Text(
+                                                         Text(
                                                           'Leave',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          leavesCount
-                                                              .toString(),
-                                                          style: TextStyle(
+                                                          _status,
+                                                          style:  TextStyle(
                                                             color: Colors.white,
-                                                              shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
-
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                            Divider(
-                                              color: Colors.white,
-                                            ),
-                                            Wrap(
-                                              alignment:
-                                                  WrapAlignment.spaceBetween,
-
-                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                SizedBox(
-                                                  width: 100,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors.redAccent,
-                                                    child: Column(
+                                                Divider(
+                                                  color: Colors.white,
+                                                ),
+                                                Wrap(
+                                                  children: [
+                                                    Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
                                                          Text(
                                                           'Late Entry',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          lateentry.length
-                                                              .toString(),
-                                                          style:
-                                                               TextStyle(
-                                                                 fontSize: 16,
-                                                            color: Colors
-                                                                .white,
-                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
-
-                                                               ),
+                                                          checkin,
+                                                          style:  TextStyle(
+                                                            color: Colors.white,
+                                                          ),
                                                         )
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                                 SizedBox(
-                                                  width: 10,
-                                                ),
-                                                SizedBox(
-                                                  width: 100,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors.amberAccent.shade700,
-                                                    child: Column(
+                                                     SizedBox(
+                                                      width: 30,
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                         SizedBox(
-                                                          height: 5,
-                                                        ),
                                                          Text(
                                                           'Early Exit',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                         SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          earlyexit.length
-                                                              .toString(),
-                                                          style:
-                                                               TextStyle(
-                                                                 fontSize: 16,
-                                                            color: Colors
-                                                                .white,
-                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
-
-                                                               ),
+                                                          checkout,
+                                                          style:  TextStyle(
+                                                            color: Colors.white,
+                                                          ),
                                                         )
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                                 SizedBox(
-                                                  width: 10,
-                                                ),
-                                                SizedBox(
-                                                  width: 100,
-                                                  height: 60,
-                                                  child: Card(
-                                                    color: Colors.green.shade900,
-                                                    child: Column(
+                                                     SizedBox(
+                                                      width: 30,
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                          CrossAxisAlignment.start,
                                                       children: [
-                                                         SizedBox(
-                                                          height: 5,
-                                                        ),
                                                          Text(
-                                                          'Working(hrs)',
-                                                          textAlign:
-                                                              TextAlign.center,
+                                                          'Working Hours',
                                                           style: TextStyle(
-                                                            fontSize: 12,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color: Colors.black,
+                                                            color: Colors.white,
                                                           ),
                                                         ),
-                                                         SizedBox(
-                                                          height: 5,
-                                                        ),
                                                         Text(
-                                                          workinghours
-                                                              .toPrecision(2)
-                                                              .toString(),
-                                                          style:
-                                                               TextStyle(
-                                                                 fontSize: 16,
+                                                          _status,
+                                                          style:  TextStyle(
                                                             color: Colors.white,
-                                                                 shadows: [Shadow(color: Colors.black,offset: Offset(-1, -1),blurRadius: 1)]
                                                           ),
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(
-                                        width: Get.width,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              portica,
-                                                primary,
-                                            ],
-                                            begin: Alignment.topRight,
-                                            end: Alignment.bottomLeft,
-                                          ),
-                                          shape: BoxShape.rectangle,
-                                          borderRadius:  BorderRadius.only(
-                                            bottomLeft: Radius.circular(8.0),
-                                            bottomRight: Radius.circular(8.0),
-                                          ),
-                                        ),
-                                        padding:  EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'This Month',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                             Text(
-                                              'Records',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                             SizedBox(
-                                              height: 10,
-                                            ),
-                                            Wrap(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Present',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      checkin,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                 SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Holiday',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      checkout,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                 SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Absent',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      _status,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                 SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Leave',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      _status,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
                                                   ],
                                                 ),
                                               ],
                                             ),
-                                            Divider(
-                                              color: Colors.white,
-                                            ),
-                                            Wrap(
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Late Entry',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      checkin,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                 SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Early Exit',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      checkout,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                 SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                     Text(
-                                                      'Working Hours',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      _status,
-                                                      style:  TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                              }),
+                                          );
+                                  }),
+                            )],
+                          ),
                         ],
                       ),
                     ),
@@ -1220,15 +1219,75 @@ class _HomeState extends State<Home> {
           );
   }
 
+  Card buildattendencecard(String title,Iterable<AttendanceReportModel> present) {
+    return Card(
+                                                      elevation: 0,
+                                                     color: Colors
+                                                          .blueAccent.withOpacity(0.2),
+                                                       borderOnForeground: false,
+                                                      shape: BeveledRectangleBorder(
+                                                        side: BorderSide(color: primary),
+                                                        borderRadius: BorderRadius.circular(10)
+
+                                                      ),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 3,
+                                                          ),
+                                                          Text(
+                                                            title,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              color: Colors.black,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 5.0),
+                                                            child: Text(
+                                                              present.length
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 20,
+                                                                color: primary,
+                                                                  shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
+
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+  }
+
+  Text subtext(String text,String value) {
+    return Text(
+                                  text + value,
+                                  style:  TextStyle(
+                                    color: Colors.black,
+                                      shadows: [Shadow(color: Colors.black,offset: Offset(-1,-1),blurRadius: 3)]
+                                  ),
+                                );
+  }
+
   InkWell dashcards(BuildContext context, checkin, checkout,title,onTap,image) {
     return InkWell(
                           child: Card(
                             elevation: 10,
                             color: Colors.white,
-                            shadowColor: Colors.redAccent,
+                            shadowColor: primary,
 
                             shape:  RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.redAccent),
+                              side: BorderSide(color: primary),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(12.0),
                               ),
@@ -1419,7 +1478,7 @@ class _HomeState extends State<Home> {
             SizedBox(width: 10,),
           ],
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         body: RefreshIndicator(
           onRefresh: () async {
             var announcements = await AllApi().getAnnounce(
