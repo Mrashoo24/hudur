@@ -364,23 +364,36 @@ class _HomeState extends State<Home> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(DateTime.now()),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                                Row(
+                                  children: [
+                                    Image.asset('assets/Images/attendence.png',
+                                      width: 40,height: 40,
+                                    ),
+                                    SizedBox(width: 10,),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          DateFormat('dd-MM-yyyy')
+                                              .format(DateTime.now()),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Attendance',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                 Text(
-                                  'Attendance',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
+
                                  SizedBox(
                                   height: 10,
                                 ),
@@ -531,13 +544,21 @@ class _HomeState extends State<Home> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              'This Month Records',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
+                                            Row(
+                                              children: [
+                                                Image.asset('assets/Images/description.png',width: 40,height: 40,)
+                                                ,
+                                                SizedBox(width: 10,),
+
+                                                Text(
+                                                  'This Month Records',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                              SizedBox(
                                               height: 10,
@@ -844,8 +865,8 @@ class _HomeState extends State<Home> {
                                         decoration: BoxDecoration(
                                           gradient: LinearGradient(
                                             colors: [
-                                              portica,
-                                                primary,
+                                              primary,
+                                                Colors.black,
                                             ],
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
@@ -1225,10 +1246,10 @@ class _HomeState extends State<Home> {
                           child: Card(
                             elevation: 10,
                             color: Colors.white,
-                            shadowColor: Colors.redAccent,
+                            shadowColor: primary,
 
                             shape:  RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.redAccent),
+                              side: BorderSide(color: primary),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(12.0),
                               ),
