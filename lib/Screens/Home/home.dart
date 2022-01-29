@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fw_ticket/fw_ticket.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hudur/Components/api.dart';
@@ -118,20 +119,7 @@ class _HomeState extends State<Home> {
   //   }
   // }
 
-  Widget _countDownTimer() {
-    return FutureBuilder(
-      future: AllApi().getCheckIn(
-        refId: widget.userModel.refId,
-        date: DateFormat('dd-MM-yyyy').format(DateTime.now()),
-      ),
-      // AllApi().getUser(widget.userModel.email),
-
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: Image.asset("assets/Images/loading.gif"),
-          );
-        } else {
+  Widget _countDownTimer(snapshot) {
           var report = snapshot.requireData;
           // var timing = snapshot.requireData[1];
           String checkInTime = "-----";
@@ -222,100 +210,129 @@ class _HomeState extends State<Home> {
               child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? SizedBox() : checkOutTime != "-----" ? SizedBox()
                   : Stack(
                 children: [
-                  CircularCountDownTimer(
-                    // Countdown duration in Seconds.
-                    duration: endTime ,
+                  Align(
+                    alignment: Alignment.center,
+                    child: CircularCountDownTimer(
+                      // Countdown duration in Seconds.
+                      duration: endTime ,
 
-                    // Countdown initial elapsed Duration in Seconds.
-                    initialDuration: initialTime,
+                      // Countdown initial elapsed Duration in Seconds.
+                      initialDuration: initialTime,
 
-                    // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
-                    controller: _controller,
+                      // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                      controller: _controller,
 
-                    // Width of the Countdown Widget.
-                    width: Get.width*0.3,
+                      // Width of the Countdown Widget.
+                      width: 120,
 
-                    // Height of the Countdown Widget.
-                    height: Get.height*0.2,
+                      // Height of the Countdown Widget.
+                      height: Get.width*0.4,
 
-                    // Ring Color for Countdown Widget.
-                    ringColor: Colors.grey[300],
+                      // Ring Color for Countdown Widget.
+                      ringColor: Colors.grey[300],
 
-                    // Ring Gradient for Countdown Widget.
-                    ringGradient: null,
+                      // Ring Gradient for Countdown Widget.
+                      ringGradient: null,
 
-                    // Filling Color for Countdown Widget.
-                    fillColor: primary,
+                      // Filling Color for Countdown Widget.
+                      fillColor: primary,
 
-                    // Filling Gradient for Countdown Widget.
-                    fillGradient: null,
+                      // Filling Gradient for Countdown Widget.
+                      fillGradient: null,
 
-                    // Background Color for Countdown Widget.
-                    backgroundColor: Colors.white.withOpacity(0.8),
+                      // Background Color for Countdown Widget.
+                      backgroundColor: Colors.white.withOpacity(0.8),
 
-                    // Background Gradient for Countdown Widget.
-                    backgroundGradient: null,
+                      // Background Gradient for Countdown Widget.
+                      backgroundGradient: null,
 
-                    // Border Thickness of the Countdown Ring.
-                    strokeWidth: 5.0,
+                      // Border Thickness of the Countdown Ring.
+                      strokeWidth: 5.0,
 
-                    // Begin and end contours with a flat edge and no extension.
-                    strokeCap: StrokeCap.round,
+                      // Begin and end contours with a flat edge and no extension.
+                      strokeCap: StrokeCap.round,
 
-                    // Text Style for Countdown Text.
-                    textStyle: TextStyle(
-                        fontSize: 33.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                      // Text Style for Countdown Text.
+                      textStyle: TextStyle(
+                          fontSize: Get.width*0.4,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
 
-                    // Format for the Countdown Text.
-                    textFormat: CountdownTextFormat.S,
+                      // Format for the Countdown Text.
+                      textFormat: CountdownTextFormat.S,
 
-                    // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-                    isReverse: false,
+                      // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                      isReverse: false,
 
-                    // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
-                    isReverseAnimation: false,
+                      // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                      isReverseAnimation: false,
 
-                    // Handles visibility of the Countdown Text.
-                    isTimerTextShown: false,
+                      // Handles visibility of the Countdown Text.
+                      isTimerTextShown: false,
 
-                    // Handles the timer start.
-                    autoStart: true,
+                      // Handles the timer start.
+                      autoStart: true,
 
-                    // This Callback will execute when the Countdown Starts.
-                    onStart: () {
-                      // Here, do whatever you want
-                      print('Countdown Started');
-                    },
-
-                    // This Callback will execute when the Countdown Ends.
-                    onComplete: () {
-                      // Here, do whatever you want
-                      print('Countdown Ended');
-                    },
-                  ),
-                  Positioned(
-                    top: Get.width*0.1,
-                    left: Get.width*0.05,
-                    child: CountdownTimer(
-                      endWidget:  Text(''),
-                      endTime: endTime1,
-                      textStyle:  TextStyle(
-                        color: Colors.black,
-                      ),
-                      controller: _controller2,
-                      onEnd: () {
-                        if (checkOutTime == '-----') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Shift over. You can check out now.',
-                              ),
-                            ),
-                          );
-                        }
+                      // This Callback will execute when the Countdown Starts.
+                      onStart: () {
+                        // Here, do whatever you want
+                        print('Countdown Started');
                       },
+
+                      // This Callback will execute when the Countdown Ends.
+                      onComplete: () {
+                        // Here, do whatever you want
+                        print('Countdown Ended');
+                      },
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 50),
+                      child: Column(
+                        children: [
+                          CountdownTimer(
+                            endWidget:  Text(''),
+                            endTime: endTime1,
+                            textStyle:  TextStyle(
+                              color: Colors.black,
+                              fontSize: Get.height*0.013
+                            ),
+                            controller: _controller2,
+                            onEnd: () {
+                              if (checkOutTime == '-----') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Shift over. You can check out now.',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            DateFormat('dd-MM-yyyy')
+                                .format(DateTime.now()),
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            'ONLINE',
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -324,9 +341,6 @@ class _HomeState extends State<Home> {
 
             ),
           );
-        }
-      },
-    );
   }
 
   bool expandName = false;
@@ -339,6 +353,8 @@ class _HomeState extends State<Home> {
             future: AllApi().getCheckIn(
                 refId: widget.userModel.refId,
                 date: DateFormat('dd-MM-yyyy').format(DateTime.now())),
+
+
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -492,24 +508,12 @@ class _HomeState extends State<Home> {
                            SizedBox(
                             height: 10,
                           ),
-                          checkout == "-----"
-                              ? Container()
-                              : Center(
-                                  child: Text(
-                                    'Today You Have Checked Out in ($differenceFinal) Hours',
-                                    style:  TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                           SizedBox(
-                            height: 20,
-                          ),
                           Divider(color: primary,thickness: 3,),
                           Container(
+                            width: Get.width,
+
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.blue,
                               // gradient: LinearGradient(
                               //   colors: [
                               //       primary,
@@ -525,158 +529,53 @@ class _HomeState extends State<Home> {
                                 bottomRight: Radius.circular(8.0),
                               ),
                             ),
-                            padding:  EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            // padding:  EdgeInsets.all(20.0),
+                            child: Stack(
+                              // mainAxisAlignment :MainAxisAlignment.spaceBetween,
+                              // mainAxisSize: MainAxisSize.max,
                               children: [
-                                Row(
-                                  children: [
-                                    // Image.asset('assets/Images/attendence.png',width: 40,height: 40,),
-                                    Column(
-                                      children: [
-                                        Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'In Time',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              Text(
-                                                checkin,
-                                                style:  TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Out Time',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              Text(
-                                                checkout,
-                                                style:  TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    _countDownTimer(),
-                                    SizedBox(width: 10,),
-                                    Column(
+                                Positioned(
+                                  top: Get.width*0.08,
+                                  left: Get.width*0.028,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Text(
-                                        DateFormat('dd-MM-yyyy')
-                                            .format(DateTime.now()),
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Attendance',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
+                                      statusCard('In Time',checkin,BorderRadius.only(
+
+                                          bottomRight: Radius.elliptical(20.0,60),
+                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
+                                      statusCard('Out Time',checkout,BorderRadius.only(
+
+                                          topRight: Radius.elliptical(20.0,60)
+                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
+
                                     ],
-                                  )],
+                                  ),
                                 ),
-                                 
-                                 SizedBox(
-                                  height: 10,
+                                _countDownTimer(snapshot),
+                                Positioned(
+                                  top: Get.width*0.08,
+                                  right: Get.width*0.03,
+                                  child: Column(
+                                    children: [
+                                      statusCard('In Status',_status.toUpperCase(),BorderRadius.only(
+
+                                          bottomLeft: Radius.elliptical(20.0,60)
+                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 13,left: 30),),
+
+                                      statusCard('Out Status',checkout == '-----' ? '-----' :differenceFinal > double.parse(widget.userModel.hoursOfShift.toString())
+                                          ? 'extra'
+                                          : differenceFinal < double.parse(widget.userModel.hoursOfShift.toString())
+                                          ? 'early'
+                                          : 'perfect',BorderRadius.only(
+
+                                          topLeft: Radius.elliptical(20.0,60)
+                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 8,left: 30),),
+
+                                    ],
+                                  ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                         Text(
-                                          'In Time',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        Text(
-                                          checkin,
-                                          style:  TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 30,
-                                    ),
 
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                         Text(
-                                          'Out Time',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        Text(
-                                          checkout,
-                                          style:  TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                     SizedBox(
-                                      width: 30,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                         Text(
-                                          'Status',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        Text(
-
-                                          _status,
-                                          style:  TextStyle(
-                                            color: Colors.black,
-                                          ),
-
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
                               ],
                             ),
                           ),
@@ -1429,6 +1328,55 @@ class _HomeState extends State<Home> {
           );
   }
 
+  Ticket statusCard(title,checkin,decoration,padding) {
+    return Ticket(
+                                        innerRadius: decoration,
+                                        outerRadius: BorderRadius.all(Radius.circular(0.0)),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            offset: Offset(0, 2),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                            color: primary.withOpacity(0.2)
+                                            // Color.fromRGBO(196, 196, 196, .76),
+                                          )
+                                        ],
+
+                                        child: Container(
+                                          width: Get.width*0.3,
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(color: primary)
+                                            ),
+                                            child: Padding(
+                                              padding: padding,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    title,
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: primary,
+                                                      fontSize: Get.width*0.023
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    checkin,
+                                                    style:  TextStyle(
+                                                      color: Colors.black,
+                                                        fontSize: Get.width*0.02
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+  }
+
   Card buildattendencecard(String title,Iterable<AttendanceReportModel> present) {
     return Card(
                                                       elevation: 0,
@@ -1522,8 +1470,8 @@ class _HomeState extends State<Home> {
                                 children:  [
                                   Image.asset(
                                   image,
-                                     width: 20,
-                                    height: 20,
+                                     width: Get.width*0.15,
+                                    height: Get.width*0.15,
                                     // color: Colors.green.shade900,
                                   ),
                                   SizedBox(height: 5,),
