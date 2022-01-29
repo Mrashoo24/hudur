@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:badges/badges.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -51,7 +52,7 @@ class _HomeState extends State<Home> {
   File image;
   int _announcementCount;
 
-  CountdownTimerController _controller;
+  CountDownController _controller = CountDownController();
   bool loading = false;
 
   // ignore: unnecessary_new
@@ -137,6 +138,12 @@ class _HomeState extends State<Home> {
           String checkOutTime = "-----";
           String date = "-----";
           int endTime = 0;
+          bool checkLoginTimeEarly =true;
+          bool checkLoginTimeLate = true;
+          bool checkLoginTimeBefore = true;
+          CountdownTimerController _controller2 = CountdownTimerController(endTime: 100);
+
+          int initialTime = 0;
           if (report != "No Data") {
             checkInTime = report["checkin"];
             checkOutTime = report["checkout"];
@@ -150,43 +157,159 @@ class _HomeState extends State<Home> {
             String year = date.substring(6, 10);
             date = year + '-' + month + '-' + day;
             // if (timing.studyPermit == '0' && timing.maternityPermit == '0') {
-            endTime = checkOutTime == "-----"
-                ? DateTime.parse(date + ' ' + checkInTime)
-                        .millisecondsSinceEpoch +
-                    (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
-                : 0;
+            // endTime = checkOutTime == "-----"
+            //     ? DateTime.parse(date + ' ' + checkInTime)
+            //             .millisecondsSinceEpoch +
+            //         (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
+            //     : 0;
+
+            var dateAndTimetest =
+            DateFormat('hh:mm').parse(widget.userModel.reportingTime);
+
+            print('reportTime $dateAndTimetest');
+
+
+
+            var closinttime = dateAndTimetest.add(Duration(hours:  int.parse(widget.userModel.hoursOfShift)));
+            checkLoginTimeBefore = closinttime.isBefore(dateAndTimetest);
+             checkLoginTimeEarly = closinttime.isAfter(DateFormat('hh:mm').parse(DateFormat('hh:mm').format(DateTime(1970,01,01,DateTime.now().hour,DateTime.now().minute,DateTime.now().second))));
+             checkLoginTimeLate = closinttime.isBefore(DateFormat('hh:mm').parse(DateFormat('hh:mm').format(DateTime.now())));
+
+            print('close $closinttime $checkLoginTimeEarly $checkLoginTimeBefore');
+
+            initialTime = checkLoginTimeLate ? closinttime.difference(dateAndTimetest).inHours : DateFormat('hh:mm a').parse(DateFormat('hh:mm a').format(DateTime.now())).difference(dateAndTimetest).inSeconds;
+
+            print('initime ${DateFormat('hh:mm a').parse(DateFormat('hh:mm a').format(DateTime.now()))}');
+
+
+            print(DateTime.now());
+            // endTime = checkOutTime != "-----"?
+            // dateAndTimetest.add(Duration(hours:  int.parse(widget.userModel.hoursOfShift))).hour : 0;
+
+          // endTime =  closinttime.difference(DateFormat('hh:mm').parse(DateFormat('hh:mm').format(DateTime.now()))).inHours;
+
+            endTime =  closinttime.difference(dateAndTimetest).inSeconds;
+              //
+              // if(checkOutTime != "-----"){
+              //   _controller.pause();
+              // }
             // } else {
-            //   endTime = checkOutTime == "-----"
+            //   endT.ime = checkOutTime == "-----"
             //       ? DateTime.parse(date + ' ' + checkInTime)
             //               .millisecondsSinceEpoch +
             //           (1000 * (5 * 3600))
             //       : 0;
             // }
+            print('endtime $endTime');
           }
-          _controller = CountdownTimerController(endTime: endTime);
+          // _controller.start();
+          print('endtime $endTime');
+          print('initime $initialTime');
+          print('checkoutime $checkOutTime ${checkOutTime != "-----"}');
 
+          print('${initialTime > int.parse(widget.userModel.hoursOfShift) * 3600} $checkLoginTimeBefore ${checkInTime != "-----" } ${ checkOutTime != "-----" }' );
           return Center(
             child: Container(
               padding:  EdgeInsets.all(8.0),
-              child: CountdownTimer(
-                endWidget:  Text(''),
-                endTime: endTime,
-                textStyle:  TextStyle(
-                  color: Colors.white,
-                ),
-                controller: _controller,
-                onEnd: () {
-                  if (checkOutTime == '-----') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(
-                        content: Text(
-                          'Shift over. You can check out now.',
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
+              child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? SizedBox() : checkOutTime == "-----" ? SizedBox()
+                  : Column(
+                children: [
+                  CountdownTimer(
+                    endWidget:  Text('dddd'),
+                    endTime: 200,
+                    textStyle:  TextStyle(
+                      color: Colors.black,
+                    ),
+                    controller: _controller2,
+                    onEnd: () {
+                      if (checkOutTime == '-----') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Shift over. You can check out now.',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  CircularCountDownTimer(
+                    // Countdown duration in Seconds.
+                    duration: endTime ,
+
+                    // Countdown initial elapsed Duration in Seconds.
+                    initialDuration: initialTime,
+
+                    // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                    controller: _controller,
+
+                    // Width of the Countdown Widget.
+                    width: Get.width*0.3,
+
+                    // Height of the Countdown Widget.
+                    height: Get.height*0.1,
+
+                    // Ring Color for Countdown Widget.
+                    ringColor: Colors.grey[300],
+
+                    // Ring Gradient for Countdown Widget.
+                    ringGradient: null,
+
+                    // Filling Color for Countdown Widget.
+                    fillColor: Colors.purpleAccent[100],
+
+                    // Filling Gradient for Countdown Widget.
+                    fillGradient: null,
+
+                    // Background Color for Countdown Widget.
+                    backgroundColor: Colors.purple[500],
+
+                    // Background Gradient for Countdown Widget.
+                    backgroundGradient: null,
+
+                    // Border Thickness of the Countdown Ring.
+                    strokeWidth: 20.0,
+
+                    // Begin and end contours with a flat edge and no extension.
+                    strokeCap: StrokeCap.round,
+
+                    // Text Style for Countdown Text.
+                    textStyle: TextStyle(
+                        fontSize: 33.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+
+                    // Format for the Countdown Text.
+                    textFormat: CountdownTextFormat.S,
+
+                    // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                    isReverse: false,
+
+                    // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                    isReverseAnimation: false,
+
+                    // Handles visibility of the Countdown Text.
+                    isTimerTextShown: false,
+
+                    // Handles the timer start.
+                    autoStart: true,
+
+                    // This Callback will execute when the Countdown Starts.
+                    onStart: () {
+                      // Here, do whatever you want
+                      print('Countdown Started');
+                    },
+
+                    // This Callback will execute when the Countdown Ends.
+                    onComplete: () {
+                      // Here, do whatever you want
+                      print('Countdown Ended');
+                    },
+                  ),
+
+                ],
+              )
+
             ),
           );
         }
@@ -194,6 +317,7 @@ class _HomeState extends State<Home> {
     );
   }
 
+  bool expandName = false;
   Widget _home() {
     return loading
         ? Center(
@@ -272,59 +396,86 @@ class _HomeState extends State<Home> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.userModel.name,
-                                    style:  TextStyle(
-                                      color: primary,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [Shadow(color: Colors.blueAccent,offset: Offset(-1,0),blurRadius: 1)]
-                                    ),
-                                  ),
-                                  subtext('Id: ',widget.userModel.empId),
-                                  Text(
-                                    widget.userModel.email,
-                                    style:  TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.userModel.phoneNumber,
-                                    style:  TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.userModel.designation,
-                                    style:  TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ExpansionPanelList(
+                            animationDuration: Duration(milliseconds: 500),
+                            dividerColor: primary,
+                            expansionCallback: (index,bool){
+                              expandName = !bool;
+                              setState(() {
 
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.1,
-                                width: MediaQuery.of(context).size.width * 0.2,
-                                child: widget.userModel.image != null
-                                    ? Image.network(
-                                        '${mainurl}assets/images/employee/profile/${widget.userModel.image}',
-                                        fit: BoxFit.fill,
-                                      )
-                                    : Image.asset(
-                                        'assets/Images/homelogo.png',
-                                        fit: BoxFit.fill,
-                                      ),
+                              });
+
+                            },
+                            children: [ExpansionPanel(
+                              canTapOnHeader: true,
+                              isExpanded:expandName,
+                              body: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          widget.userModel.phoneNumber,
+                                          style:  TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Text(
+                                          widget.userModel.designation,
+                                          style:  TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        Text(
+                                          widget.userModel.email,
+                                          style:  TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height * 0.1,
+                                      width: MediaQuery.of(context).size.width * 0.2,
+                                      child: widget.userModel.image != null
+                                          ? Image.network(
+                                              '${mainurl}assets/images/employee/profile/${widget.userModel.image}',
+                                              fit: BoxFit.fill,
+                                            )
+                                          : Image.asset(
+                                              'assets/Images/homelogo.png',
+                                              fit: BoxFit.fill,
+                                            ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                              headerBuilder: (context,ind){
+                                return Row(
+                                  children: [
+                                    SizedBox(width: 10,),
+                                    Text(
+                                      widget.userModel.name,
+                                      style:  TextStyle(
+                                          color: primary,
+                                          fontSize: 18,
+                                          // fontWeight: FontWeight.bold,
+                                          // shadows: [Shadow(color: Colors.blueAccent,offset: Offset(-1,0),blurRadius: 1)]
+                                      ),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    subtext('(', '${widget.userModel.empId})'),
+                                  ],
+                                );
+                              }
+                            )],
                           ),
                            SizedBox(
                             height: 10,
@@ -372,6 +523,7 @@ class _HomeState extends State<Home> {
                                     SizedBox(width: 10,),
                                     Column(
                                     children: [
+                                      _countDownTimer(),
                                       Text(
                                         DateFormat('dd-MM-yyyy')
                                             .format(DateTime.now()),
@@ -656,7 +808,7 @@ class _HomeState extends State<Home> {
                                                               'Leave',
                                                               style: TextStyle(
                                                                   fontWeight: FontWeight.bold,
-                                                                  fontSize: Get.width * 0.035,
+                                                                  fontSize: 10,
                                                                   color: Colors.black,
                                                               ),
                                                             ),
@@ -670,7 +822,7 @@ class _HomeState extends State<Home> {
                                                                     .toString(),
                                                                 style: TextStyle(
                                                                     fontWeight: FontWeight.bold,
-                                                                    fontSize: Get.width*0.05,
+                                                                    fontSize: 14,
                                                                     color: primary,
                                                                     shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
 
@@ -724,7 +876,7 @@ class _HomeState extends State<Home> {
                                                               textAlign:
                                                               TextAlign.center,
                                                               style: TextStyle(
-                                                                fontSize: Get.width*0.035,
+                                                                fontSize: 10,
                                                                 fontWeight:
                                                                 FontWeight.bold,
                                                                 color: Colors.black,
@@ -742,7 +894,7 @@ class _HomeState extends State<Home> {
                                                                 style:
                                                                 TextStyle(
                                                                     fontWeight: FontWeight.bold,
-                                                                    fontSize: Get.width*0.05,
+                                                                    fontSize: 14,
                                                                     color: primary,
                                                                     shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
                                                                 ),
@@ -1241,7 +1393,7 @@ class _HomeState extends State<Home> {
                                                           Text(
                                                             title,
                                                             style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 10,
                                                               fontWeight:
                                                                   FontWeight.bold,
                                                               color: Colors.black,
@@ -1257,7 +1409,7 @@ class _HomeState extends State<Home> {
                                                                   .toString(),
                                                               style: TextStyle(
                                                                 fontWeight: FontWeight.bold,
-                                                                fontSize: 20,
+                                                                fontSize: 14,
                                                                 color: primary,
                                                                   shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
 
@@ -1393,7 +1545,7 @@ class _HomeState extends State<Home> {
               }
           ),
           actions: [
-            _countDownTimer(),
+            // _countDownTimer(),
             FutureBuilder<List<AnnounceModel>>(
               future: AllApi().getAnnounce(
                 companyId: widget.userModel.companyId,
@@ -1425,6 +1577,7 @@ class _HomeState extends State<Home> {
                 _announcementCount = announcements.length;
                 return IconButton(
                   onPressed: () {
+                    _controller.start();
                     Get.to(
                       () => Announcements(
                         userModel: widget.userModel,
