@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
   File image;
   int _announcementCount;
 
-  CountDownController _controller = CountDownController();
+  CountDownController _controller;
   bool loading = false;
 
   // ignore: unnecessary_new
@@ -141,7 +141,7 @@ class _HomeState extends State<Home> {
           bool checkLoginTimeEarly =true;
           bool checkLoginTimeLate = true;
           bool checkLoginTimeBefore = true;
-          CountdownTimerController _controller2 = CountdownTimerController(endTime: 100);
+          int endTime1 = 0;
 
           int initialTime = 0;
           if (report != "No Data") {
@@ -157,11 +157,7 @@ class _HomeState extends State<Home> {
             String year = date.substring(6, 10);
             date = year + '-' + month + '-' + day;
             // if (timing.studyPermit == '0' && timing.maternityPermit == '0') {
-            // endTime = checkOutTime == "-----"
-            //     ? DateTime.parse(date + ' ' + checkInTime)
-            //             .millisecondsSinceEpoch +
-            //         (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
-            //     : 0;
+
 
             var dateAndTimetest =
             DateFormat('hh:mm').parse(widget.userModel.reportingTime);
@@ -189,7 +185,18 @@ class _HomeState extends State<Home> {
           // endTime =  closinttime.difference(DateFormat('hh:mm').parse(DateFormat('hh:mm').format(DateTime.now()))).inHours;
 
             endTime =  closinttime.difference(dateAndTimetest).inSeconds;
-              //
+
+            endTime1 =
+        //         closinttime.millisecondsSinceEpoch +
+        // (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600));
+
+            checkOutTime == "-----"
+                ? DateTime.parse(date + ' ' + DateFormat('hh:mm:ss.SSS').format(dateAndTimetest))
+                        .millisecondsSinceEpoch +
+                    (1000 * (int.parse(widget.userModel.hoursOfShift) * 3600))
+                : 0;
+
+            print('checvkintime ${DateFormat('hh:mm:ss.SSS').format(dateAndTimetest)}');
               // if(checkOutTime != "-----"){
               //   _controller.pause();
               // }
@@ -200,39 +207,21 @@ class _HomeState extends State<Home> {
             //           (1000 * (5 * 3600))
             //       : 0;
             // }
-            print('endtime $endTime');
+            print('endtime $endTime $endTime1');
           }
           // _controller.start();
           print('endtime $endTime');
           print('initime $initialTime');
           print('checkoutime $checkOutTime ${checkOutTime != "-----"}');
 
-          print('${initialTime > int.parse(widget.userModel.hoursOfShift) * 3600} $checkLoginTimeBefore ${checkInTime != "-----" } ${ checkOutTime != "-----" }' );
+          print('${initialTime > int.parse(widget.userModel.hoursOfShift) * 3600} $checkLoginTimeBefore ${checkInTime == "-----" } ${ checkOutTime != "-----" }' );
+
+          CountdownTimerController _controller2 = CountdownTimerController(endTime: endTime1);
           return Center(
             child: Container(
-              padding:  EdgeInsets.all(8.0),
-              child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? SizedBox() : checkOutTime == "-----" ? SizedBox()
-                  : Column(
+              child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? SizedBox() : checkOutTime != "-----" ? SizedBox()
+                  : Stack(
                 children: [
-                  CountdownTimer(
-                    endWidget:  Text('dddd'),
-                    endTime: 200,
-                    textStyle:  TextStyle(
-                      color: Colors.black,
-                    ),
-                    controller: _controller2,
-                    onEnd: () {
-                      if (checkOutTime == '-----') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Shift over. You can check out now.',
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
                   CircularCountDownTimer(
                     // Countdown duration in Seconds.
                     duration: endTime ,
@@ -247,7 +236,7 @@ class _HomeState extends State<Home> {
                     width: Get.width*0.3,
 
                     // Height of the Countdown Widget.
-                    height: Get.height*0.1,
+                    height: Get.height*0.2,
 
                     // Ring Color for Countdown Widget.
                     ringColor: Colors.grey[300],
@@ -256,19 +245,19 @@ class _HomeState extends State<Home> {
                     ringGradient: null,
 
                     // Filling Color for Countdown Widget.
-                    fillColor: Colors.purpleAccent[100],
+                    fillColor: primary,
 
                     // Filling Gradient for Countdown Widget.
                     fillGradient: null,
 
                     // Background Color for Countdown Widget.
-                    backgroundColor: Colors.purple[500],
+                    backgroundColor: Colors.white.withOpacity(0.8),
 
                     // Background Gradient for Countdown Widget.
                     backgroundGradient: null,
 
                     // Border Thickness of the Countdown Ring.
-                    strokeWidth: 20.0,
+                    strokeWidth: 5.0,
 
                     // Begin and end contours with a flat edge and no extension.
                     strokeCap: StrokeCap.round,
@@ -305,6 +294,29 @@ class _HomeState extends State<Home> {
                       // Here, do whatever you want
                       print('Countdown Ended');
                     },
+                  ),
+                  Positioned(
+                    top: Get.width*0.1,
+                    left: Get.width*0.05,
+                    child: CountdownTimer(
+                      endWidget:  Text(''),
+                      endTime: endTime1,
+                      textStyle:  TextStyle(
+                        color: Colors.black,
+                      ),
+                      controller: _controller2,
+                      onEnd: () {
+                        if (checkOutTime == '-----') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Shift over. You can check out now.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
 
                 ],
@@ -519,11 +531,57 @@ class _HomeState extends State<Home> {
                               children: [
                                 Row(
                                   children: [
-                                    Image.asset('assets/Images/attendence.png',width: 40,height: 40,),
+                                    // Image.asset('assets/Images/attendence.png',width: 40,height: 40,),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'In Time',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                checkin,
+                                                style:  TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Out Time',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              Text(
+                                                checkout,
+                                                style:  TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    _countDownTimer(),
                                     SizedBox(width: 10,),
                                     Column(
                                     children: [
-                                      _countDownTimer(),
                                       Text(
                                         DateFormat('dd-MM-yyyy')
                                             .format(DateTime.now()),
@@ -1376,20 +1434,27 @@ class _HomeState extends State<Home> {
                                                       elevation: 0,
                                                      color: Colors
                                                           .blueAccent.withOpacity(0.2),
-                                                       borderOnForeground: false,
+                                                           borderOnForeground: false,
+
                                                       shape: BeveledRectangleBorder(
+
                                                         side: BorderSide(color: primary),
                                                         borderRadius: BorderRadius.circular(10)
 
                                                       ),
+
                                                       child: Column(
+
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .center,
+
                                                         children: [
+
                                                           SizedBox(
                                                             height: 3,
                                                           ),
+
                                                           Text(
                                                             title,
                                                             style: TextStyle(
@@ -1399,9 +1464,11 @@ class _HomeState extends State<Home> {
                                                               color: Colors.black,
                                                             ),
                                                           ),
+
                                                           SizedBox(
                                                             height: 5,
                                                           ),
+
                                                           Padding(
                                                             padding: const EdgeInsets.only(bottom: 5.0),
                                                             child: Text(
@@ -1455,8 +1522,8 @@ class _HomeState extends State<Home> {
                                 children:  [
                                   Image.asset(
                                   image,
-                                     width: 70,
-                                    height: 70,
+                                     width: 20,
+                                    height: 20,
                                     // color: Colors.green.shade900,
                                   ),
                                   SizedBox(height: 5,),
