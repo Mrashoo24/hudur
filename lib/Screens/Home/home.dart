@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:badges/badges.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fw_ticket/fw_ticket.dart';
 import 'package:get/get.dart';
@@ -150,6 +152,9 @@ class _HomeState extends State<Home> {
             var dateAndTimetest =
             DateFormat('hh:mm').parse(widget.userModel.reportingTime);
 
+
+            var reprtingDateTime = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day,dateAndTimetest.hour,dateAndTimetest.second);
+
             print('reportTime $dateAndTimetest');
 
 
@@ -207,17 +212,145 @@ class _HomeState extends State<Home> {
           CountdownTimerController _controller2 = CountdownTimerController(endTime: endTime1);
           return Center(
             child: Container(
-              child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? SizedBox() : checkOutTime != "-----" ? SizedBox()
-                  : Stack(
+              child: initialTime > int.parse(widget.userModel.hoursOfShift) *3600 || checkLoginTimeBefore || checkInTime == "-----"  ? Stack(
                 children: [
                   Align(
                     alignment: Alignment.center,
                     child: CircularCountDownTimer(
                       // Countdown duration in Seconds.
-                      duration: endTime ,
+                      duration: 0 ,
 
                       // Countdown initial elapsed Duration in Seconds.
-                      initialDuration: initialTime,
+                      initialDuration: 0,
+
+                      // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                      controller: _controller,
+
+                      // Width of the Countdown Widget.
+                      width: 120,
+
+                      // Height of the Countdown Widget.
+                      height: Get.width*0.4,
+
+                      // Ring Color for Countdown Widget.
+                      ringColor: Colors.grey[300],
+
+                      // Ring Gradient for Countdown Widget.
+                      ringGradient: null,
+
+                      // Filling Color for Countdown Widget.
+                      fillColor: primary,
+
+                      // Filling Gradient for Countdown Widget.
+                      fillGradient: null,
+
+                      // Background Color for Countdown Widget.
+                      backgroundColor: Colors.white.withOpacity(0.8),
+
+                      // Background Gradient for Countdown Widget.
+                      backgroundGradient: null,
+
+                      // Border Thickness of the Countdown Ring.
+                      strokeWidth: 6.0,
+
+                      // Begin and end contours with a flat edge and no extension.
+                      strokeCap: StrokeCap.round,
+
+                      // Text Style for Countdown Text.
+                      textStyle: TextStyle(
+                          fontSize: Get.width*0.4,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+
+                      // Format for the Countdown Text.
+                      textFormat: CountdownTextFormat.S,
+
+                      // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                      isReverse: false,
+
+                      // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                      isReverseAnimation: false,
+
+                      // Handles visibility of the Countdown Text.
+                      isTimerTextShown: false,
+
+                      // Handles the timer start.
+                      autoStart: true,
+
+                      // This Callback will execute when the Countdown Starts.
+                      onStart: () {
+                        // Here, do whatever you want
+                        print('Countdown Started');
+                      },
+
+                      // This Callback will execute when the Countdown Ends.
+                      onComplete: () {
+                        // Here, do whatever you want
+                        print('Countdown Ended');
+                      },
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 50),
+                      child: Column(
+                        children: [
+                          CountdownTimer(
+                            endWidget:  Text(''),
+                            endTime: endTime1,
+                            textStyle:  TextStyle(
+                                color: Colors.black,
+                                fontSize: Get.height*0.013
+                            ),
+                            controller: _controller2,
+                            onEnd: () {
+                              if (checkOutTime == '-----') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Shift over. You can check out now.',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            DateFormat('dd-MM-yyyy')
+                                .format(DateTime.now()),
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            'OFFLINE',
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                ],
+              ) : checkOutTime != "-----" ? Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: CircularCountDownTimer(
+                      // Countdown duration in Seconds.
+                      duration: 0 ,
+
+                      // Countdown initial elapsed Duration in Seconds.
+                      initialDuration: 0,
 
                       // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
                       controller: _controller,
@@ -287,7 +420,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Align(
-                      alignment: Alignment.bottomCenter,
+                    alignment: Alignment.bottomCenter,
                     child: Container(
                       margin: EdgeInsets.only(top: 50),
                       child: Column(
@@ -296,8 +429,8 @@ class _HomeState extends State<Home> {
                             endWidget:  Text(''),
                             endTime: endTime1,
                             textStyle:  TextStyle(
-                              color: Colors.black,
-                              fontSize: Get.height*0.013
+                                color: Colors.black,
+                                fontSize: Get.height*0.013
                             ),
                             controller: _controller2,
                             onEnd: () {
@@ -324,11 +457,143 @@ class _HomeState extends State<Home> {
                           ),
                           SizedBox(height: 5,),
                           Text(
-                            'ONLINE',
+                            'OFFLINE',
                             style: TextStyle(
                               fontSize: Get.width*0.027,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                ],
+              )
+                  : Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: CircularCountDownTimer(
+                      // Countdown duration in Seconds.
+                      duration: endTime ,
+
+                      // Countdown initial elapsed Duration in Seconds.
+                      initialDuration: initialTime,
+
+                      // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                      controller: _controller,
+
+                      // Width of the Countdown Widget.
+                      width: 120,
+
+                      // Height of the Countdown Widget.
+                      height: Get.width*0.4,
+
+                      // Ring Color for Countdown Widget.
+                      ringColor: Colors.grey[300],
+
+                      // Ring Gradient for Countdown Widget.
+                      ringGradient: null,
+
+                      // Filling Color for Countdown Widget.
+                      fillColor: Colors.green.shade400,
+
+                      // Filling Gradient for Countdown Widget.
+                      fillGradient: null,
+
+                      // Background Color for Countdown Widget.
+                      backgroundColor: Colors.white.withOpacity(0.8),
+
+                      // Background Gradient for Countdown Widget.
+                      backgroundGradient: null,
+
+                      // Border Thickness of the Countdown Ring.
+                      strokeWidth: 7.0,
+
+                      // Begin and end contours with a flat edge and no extension.
+                      strokeCap: StrokeCap.round,
+
+                      // Text Style for Countdown Text.
+                      textStyle: TextStyle(
+                          fontSize: Get.width*0.4,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+
+                      // Format for the Countdown Text.
+                      textFormat: CountdownTextFormat.S,
+
+                      // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                      isReverse: false,
+
+                      // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                      isReverseAnimation: false,
+
+                      // Handles visibility of the Countdown Text.
+                      isTimerTextShown: false,
+
+                      // Handles the timer start.
+                      autoStart: true,
+
+                      // This Callback will execute when the Countdown Starts.
+                      onStart: () {
+                        // Here, do whatever you want
+                        print('Countdown Started');
+                      },
+
+                      // This Callback will execute when the Countdown Ends.
+                      onComplete: () {
+                        // Here, do whatever you want
+                        print('Countdown Ended');
+                      },
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 50),
+                      child: Column(
+                        children: [
+                          CountdownTimer(
+                            endWidget:  Text(''),
+                            endTime: endTime1,
+                            textStyle:  TextStyle(
+                              color: Colors.black,
+                              fontSize: Get.height*0.02,
+                              fontWeight: FontWeight.bold
+
+                            ),
+                            controller: _controller2,
+                            onEnd: () {
+                              if (checkOutTime == '-----') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Shift over. You can check out now.',
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            DateFormat('dd-MM-yyyy')
+                                .format(DateTime.now()),
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          Text(
+                            'ONLINE',
+                            style: TextStyle(
+                              fontSize: Get.width*0.027,
+                              color: Colors.black,
+                                fontWeight: FontWeight.bold
                             ),
                           ),
                         ],
@@ -513,7 +778,7 @@ class _HomeState extends State<Home> {
                             width: Get.width,
 
                             decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: Colors.lightBlueAccent,
                               // gradient: LinearGradient(
                               //   colors: [
                               //       primary,
@@ -530,54 +795,109 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             // padding:  EdgeInsets.all(20.0),
-                            child: Stack(
-                              // mainAxisAlignment :MainAxisAlignment.spaceBetween,
-                              // mainAxisSize: MainAxisSize.max,
+                            child: Column(
                               children: [
-                                Positioned(
-                                  top: Get.width*0.08,
-                                  left: Get.width*0.028,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      statusCard('In Time',checkin,BorderRadius.only(
+                                Stack(
+                                  // mainAxisAlignment :MainAxisAlignment.spaceBetween,
+                                  // mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Positioned(
+                                      top: Get.width*0.055,
+                                      left: Get.width*0.028,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          statusCard('In Time',checkin,BorderRadius.only(
 
-                                          bottomRight: Radius.elliptical(20.0,60),
-                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
-                                      statusCard('Out Time',checkout,BorderRadius.only(
+                                              bottomRight: Radius.elliptical(20.0,60),
+                                          ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
 
-                                          topRight: Radius.elliptical(20.0,60)
-                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
 
-                                    ],
-                                  ),
-                                ),
-                                _countDownTimer(snapshot),
-                                Positioned(
-                                  top: Get.width*0.08,
-                                  right: Get.width*0.03,
-                                  child: Column(
-                                    children: [
-                                      statusCard('In Status',_status.toUpperCase(),BorderRadius.only(
+                                          statusCard('In Status',_status.toUpperCase(),BorderRadius.only(
 
-                                          bottomLeft: Radius.elliptical(20.0,60)
-                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 13,left: 30),),
+                                              topRight: Radius.elliptical(20.0,60)
+                                          ), EdgeInsets.only(top: 8.0,bottom: 8,right: 30,left: 8),),
 
-                                      statusCard('Out Status',checkout == '-----' ? '-----' :differenceFinal > double.parse(widget.userModel.hoursOfShift.toString())
-                                          ? 'extra'
-                                          : differenceFinal < double.parse(widget.userModel.hoursOfShift.toString())
-                                          ? 'early'
-                                          : 'perfect',BorderRadius.only(
+                                        ],
+                                      ),
+                                    ),
+                                    _countDownTimer(snapshot),
+                                    Positioned(
+                                      top: Get.width*0.055,
+                                      right: Get.width*0.03,
+                                      child: Column(
+                                        children: [
+                                          statusCard('Out Time',checkout,BorderRadius.only(
 
-                                          topLeft: Radius.elliptical(20.0,60)
-                                      ), EdgeInsets.only(top: 8.0,bottom: 8,right: 8,left: 30),),
+                                              bottomLeft: Radius.elliptical(20.0,60)
+                                          ), EdgeInsets.only(top: 8.0,bottom: 8,right: 13,left: 30),),
 
-                                    ],
-                                  ),
+
+                                          statusCard('Out Status',checkout == '-----' ? '-----' :differenceFinal > double.parse(widget.userModel.hoursOfShift.toString())
+                                              ? 'extra'
+                                              : differenceFinal < double.parse(widget.userModel.hoursOfShift.toString())
+                                              ? 'early'
+                                              : 'perfect',BorderRadius.only(
+
+                                              topLeft: Radius.elliptical(20.0,60)
+                                          ), EdgeInsets.only(top: 8.0,bottom: 8,right: 8,left: 30),),
+
+                                        ],
+                                      ),
+                                    ),
+
+                                  ],
                                 ),
 
                               ],
                             ),
+                          ),
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Opacity(
+                                opacity: 1,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(60)
+                                  ),
+                                  child: Container(
+
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      shape: BoxShape.rectangle,
+                                      gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors:  checkin != '-----'?[Colors.white,Colors.red.shade400] :[Colors.white,Colors.green.shade400])
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 56.0,vertical: 8),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                         checkin != '-----'? Text('CHECK-OUT',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),) : Text('CHECK-IN',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // Opacity(
+                              //   opacity: 0.6,
+                              //   child: ElevatedButton(onPressed: (){}, child: Row(
+                              //     mainAxisSize: MainAxisSize.min,
+                              //     children: [
+                              //       Image.asset('assets/Images/checkout.png',width: 30,),
+                              //       SizedBox(width: 10,),
+                              //       Text('CHECKOUT',style: TextStyle(color: Colors.black54),),
+                              //     ],
+                              //   ),
+                              //     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.redAccent.shade100)
+                              //     ),
+                              //
+                              //   ),
+                              // ),
+                            ],
                           ),
                           Divider(color: primary,thickness: 3,),
                           SizedBox(
@@ -866,82 +1186,6 @@ class _HomeState extends State<Home> {
                                                 Divider(
                                                   color: Colors.white,
                                                 ),
-                                                // Wrap(
-                                                //   alignment:
-                                                //       WrapAlignment.spaceBetween,
-                                                //
-                                                //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                //   children: [
-                                                //     SizedBox(
-                                                // width: Get.width*0.25,
-                                                //     height: Get.height*0.08,
-                                                //       child: buildattendencecard('Late Entry',lateentry),
-                                                //     ),
-                                                //      SizedBox(
-                                                //       width: 10,
-                                                //     ),
-                                                //     SizedBox(
-                                                //         width: Get.width*0.25,
-                                                //         height: Get.height*0.08,
-                                                //       child: buildattendencecard('Early Exit',earlyexit),
-                                                //     ),
-                                                //      SizedBox(
-                                                //       width: 10,
-                                                //     ),
-                                                //     SizedBox(
-                                                //       width: Get.width*0.25,
-                                                //       height: Get.height*0.08,
-                                                //       child: Card(
-                                                //         elevation: 1,
-                                                //         // color: Colors
-                                                //         //     .green.shade900,
-                                                //         borderOnForeground: false,
-                                                //         shape: BeveledRectangleBorder(
-                                                //             side: BorderSide(color: primary),
-                                                //             borderRadius: BorderRadius.circular(10)
-                                                //
-                                                //         ),
-                                                //                 color: Colors.blueAccent.withOpacity(0.2),
-                                                //         child: Column(
-                                                //           crossAxisAlignment:
-                                                //               CrossAxisAlignment
-                                                //                   .center,
-                                                //           children: [
-                                                //              SizedBox(
-                                                //               height: 5,
-                                                //             ),
-                                                //              Text(
-                                                //               'Working(hrs)',
-                                                //               textAlign:
-                                                //                   TextAlign.center,
-                                                //               style: TextStyle(
-                                                //                 fontSize: Get.width*0.035,
-                                                //                 fontWeight:
-                                                //                 FontWeight.bold,
-                                                //                 color: Colors.black,
-                                                //               ),
-                                                //             ),
-                                                //              SizedBox(
-                                                //               height: 5,
-                                                //             ),
-                                                //             Text(
-                                                //               workinghours
-                                                //                   .toPrecision(2)
-                                                //                   .toString(),
-                                                //               style:
-                                                //                    TextStyle(
-                                                //                        fontWeight: FontWeight.bold,
-                                                //                        fontSize: Get.width*0.05,
-                                                //                        color: primary,
-                                                //                        shadows: [Shadow(color: Colors.black,offset: Offset(-1, 0),blurRadius: 1)]
-                                                //                    ),
-                                                //             ),
-                                                //           ],
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //   ],
-                                                // ),
                                               ],
                                             ),
                                           )
@@ -1172,94 +1416,103 @@ class _HomeState extends State<Home> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
-                        dashcards(context, checkin, checkout,'CHECK IN',() {
-                          if (checkin != "-----" && checkout == "-----") {
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (ctx) {
-                                return AlertDialog(
-                                  title:  Text(
-                                    'You have already checked-in.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child:  Text(
-                                        'Dismiss',
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            _confirmCheckInDialogBox();
-                          }
-                        },'assets/Images/checkin.png'),
-                        dashcards(context, checkin, checkout, 'CHECK OUT',() {
-                          if (checkin == "-----") {
-                            showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (ctx) {
-                                return AlertDialog(
-                                  title:  Text(
-                                    'You need to check-in first.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child:  Text(
-                                        'Dismiss',
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            if (checkout != "-----") {
-                              showDialog(
-                                barrierDismissible: false,
-                                context: context,
-                                builder: (ctx) {
-                                  return AlertDialog(
-                                    title:  Text(
-                                      'You have Checked out Already',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child:  Text(
-                                          'Dismiss',
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            } else {
-                              _confirmCheckOutDialogBox(
-                                checkin: checkin,
-                                differenceFinal: differenceFinal,
-                              );
-                            }
-                          }
-                        },'assets/Images/checkout.png'),
-                        dashcards(context, checkin, checkout,'LEAVE REQUESTS',() {
+                        // dashcards(context, checkin, checkout,'CHECK IN',() {
+                        //   if (checkin != "-----" && checkout == "-----") {
+                        //     showDialog(
+                        //       barrierDismissible: false,
+                        //       context: context,
+                        //       builder: (ctx) {
+                        //         return AlertDialog(
+                        //           title:  Text(
+                        //             'You have already checked-in.',
+                        //           ),
+                        //           actions: [
+                        //             TextButton(
+                        //               onPressed: () {
+                        //                 Navigator.of(context).pop();
+                        //               },
+                        //               child:  Text(
+                        //                 'Dismiss',
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         );
+                        //       },
+                        //     );
+                        //   } else {
+                        //     _confirmCheckInDialogBox();
+                        //   }
+                        // },'assets/Images/checkin.png'),
+                        // dashcards(context, checkin, checkout, 'CHECK OUT',() {
+                        //   if (checkin == "-----") {
+                        //     showDialog(
+                        //       barrierDismissible: false,
+                        //       context: context,
+                        //       builder: (ctx) {
+                        //         return AlertDialog(
+                        //           title:  Text(
+                        //             'You need to check-in first.',
+                        //           ),
+                        //           actions: [
+                        //             TextButton(
+                        //               onPressed: () {
+                        //                 Navigator.of(context).pop();
+                        //               },
+                        //               child:  Text(
+                        //                 'Dismiss',
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         );
+                        //       },
+                        //     );
+                        //   } else {
+                        //     if (checkout != "-----") {
+                        //       showDialog(
+                        //         barrierDismissible: false,
+                        //         context: context,
+                        //         builder: (ctx) {
+                        //           return AlertDialog(
+                        //             title:  Text(
+                        //               'You have Checked out Already',
+                        //             ),
+                        //             actions: [
+                        //               TextButton(
+                        //                 onPressed: () {
+                        //                   Navigator.of(context).pop();
+                        //                 },
+                        //                 child:  Text(
+                        //                   'Dismiss',
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           );
+                        //         },
+                        //       );
+                        //     } else {
+                        //       _confirmCheckOutDialogBox(
+                        //         checkin: checkin,
+                        //         differenceFinal: differenceFinal,
+                        //       );
+                        //     }
+                        //   }
+                        // },'assets/Images/checkout.png'),
+                        dashcards(context, checkin, checkout,'LEAVES',() {
                           Get.to(
                                 () => Leaves(
                               userModel: widget.userModel,
                             ),
                           );
                         },'assets/Images/leave.png'),
+
+                        dashcards(context, checkin, checkout,  'CERTIFICATES',() {
+                          Get.to(
+                                () => Services(
+                              userModel: widget.userModel,
+                            ),
+                          );
+                        },'assets/Images/services.png'),
+
                         dashcards(context, checkin, checkout,  'COURSES',() {
                           Get.to(
                                 () => Courses(
@@ -1267,13 +1520,7 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         },'assets/Images/courses.png'),
-                        dashcards(context, checkin, checkout,  'SERVICES',() {
-                          Get.to(
-                                () => Services(
-                              userModel: widget.userModel,
-                            ),
-                          );
-                        },'assets/Images/services.png'),
+
                         dashcards(context, checkin, checkout,  'ENQUIRY',() {
                           Get.to(
                                 () => EnquiryChat(
@@ -1281,41 +1528,6 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         },'assets/Images/enquiry.png'),
-                        dashcards(context, checkin, checkout,  'BENCH LIST',() {
-                          Get.to(
-                                () => BenchList(
-                              userModel: widget.userModel,
-                            ),
-                          );
-                        },'assets/Images/benchlist.png'),
-                        dashcards(context, checkin, checkout,  'ATTENDENCE',() {
-                          Get.to(
-                                () => CheckInHistory(
-                              userModel: widget.userModel,
-                            ),
-                          );
-                        },'assets/Images/history.png'),
-
-                        dashcards(context, checkin, checkout,  'FAULTY ATTENDANCE',() {
-                          Get.to(
-                                () => LateReason(
-                              userModel: widget.userModel,
-                            ),
-                          );
-                        },'assets/Images/faultycheckin.png'),
-
-                        dashcards(context, checkin, checkout,  'ADMINISTRATIVE LEAVE',() {
-                          Get.to(
-                                () => AdministrativeLeaves(
-                              userModel: widget.userModel,
-                            ),
-                          );
-                        },'assets/Images/adminleave.png'),
-                        dashcards(context, checkin, checkout,  'RELATED SITES',() {
-                          Get.to(RelatedSites(
-                            userModel: widget.userModel,
-                          ));
-                        },'assets/Images/relatedsite.png'),
 
 
                       ],
@@ -1359,14 +1571,15 @@ class _HomeState extends State<Home> {
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       color: primary,
-                                                      fontSize: Get.width*0.023
+                                                      fontSize: Get.width*0.024
                                                     ),
                                                   ),
                                                   Text(
                                                     checkin,
                                                     style:  TextStyle(
                                                       color: Colors.black,
-                                                        fontSize: Get.width*0.02
+                                                        fontSize: Get.width*0.04,
+                                                      fontWeight: FontWeight.bold
                                                     ),
                                                   )
                                                 ],
@@ -1492,6 +1705,80 @@ class _HomeState extends State<Home> {
                         );
   }
 
+  InkWell dashcards1(BuildContext context,title,onTap,image) {
+    return  InkWell(
+      child: Container(
+
+        padding:  EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:  [
+            Image.asset(
+              image,
+              width: Get.width*0.05,
+              height: Get.width*0.05,
+              // color: Colors.green.shade900,
+            ),
+            SizedBox(height: 5,),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: primary,
+                fontSize: Get.width*0.025,
+              ),
+            )
+          ],
+        ),
+      ),
+      onTap: onTap,
+    );
+
+    //   InkWell(
+    //   child: Card(
+    //     elevation: 10,
+    //     color: Colors.white,
+    //     shadowColor: primary,
+    //
+    //     shape:  RoundedRectangleBorder(
+    //       side: BorderSide(color: primary),
+    //       borderRadius: BorderRadius.all(
+    //         Radius.circular(12.0),
+    //       ),
+    //     ),
+    //     child: Container(
+    //       width: Get.width*0.17,
+    //       padding:  EdgeInsets.all(8.0),
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         crossAxisAlignment: CrossAxisAlignment.center,
+    //         children:  [
+    //           Image.asset(
+    //             image,
+    //             width: Get.width*0.05,
+    //             height: Get.width*0.05,
+    //             // color: Colors.green.shade900,
+    //           ),
+    //           SizedBox(height: 5,),
+    //           Text(
+    //             title,
+    //             textAlign: TextAlign.center,
+    //             style: TextStyle(
+    //               fontWeight: FontWeight.bold,
+    //               color: primary,
+    //               fontSize: Get.width*0.02,
+    //             ),
+    //           )
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    //   onTap: onTap,
+    // );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1502,6 +1789,49 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: Scaffold(
+        bottomNavigationBar: Container(
+          height: 100,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              dashcards1(context,'BENCH\nLIST',() {
+                Get.to(
+                      () => BenchList(
+                    userModel: widget.userModel,
+                  ),
+                );
+              },'assets/Images/benchlist.png'),
+              dashcards1(context,'HISTORY',() {
+                Get.to(
+                      () => CheckInHistory(
+                    userModel: widget.userModel,
+                  ),
+                );
+              },'assets/Images/history.png'),
+
+              dashcards1(context,'CORRECTION',() {
+                Get.to(
+                      () => LateReason(
+                    userModel: widget.userModel,
+                  ),
+                );
+              },'assets/Images/faultycheckin.png'),
+
+              dashcards1(context, 'ADMIN\nLEAVE',() {
+                Get.to(
+                      () => AdministrativeLeaves(
+                    userModel: widget.userModel,
+                  ),
+                );
+              },'assets/Images/adminleave.png'),
+              dashcards1(context,'SITES',() {
+                Get.to(RelatedSites(
+                  userModel: widget.userModel,
+                ));
+              },'assets/Images/relatedsite.png'),
+            ],
+          ),
+        ),
         appBar: AppBar(
           backgroundColor:   primary,
           title: FutureBuilder(
