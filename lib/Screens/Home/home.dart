@@ -858,24 +858,106 @@ class _HomeState extends State<Home> {
                             children: [
                               Opacity(
                                 opacity: 1,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(60)
-                                  ),
-                                  child: Container(
+                                child: InkWell(
+                                  onTap:() {
+                                    if (checkin != "-----" && checkout == "-----") {
+                                        if (checkin == "-----") {
+                                          showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (ctx) {
+                                              return AlertDialog(
+                                                title:  Text(
+                                                  'You need to check-in first.',
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child:  Text(
+                                                      'Dismiss',
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          if (checkout != "-----") {
+                                            showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (ctx) {
+                                                return AlertDialog(
+                                                  title:  Text(
+                                                    'You have Checked out Already',
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child:  Text(
+                                                        'Dismiss',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            _confirmCheckOutDialogBox(
+                                              checkin: checkin,
+                                              differenceFinal: differenceFinal,
+                                            );
+                                          }
+                                        }
 
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(60),
-                                      shape: BoxShape.rectangle,
-                                      gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors:  checkin != '-----'?[Colors.white,Colors.red.shade400] :[Colors.white,Colors.green.shade400])
+                                      // showDialog(
+                                      //   barrierDismissible: false,
+                                      //   context: context,
+                                      //   builder: (ctx) {
+                                      //     return AlertDialog(
+                                      //       title:  Text(
+                                      //         'You have already checked-in.',
+                                      //       ),
+                                      //       actions: [
+                                      //         TextButton(
+                                      //           onPressed: () {
+                                      //             Navigator.of(context).pop();
+                                      //           },
+                                      //           child:  Text(
+                                      //             'Dismiss',
+                                      //           ),
+                                      //         ),
+                                      //       ],
+                                      //     );
+                                      //   },
+                                      // );
+                                    } else {
+                                      _confirmCheckInDialogBox();
+                                    }
+                                  } ,
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(60)
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 56.0,vertical: 8),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                         checkin != '-----'? Text('CHECK-OUT',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),) : Text('CHECK-IN',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),),
-                                        ],
+                                    child: Container(
+
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(60),
+                                        shape: BoxShape.rectangle,
+                                        gradient: LinearGradient(begin: Alignment.topCenter,end: Alignment.bottomCenter,colors:  checkin != '-----'?[Colors.white,Colors.red.shade400] :[Colors.white,Colors.green.shade400])
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 56.0,vertical: 8),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                           checkin != '-----'? Text('CHECK-OUT',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),) : Text('CHECK-IN',style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.bold),),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1416,6 +1498,7 @@ class _HomeState extends State<Home> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
+                        //dashcard
                         // dashcards(context, checkin, checkout,'CHECK IN',() {
                         //   if (checkin != "-----" && checkout == "-----") {
                         //     showDialog(
@@ -1443,7 +1526,9 @@ class _HomeState extends State<Home> {
                         //     _confirmCheckInDialogBox();
                         //   }
                         // },'assets/Images/checkin.png'),
-                        // dashcards(context, checkin, checkout, 'CHECK OUT',() {
+
+
+                        // dashcards(context, checkin, checkout, 'CHECK OUT',() {a
                         //   if (checkin == "-----") {
                         //     showDialog(
                         //       barrierDismissible: false,
